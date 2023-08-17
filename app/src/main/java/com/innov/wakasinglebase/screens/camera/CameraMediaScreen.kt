@@ -2,6 +2,8 @@ package com.innov.wakasinglebase.screens.camera
 
 
 import android.app.Activity
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,16 +24,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.innov.wakasinglebase.core.extension.getCurrentBrightness
 import com.innov.wakasinglebase.core.utils.DisableRippleInteractionSource
-
 import com.innov.wakasinglebase.screens.camera.tabs.CameraScreen
-import com.innov.wakasinglebase.screens.camera.tabs.TemplateScreen
 import com.innov.wakasinglebase.ui.theme.White
 import kotlinx.coroutines.launch
 
 
-
-
-
+@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun CameraMediaScreen(
@@ -78,62 +76,25 @@ fun CameraMediaScreen(
                             viewModel = cameraMediaViewModel,
                             cameraOpenType = tabs[page]
                         )
-                        2 -> TemplateScreen(
+                        2 -> CameraScreen(
                             navController = navController,
                             viewModel = cameraMediaViewModel,
                         )
                     }
                 }
             }
-            BottomTabLayout(pagerState) {
-                coroutineScope.launch {
-                    pagerState.scrollToPage(it)
-                }
-            }
+
+
+
 
         }
     }
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun BottomTabLayout(
-    pagerState: PagerState,
-    onClickTab: (position: Int) -> Unit
-) {
-    val edgePadding = LocalConfiguration.current.screenWidthDp.div(2).dp
-    ScrollableTabRow(
-        selectedTabIndex = pagerState.currentPage,
-        divider = {},
-        indicator = {},
-        edgePadding = edgePadding
-    ) {
-        Tabs.values().asList().forEachIndexed { index, tab ->
-            val isSelected = pagerState.currentPage == index
-            Tab(selected = isSelected, onClick = {
-                onClickTab(index)
-            }, interactionSource = remember { DisableRippleInteractionSource() }, text = {
-                val textColor = if (isSelected) White
-                else White.copy(alpha = 0.6f)
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = stringResource(id = tab.rawValue),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = textColor
-                    )
-                    Box(
-                        modifier = Modifier
-                            .alpha(if (isSelected) 1f else 0f)
-                            .padding(top = 10.dp)
-                            .size(5.dp)
-                            .background(color = White, shape = CircleShape)
-                    )
-                }
-            })
-        }
-    }
-}
+
+
+
 
 
 

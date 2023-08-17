@@ -321,10 +321,10 @@ fun FooterUi(
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.Bottom) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-            onClickUser(item.authorDetails.uid)
+            item.authorDetails?.let { it.uid?.let { it1 -> onClickUser(it1) } }
         }) {
             AsyncImage(
-                model = item.authorDetails.profilePic,
+                model = item.authorDetails?.profilePic,
                 contentDescription = null,
                 modifier = Modifier
                     .size(50.dp)
@@ -333,14 +333,16 @@ fun FooterUi(
                     )
                     .clip(shape = CircleShape)
                     .clickable {
-                        onClickUser.invoke(item.authorDetails.uid)
+                        item.authorDetails?.let { it.uid?.let { it1 -> onClickUser.invoke(it1) } }
                     },
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = item.authorDetails.name, style = MaterialTheme.typography.bodyMedium
-            )
+            item.authorDetails?.let {
+                Text(
+                    text = "${it.name}", style = MaterialTheme.typography.bodyMedium
+                )
+            }
             if (showUploadDate) {
                 Text(
                     text = " . ${item.createdAt} ago",
@@ -353,7 +355,7 @@ fun FooterUi(
         val audioInfo: String = item.audioModel?.run {
             "Original sound - ${audioAuthor.uniqueUserName} - ${audioAuthor.name}"
         }
-            ?: item.run { "Original sound - ${item.authorDetails.uniqueUserName} - ${item.authorDetails.name}" }
+            ?: item.run { "Original sound - ${item.authorDetails?.uniqueUserName} - ${item.authorDetails?.name}" }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),

@@ -2,19 +2,20 @@ package com.innov.wakasinglebase.data.source
 
 import android.content.ContentValues.TAG
 import android.util.Log
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.snapshots
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.ktx.Firebase
+
 import com.innov.wakasinglebase.data.model.UserModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.tasks.await
 
+
 class AuthDataSource {
-    private val db = Firebase.firestore
-    private val auth=Firebase.auth
+    private val db=FirebaseFirestore.getInstance()
+    private  val auth=FirebaseAuth.getInstance()
+
     suspend fun createUser(name: String,email:String,uid:String,profilePic:String){
 // Create a new user with a first and last name
         val user = hashMapOf(
@@ -36,13 +37,16 @@ class AuthDataSource {
             .document(uid)
             .set(user).await()
     }
-      fun getUser(){
+      fun getUser():UserModel?{
+          var userDb:UserModel?=null
        auth.currentUser?.let {user->
-        val reff=  db.collection("users")
-               .document(user.uid).get()
-           reff.addOnSuccessListener {
-               it.toObject<UserModel>()
-           }
+        userDb= db.collection("users")
+               .document(user.uid).get().result
+
+            .toObject<UserModel>()
+
        }
+          return userDb
     }
+
 }

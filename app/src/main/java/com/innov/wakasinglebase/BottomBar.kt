@@ -92,6 +92,8 @@ fun RowScope.BottomItem(
         selected = isCurrentBottomItemSelected,
         onClick = {
             screen.route.let {
+                // todo check for authentication
+
                 navController.navigate(it){
                     launchSingleTop=true
                 }

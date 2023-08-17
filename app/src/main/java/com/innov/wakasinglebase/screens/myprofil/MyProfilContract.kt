@@ -1,9 +1,10 @@
-package com.innov.wakasinglebase.screens.settings
+package com.innov.wakasinglebase.screens.myprofil
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import com.innov.wakasinglebase.R
+import com.innov.wakasinglebase.signin.AuthData
 
 /**
  * Created by innov Victor on 4/1/2023.
@@ -17,6 +18,14 @@ sealed class SettingEvent {
 
 }
 
+data class UiState(
+    val isSignInSuccessfull : Boolean = false,
+    val signinError : String? = null,
+    val currentUser: AuthData? = null,
+    val isLoading : Boolean = false,
+
+    )
+
 
 data class RowItem(
     @DrawableRes val icon: Int,
@@ -26,17 +35,9 @@ data class RowItem(
 
 val settingUiModel: Map<String, List<RowItem>> = mapOf(
     "Account" to listOf(
-        RowItem(icon = R.drawable.ic_profile_fill, title = R.string.my_account),
-        RowItem(icon = R.drawable.ic_phone, title = R.string.playback),
-    ),
-    "Payments" to listOf(
         RowItem(icon = R.drawable.ic_dollar, title = R.string.live),
         RowItem(icon = R.drawable.ic_graph, title = R.string.playback),
-    ),
-    "Secutity" to listOf(
-        RowItem(icon = R.drawable.ic_recycler_bin, title = R.string.free_up_space),
         RowItem(icon = R.drawable.ic_cle, title = R.string.data_saver),
-        RowItem(icon = R.drawable.ic_wallpaper, title = R.string.wallpaper)
     ),
     "Support & About" to listOf(
         RowItem(icon = R.drawable.ic_flag, title = R.string.report_a_problem),

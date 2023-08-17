@@ -8,7 +8,7 @@ import com.innov.wakasinglebase.core.extension.randomUploadDate
  */
 data class VideoModel(
     val videoId: String,
-    val authorDetails: UserModel,
+    val authorDetails: UserModel?,
     val videoStats: VideoStats,
     val videoLink: String,
     val description: String,
@@ -21,20 +21,20 @@ data class VideoModel(
         var like: Long,
         var comment: Long,
         var share: Long,
-        var favourite: Long,
+
         var views: Long = (like.plus(500)..like.plus(100000)).random()
     ) {
         var formattedLikeCount: String = ""
         var formattedCommentCount: String = ""
         var formattedShareCount: String = ""
-        var formattedFavouriteCount: String = ""
+
         var formattedViewsCount: String = ""
 
         init {
             formattedLikeCount = like.formattedCount()
             formattedCommentCount = comment.formattedCount()
             formattedShareCount = share.formattedCount()
-            formattedFavouriteCount = favourite.formattedCount()
+
             formattedViewsCount = views.formattedCount()
         }
     }

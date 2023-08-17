@@ -1,8 +1,10 @@
 package com.innov.wakasinglebase.signin
 
+import com.innov.wakasinglebase.data.model.UserModel
+
 
 data class SignInResult(
-    val data: AuthData?,
+    val data: UserModel?,
     val errorMessage:String?
 )
 

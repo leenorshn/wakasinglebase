@@ -1,13 +1,23 @@
 package com.innov.wakasinglebase.screens.camera.tabs
 //package com.innov.cameramedia.tabs
 //
+import android.content.Context
+import android.database.Cursor
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.video.Recorder
+import androidx.camera.video.Recording
+import androidx.camera.video.VideoCapture
+import androidx.camera.video.VideoRecordEvent
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -45,14 +55,17 @@ import com.google.accompanist.permissions.shouldShowRationale
 import com.innov.wakasinglebase.R
 
 import com.innov.wakasinglebase.common.CaptureButton
+import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.extension.MediumSpace
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.core.utils.openAppSetting
 import com.innov.wakasinglebase.screens.camera.CameraCaptureOptions
 import com.innov.wakasinglebase.screens.camera.CameraController
 import com.innov.wakasinglebase.screens.camera.CameraMediaViewModel
+
 import com.innov.wakasinglebase.screens.camera.PermissionType
 import com.innov.wakasinglebase.screens.camera.Tabs
+import com.innov.wakasinglebase.screens.camera.UploadData
 import com.innov.wakasinglebase.ui.theme.LightGreenColor
 import com.innov.wakasinglebase.ui.theme.TealColor
 import com.innov.wakasinglebase.ui.theme.White
@@ -61,6 +74,9 @@ import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.SnapOffsets
 import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
 import kotlinx.coroutines.launch
+import java.io.File
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 /**
@@ -68,6 +84,7 @@ import kotlinx.coroutines.launch
  */
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CameraScreen(
@@ -81,45 +98,94 @@ fun CameraScreen(
             android.Manifest.permission.CAMERA, android.Manifest.permission.RECORD_AUDIO
         )
     )
+    var fileName by remember { mutableStateOf("") }
+    var uriG by remember { mutableStateOf<Uri?>(null) }
     LaunchedEffect(key1 = Unit) {
         if (!multiplePermissionState.permissions[0].status.isGranted) {
             multiplePermissionState.launchMultiplePermissionRequest()
         }
     }
 
+
     val fileLauncher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickMultipleVisualMedia(),
-            onResult = {})
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent(),
+            onResult = {uri->
 
+               var t= getFileNameFromUri(context,uri!!)
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        if (multiplePermissionState.permissions[0].status.isGranted) {
-            CameraPreview(cameraOpenType,
-                onClickCancel = { navController.navigateUp() },
-                onClickOpenFile = {
-                    fileLauncher.launch(pickVisualMediaRequest)
+                fileName=t ?:""
+                uriG=uri
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    key="uploadData",
+                    value = UploadData(uri = uri,fileName= fileName)
+                )
+                navController.navigate("upload_route"){
+//                    popUpTo(DestinationRoute.CAMERA_ROUTE){
+//                        inclusive=true
+//                    }
                 }
 
-            )
-        } else {
-            CameraMicrophoneAccessPage(multiplePermissionState.permissions[1].status.isGranted,
-                cameraOpenType,
-                onClickCancel = { navController.navigateUp() },
-                onClickOpenFile = { fileLauncher.launch(pickVisualMediaRequest) }) {
-                val permissionState = when (it) {
-                    PermissionType.CAMERA -> multiplePermissionState.permissions[1]
-                    PermissionType.MICROPHONE -> multiplePermissionState.permissions[1]
-                }
-                permissionState.apply {
-                    if (this.status.shouldShowRationale) {
-                        this.launchPermissionRequest()
-                    } else {
-                        context.openAppSetting()
+
+
+                    //UploadScreen(navController = navController, uri = uri, fileName = fileName)
+
+            })
+
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()) {
+        //if(fileName.isNotEmpty()&&uriG!=null){
+
+          //  UploadScreen(uri =uriG !!, fileName = fileName)
+       // }else{
+            if (multiplePermissionState.permissions[0].status.isGranted) {
+                CameraPreview(cameraOpenType,
+                    onClickCancel = { navController.navigateUp() },
+                    navController=navController,
+                    onClickOpenFile = {
+                        fileLauncher.launch("video/*")
+                    }
+
+                )
+            } else {
+                CameraMicrophoneAccessPage(multiplePermissionState.permissions[1].status.isGranted,
+                    cameraOpenType,
+                    onClickCancel = { navController.navigateUp() },
+                    onClickOpenFile = { fileLauncher.launch("video/*") }) {
+                    val permissionState = when (it) {
+                        PermissionType.CAMERA -> multiplePermissionState.permissions[1]
+                        PermissionType.MICROPHONE -> multiplePermissionState.permissions[1]
+                    }
+                    permissionState.apply {
+                        if (this.status.shouldShowRationale) {
+                            this.launchPermissionRequest()
+                        } else {
+                            context.openAppSetting()
+                        }
                     }
                 }
+        }
+
+        //}
+    }
+}
+
+private  fun getFileNameFromUri(context: Context, uri: Uri):String?{
+    var fileName:String?=null
+    val projection= arrayOf(MediaStore.MediaColumns.DISPLAY_NAME)
+    val cursor: Cursor?=context.contentResolver.query(uri,projection,null,null,null)
+
+    cursor?.use {
+        if(it.moveToFirst()){
+            val columnIndex:Int=it.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
+            if(columnIndex!=-1){
+                fileName=it.getString(columnIndex)
             }
         }
     }
+    return fileName
 }
 
 
@@ -225,18 +291,20 @@ fun CameraMicrophoneAccessPage(
             cameraOpenType = cameraOpenType,
             onClickEffect = { },
             onClickOpenFile = onClickOpenFile,
-            onclickCameraCapture = { },
+            onclickCameraCapture = {},
             isEnabledLayout = false
         )
     }
 }
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun CameraPreview(
     cameraOpenType: Tabs,
     onClickCancel: () -> Unit,
     onClickOpenFile: () -> Unit,
+    navController:NavController
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -246,6 +314,18 @@ fun CameraPreview(
     var defaultCameraFacing by remember { mutableStateOf(CameraSelector.DEFAULT_FRONT_CAMERA) }
     val cameraProvider = cameraProviderFuture.get()
     val preview = remember { Preview.Builder().build() }
+   // val previewView: PreviewView = remember { PreviewView(context) }
+    var recording: Recording? = remember { null }
+    val videoCapture: MutableState<VideoCapture<Recorder>?> = remember { mutableStateOf(null) }
+    val recordingStarted: MutableState<Boolean> = remember { mutableStateOf(false) }
+
+    LaunchedEffect(preview) {
+        videoCapture.value = context.createVideoCaptureUseCase(
+            lifecycleOwner = lifecycleOwner,
+            cameraSelector = defaultCameraFacing,
+            previewView = preview
+        )
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
@@ -278,7 +358,50 @@ fun CameraPreview(
                 cameraOpenType = cameraOpenType,
                 onClickEffect = { },
                 onClickOpenFile = onClickOpenFile,
-                onclickCameraCapture = { },
+                recordingStarted=recordingStarted.value,
+
+                onclickCameraCapture = {
+                    if (!recordingStarted.value) {
+
+                            recordingStarted.value = true
+                            val mediaDir = context.externalCacheDirs.firstOrNull()?.let {
+                                File(it, context.getString(R.string.app_name)).apply { mkdirs() }
+                            }
+
+                            recording = startRecordingVideo(
+                                context = context,
+                                filenameFormat = "yyyy-MM-dd-HH-mm-ss-SSS",
+                                videoCapture = videoCapture,
+                                outputDirectory = if (mediaDir != null && mediaDir.exists()) mediaDir else context.filesDir,
+                                executor = context.mainExecutor,
+                                audioEnabled = true,//todo
+                            ) { event ->
+                                if (event is VideoRecordEvent.Finalize) {
+                                    val uri = event.outputResults.outputUri
+                                    if (uri != Uri.EMPTY) {
+                                        val uriEncoded = URLEncoder.encode(
+                                            uri.toString(),
+                                            StandardCharsets.UTF_8.toString()
+                                        )
+                                        var t= getFileNameFromUri(context,uri)
+                                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                                            key="uploadData",
+                                            value = UploadData(uri = uri,fileName= t?:"")
+                                        )
+                                        navController.navigate("upload_route"){
+//                                            popUpTo(DestinationRoute.CAMERA_ROUTE){
+//                                                inclusive=false
+//                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                    } else {
+                        recordingStarted.value = false
+                        recording?.stop()
+                    }
+                },
                 isEnabledLayout = true
             )
 
@@ -344,6 +467,7 @@ fun FooterCameraController(
     onClickEffect: () -> Unit,
     onClickOpenFile: () -> Unit,
     onclickCameraCapture: () -> Unit,
+    recordingStarted:Boolean=false,
     isEnabledLayout: Boolean = false
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -449,6 +573,7 @@ fun FooterCameraController(
             CaptureButton(
                 modifier = Modifier.alpha(alphaForInteractiveView(isEnabledLayout)),
                 color = captureButtonColor,
+                isRecording =recordingStarted,
                 onClickCapture = onclickCameraCapture
             )
             Column(horizontalAlignment = Alignment.CenterHorizontally,

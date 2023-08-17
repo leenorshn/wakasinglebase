@@ -9,7 +9,7 @@ import javax.inject.Inject
  * Created by innov Victor on 3/15/2023.
  */
 class GetContentCreatorsUseCase @Inject constructor(private val followingRepository: FollowingRepository) {
-    operator fun invoke(): Flow<List<ContentCreatorFollowingModel>> {
+    suspend operator fun invoke(): Flow<List<ContentCreatorFollowingModel>> {
         return followingRepository.getContentCreatorForFollowing()
     }
 }

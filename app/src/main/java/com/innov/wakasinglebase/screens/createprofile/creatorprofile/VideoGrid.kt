@@ -89,7 +89,7 @@ fun Context.VideoGridItem(item: VideoModel, index: Int, onClickVideo: (VideoMode
             mutableStateOf<Pair<Bitmap?, Boolean>>(Pair(null, true))  //bitmap, isShow
         }
         AsyncImage(
-            model = thumbnail,
+            model = thumbnail.first,
             contentDescription = "image thumbnail",
             modifier = Modifier
                 .fillMaxSize()
@@ -132,7 +132,7 @@ fun Context.VideoGridItem(item: VideoModel, index: Int, onClickVideo: (VideoMode
                 tint = Color.Gray
             )
             Text(
-                text = "${item.videoStats}",
+                text = "${item.videoStats.like} votes",
                 color = Color.White,
                 style = MaterialTheme.typography.labelMedium
             )

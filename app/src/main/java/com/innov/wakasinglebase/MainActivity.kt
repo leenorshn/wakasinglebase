@@ -1,102 +1,114 @@
 package com.innov.wakasinglebase
 
+import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.google.android.gms.auth.api.identity.Identity
-import com.innov.wakasinglebase.signin.AuthenticationScreen
-import com.innov.wakasinglebase.signin.GoogleAuthUiClient
-import com.innov.wakasinglebase.signin.SignInViewModel
+import com.google.android.gms.auth.api.identity.SignInClient
+
+import com.innov.wakasinglebase.signin.MainViewModel
+import com.innov.wakasinglebase.signin.SignInScreen
+
+import com.innov.wakasinglebase.signin.utils.GoogleAuthUiHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-   // private val authViewModel: AuthViewModel by viewModels()
+    @Inject
+    lateinit var googleAuthUiHelper: GoogleAuthUiHelper
+    @Inject lateinit var oneTapClient : SignInClient
 
-    private val googleAuthUiClient by lazy {
-        GoogleAuthUiClient(
-            context = applicationContext,
-            oneTapClient = Identity.getSignInClient(applicationContext)
-        )
-    }
+
+
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
 
         installSplashScreen()
         super.onCreate(savedInstanceState)
-
-
         setContent {
+               // RootScreen()
 
-            val viewModel= viewModel<SignInViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            val navController= rememberNavController()
-            NavHost(navController = navController, startDestination = "sign_in"){
+            val navController = rememberNavController()
+            val viewModel : MainViewModel = hiltViewModel()
 
-                composable("sign_in"){
+            val uiState = viewModel.uiState.value
 
+            NavHost(navController = navController, startDestination = "signin"){
+                composable("signin"){
 
-                    val launcher= rememberLauncherForActivityResult(
+                    val launcher = rememberLauncherForActivityResult(
                         contract = ActivityResultContracts.StartIntentSenderForResult(),
-                        onResult ={result->
-                            if (result.resultCode== RESULT_OK){
+                        onResult = {result->
+                            if(result.resultCode == RESULT_OK){
                                 lifecycleScope.launch {
-                                    val signInResult=googleAuthUiClient.signInWithIntent(result.data ?: return@launch)
+                                    val signInResult = googleAuthUiHelper.getSignInResultFromIntentAndSignIn(
+                                        intent = result.data ?: return@launch
+                                    )
                                     viewModel.onSignInResult(signInResult)
                                 }
                             }
                         }
                     )
-                    LaunchedEffect(key1 = state.isSignSuccessFul,  ){
-                        if (state.isSignSuccessFul){
-                            Toast.makeText(applicationContext,"Success logged in",Toast.LENGTH_LONG)
-                                .show()
 
-                        navController.navigate("root_screen")
-                        viewModel.resetState()
+                    LaunchedEffect(key1 = uiState.currentUser){
+                        Log.e("Magi","${uiState.currentUser?.uid}")
+
+                        if(uiState.currentUser != null){
+                            navController.navigate("main")
                         }
                     }
-                    
-                    AuthenticationScreen(state = state,
-                    onClickButton = {
-                        lifecycleScope.launch {
-                            val signInIntentSender=googleAuthUiClient.signIn()
-                            launcher.launch(
-                                IntentSenderRequest.Builder(
-                                    signInIntentSender ?: return@launch
-                                ).build()
-                            )
+
+                    LaunchedEffect(key1 = uiState.isSignInSuccessfull ){
+                        if(uiState.isSignInSuccessfull){
+                            navController.navigate("main")
+                            //viewModel.resetSignInState()
                         }
-                    })
+                    }
+
+                    SignInScreen(
+                        isLoading = uiState.isLoading,
+                        currentUser = uiState.currentUser,
+                        error = uiState.signinError?:"Erreur inconnue",
+                        onSignInClick = {
+                            lifecycleScope.launch {
+                                val signInIntentSender = googleAuthUiHelper.actionSignIn()
+                                launcher.launch(
+                                    IntentSenderRequest.Builder(
+                                        signInIntentSender ?: return@launch
+                                    ).build()
+                                )
+                            }
+                        }
+                    )
                 }
-                composable("root_screen"){
+                composable("main"){
                     RootScreen()
                 }
+
+
+
+
+
             }
+
         }
     }
+
+
 }
 

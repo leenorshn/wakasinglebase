@@ -9,17 +9,22 @@ import kotlinx.coroutines.flow.flow
 
 object ContentCreatorForFollowingDataSource {
 
-    fun fetchContentCreatorForFollowing(): Flow<List<ContentCreatorFollowingModel>> {
-        return flow {
-            val creatorForFollowing: List<ContentCreatorFollowingModel> = listOf(
+    suspend fun fetchContentCreatorForFollowing(): Flow<List<ContentCreatorFollowingModel>> {
+        var cover:List<ContentCreatorFollowingModel> = emptyList()
+        VideoDataSource.fetchVideos().collect{
+         cover=   it.map {d->
                 ContentCreatorFollowingModel(
-                    userModel = UsersDataSource.kylieJenner,
-                    coverVideo = VideoDataSource.KylieJennerVideos.kylie_vid1
-                ),
-            )
-            emit(creatorForFollowing.shuffled())
+                    userModel =d.authorDetails,
+                    coverVideo = d
+                )
+            }
+        }
+        return flow {
+            emit(cover.shuffled())
         }
 
     }
+
+
 
 }

@@ -11,11 +11,11 @@ import javax.inject.Inject
  * Created by innov  on 3/22/2023.
  */
 class CreatorProfileRepository @Inject constructor() {
-    fun getCreatorDetails(id: String): Flow<UserModel?> {
+    suspend fun getCreatorDetails(id: String): Flow<UserModel?> {
         return fetchSpecificUser(id)
     }
 
-    fun getCreatorPublicVideo(id: String): Flow<List<VideoModel>> {
+    suspend fun getCreatorPublicVideo(id: String): Flow<List<VideoModel>> {
         return VideoDataSource.fetchVideosOfParticularUser(id)
     }
 }

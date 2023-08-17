@@ -11,7 +11,7 @@ import javax.inject.Inject
 class GetCreatorPublicVideoUseCase @Inject constructor(
     private val creatorProfileRepository: CreatorProfileRepository
 ) {
-    operator fun invoke(id: String): Flow<List<VideoModel>> {
+    suspend operator fun invoke(id: String): Flow<List<VideoModel>> {
         return creatorProfileRepository.getCreatorPublicVideo(id)
     }
 }

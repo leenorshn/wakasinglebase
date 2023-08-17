@@ -1,36 +1,31 @@
-package com.innov.wakasinglebase.signin
+package com.innov.wakasinglebase.screens.myprofil
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.innov.wakasinglebase.core.base.BaseViewModel
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
+import com.innov.wakasinglebase.signin.Result
+import com.innov.wakasinglebase.signin.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Created by innov Victor on 4/1/2023.
+ */
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class SettingViewModel @Inject constructor(
     private val repository: AuthRepository
-) : ViewModel(){
+) : BaseViewModel<ViewState, SettingEvent>() {
     val uiState = mutableStateOf(UiState())
 
     init {
+        updateState(ViewState(settingUiData = settingUiModel))
         getSignedInUser()
     }
 
-    fun onSignInResult(result : SignInResult){
-        uiState.value = uiState.value.copy(
-            isSignInSuccessfull = result.data != null,
-            signinError = result.errorMessage,
-            currentUser = result.data
-        )
+    override fun onTriggerEvent(event: SettingEvent) {
     }
 
     private fun getSignedInUser() {
@@ -58,7 +53,7 @@ class MainViewModel @Inject constructor(
 
 
             }
-       }
+        }
     }
 
     fun signOut(oneTapClient : SignInClient){
@@ -84,12 +79,6 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-
-
-
-
-
-
 
 
 }

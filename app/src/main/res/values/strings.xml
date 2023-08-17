@@ -40,7 +40,7 @@
 
     <!-- authenticaion -->
     <string name="login_or_sign_up">Bienvenu chez nous!</string>
-    <string name="login_in_to_your_existing_account">Créer ou connecter vous à votre compte Waka-Waka</string>
+    <string name="login_in_to_your_existing_account">Créer ou connecter vous à votre\n compte Waka-Waka</string>
     <string name="use_phone">Use phone </string>
     <string name="continue_with_facebook">Continue with Facebook</string>
     <string name="continue_with_google">Continuer avec Google</string>
@@ -64,14 +64,14 @@
     <string name="sign_up_for_an_account">Sign up for and account</string>
 
     <!-- settings -->
-    <string name="settings_and_privacy">Settings and privacy</string>
+    <string name="settings_and_privacy">Settings</string>
     <string name="account">Account</string>
     <string name="my_account">My account</string>
-    <string name="live">Amount</string>
+    <string name="live">Mon compte</string>
     <string name="playback">Stats</string>
     <string name="language">Language</string>
     <string name="free_up_space">Free up space</string>
-    <string name="data_saver">Security</string>
+    <string name="data_saver">Securité</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="report_a_problem">Report a problem</string>
     <string name="support">Support</string>

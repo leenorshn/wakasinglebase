@@ -7,6 +7,7 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,6 +42,7 @@ import com.innov.wakasinglebase.data.model.TemplateModel
 import com.innov.wakasinglebase.ui.theme.SubTextColor
 import kotlin.math.absoluteValue
 import com.innov.wakasinglebase.R
+import com.innov.wakasinglebase.ui.theme.PrimaryColor
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,26 +77,24 @@ fun GiftScreen(
     LaunchedEffect(key1 = Unit) {
         viewModel.onTriggerEvent(CommunityMediaEvent.EventFetchTemplate)
     }
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        IconButton(
-            onClick = { navController.navigateUp() },
-            modifier = Modifier
-                .align(Alignment.Start)
-                .padding(top = 20.dp, start = 6.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_cancel),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(28.dp)
-            )
-        }
 
-        Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-            viewState?.templates?.let {
-                TemplatePager(it)
+
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+
+        if (viewState?.templates==null){
+             CircularProgressIndicator(
+                trackColor = PrimaryColor,
+                 color = Color.White,
+            )
+        }else{
+            Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                viewState?.templates?.let {
+                    TemplatePager(it)
+                }
             }
         }
+
+
 //        CustomButton(
 //            buttonText = stringResource(id = R.string.upload_photos),
 //            shape = RoundedCornerShape(24.dp),
@@ -174,7 +174,7 @@ fun SingleTemplateCard(
         )
         {
             AsyncImage(
-                model = item.parseMediaLink(),
+                model = item.mediaUrl,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop

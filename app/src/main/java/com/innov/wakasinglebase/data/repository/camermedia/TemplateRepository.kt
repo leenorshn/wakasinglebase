@@ -12,4 +12,6 @@ class TemplateRepository @Inject constructor() {
     fun getTemplates(): Flow<List<TemplateModel>> {
         return TemplateDataSource.fetchTemplates()
     }
+
+
 }

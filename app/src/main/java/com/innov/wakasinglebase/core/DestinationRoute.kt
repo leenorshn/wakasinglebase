@@ -24,6 +24,7 @@ object DestinationRoute {
     const val LOGIN_OR_SIGNUP_WITH_PHONE_EMAIL_ROUTE = "login_signup_phone_email_route"
 
     const val SETTING_ROUTE="setting_route"
+    const val UPLOAD_ROUTE="upload_route"
 
     object PassedKey {
         const val USER_ID = "user_id"

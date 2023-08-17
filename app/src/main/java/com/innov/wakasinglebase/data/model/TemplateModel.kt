@@ -6,7 +6,7 @@ import android.net.Uri
  * Created by innov  on 4/2/2023.
  */
 data class TemplateModel(
-    val id: Long,
+    val id: String,
     val name: String,
     val hint: String,
     val mediaUrl: String

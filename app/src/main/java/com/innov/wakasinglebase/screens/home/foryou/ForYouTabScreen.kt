@@ -1,5 +1,6 @@
 package com.innov.wakasinglebase.screens.home.foryou
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -36,7 +37,9 @@ fun ForYouTabScreen(
             )
     ) {
 
+
         viewState?.forYouPageFeed?.let {
+            Log.e("Waka",it.size.toString())
 
            WakawakaVerticalVideoPager(
                 videos = it,

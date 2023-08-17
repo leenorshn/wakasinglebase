@@ -3,27 +3,34 @@ package com.innov.wakasinglebase.screens.myprofil
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.common.TopBar
 import com.innov.wakasinglebase.core.DestinationRoute.AUTHENTICATION_ROUTE
 import com.innov.wakasinglebase.core.extension.MediumSpace
+import com.innov.wakasinglebase.core.extension.SmallSpace
 import com.innov.wakasinglebase.core.extension.Space
-import com.innov.wakasinglebase.screens.settings.RowItem
-import com.innov.wakasinglebase.screens.settings.SettingViewModel
 import com.innov.wakasinglebase.ui.theme.*
 
 
@@ -38,17 +45,18 @@ fun MyProfileScreen(
     settingViewModel: SettingViewModel = hiltViewModel()
 ) {
     val viewState by settingViewModel.viewState.collectAsState()
+    val uiState by settingViewModel.uiState
 
     val scrollState = rememberScrollState()
 
-    val isCollapsed: Boolean by remember {
-        derivedStateOf {
-            scrollState.value.dp > expandedTitleHeight
-        }
-    }
+//    val isCollapsed: Boolean by remember {
+//        derivedStateOf {
+//            scrollState.value.dp > expandedTitleHeight
+//        }
+//    }
 
     Scaffold(
-
+        topBar = { TopBar(title =  stringResource(id = R.string.settings_and_privacy)) { navController.navigateUp() } }
     ) {
         Column(
             modifier = Modifier
@@ -57,17 +65,55 @@ fun MyProfileScreen(
                 .padding(it)
                 .verticalScroll(scrollState)
         ) {
-            Text(
-                text = stringResource(id = R.string.settings_and_privacy),
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 24.dp)
-            )
+
+            SmallSpace()
+            if(uiState.currentUser!=null){
+                ListItem(
+                    headlineContent = {
+                        Text(
+                        text = "@${uiState.currentUser?.name}",
+                        style = MaterialTheme.typography.bodyMedium.copy(color = Color.Black, fontSize = 22.sp)
+                    )
+                    },
+                    leadingContent = {
+                        AsyncImage(
+                            model = uiState.currentUser?.profilePic,
+                            contentDescription = "image thumbnail",
+                            modifier = Modifier
+                                .size(64.dp)
+                                .background(GrayMainColor)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    },
+                    supportingContent =  {
+                        Text(
+                            text = "${uiState.currentUser?.phone?:"non defini"}",
+                            style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray)
+                        )
+                    },
+                    trailingContent = {
+                        Text(
+                            text = "${uiState.currentUser?.balance} fc",
+                            style = MaterialTheme.typography.bodyMedium.copy(color = Color.Blue)
+                        )
+                    }
+                )
+
+//                    Spacer(modifier = Modifier.width(24.dp))
+//
+
+
+
+
+            }else{
+                CircularProgressIndicator(color= PrimaryColor)
+            }
             MediumSpace()
+
             viewState?.settingUiData?.let {
                 it.forEach {
-                    GroupedUiCardSection(item = it.key to it.value, onClickItem = { titleId ->
+                    GroupedUiCardSection(item = it.key ,items= it.value, onClickItem = { titleId ->
                         when (titleId) {
                             R.string.my_account -> navController.navigate(AUTHENTICATION_ROUTE)
                         }
@@ -89,9 +135,9 @@ fun MyProfileScreen(
 }
 
 @Composable
-fun GroupedUiCardSection(item: Pair<String, List<RowItem>>, onClickItem: (Int) -> Unit) {
+fun GroupedUiCardSection(item: String,items: List<RowItem>, onClickItem: (Int) -> Unit) {
     Text(
-        text = item.first,
+        text = item,
         modifier = Modifier.padding(horizontal = 20.dp),
         color = SubTextColor,
         style = MaterialTheme.typography.labelMedium
@@ -107,7 +153,7 @@ fun GroupedUiCardSection(item: Pair<String, List<RowItem>>, onClickItem: (Int) -
                 .padding(start = 18.dp, end = 16.dp)
                 .padding(vertical = 8.dp)
         ) {
-            item.second.forEach {
+            items.forEach {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

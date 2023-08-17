@@ -1,8 +1,10 @@
 package com.innov.wakasinglebase.screens.home.foryou
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.base.BaseViewModel
-import com.innov.wakasinglebase.domain.foryou.GetForYouPageFeedUseCase
+import com.innov.wakasinglebase.domain.foryou.VideoPageFeedUseCase
+
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -12,7 +14,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ForYouViewModel @Inject constructor(
-    private val getForYouPageFeedUseCase: GetForYouPageFeedUseCase
+    private val getForYouPageFeedUseCase: VideoPageFeedUseCase
 ) : BaseViewModel<ViewState, ForYouEvent>() {
     init {
         getForYouPageFeeds()

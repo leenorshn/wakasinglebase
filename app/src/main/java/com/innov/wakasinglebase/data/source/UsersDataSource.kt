@@ -1,52 +1,33 @@
 package com.innov.wakasinglebase.data.source
 
 
+import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
 import com.innov.wakasinglebase.data.model.UserModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 
 /**
  * Created by innov Victor on 3/18/2023.
  */
 object UsersDataSource {
-    val kylieJenner = UserModel(
-        uid = "keyliejenner",
-        uniqueUserName = "keyliejenner",
-        name = "Kylie jenner",
-        bio = "Kylie",
-        profilePic = "https://c4.wallpaperflare.com/wallpaper/887/659/808/kylie-jenner-2018-wallpaper-preview.jpg",
-        isVerified = true,
-        city = "Butembo",
-        email = "shukurukate@gmail.com",
-        hasContract = true,
-        phone = "+243978154329"
 
-    )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    val userList = listOf(
-        kylieJenner,
-
-    )
-
-    fun fetchSpecificUser(userId: String): Flow<UserModel?> {
+    suspend fun fetchSpecificUser(userId: String): Flow<UserModel?> {
+        var db=FirebaseFirestore.getInstance();
+        Log.e("Waka",userId)
+        val res=db.collection("users").document(userId).get().await()
         return flow {
-            val user = userList.firstOrNull { it.uid == userId }
+            val user = UserModel(
+                uid = userId,
+                name = res.data?.get("name").toString(),
+                phone = res.data?.get("phone").toString(),
+                uniqueUserName = res.data?.get("name").toString().replace(" ","_"),
+                bio = res.data?.get("bio").toString(),
+                city = res.data?.get("city").toString(),
+                email = res.data?.get("email").toString(),
+                profilePic = res.data?.get("profilePic").toString()
+            )
             emit(user)
         }
     }

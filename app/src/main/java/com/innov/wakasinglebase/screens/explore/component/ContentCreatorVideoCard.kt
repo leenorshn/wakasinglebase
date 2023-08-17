@@ -84,7 +84,7 @@ fun CreatorCard(
                 pagerState = pagerState,
                 pageIndex = page,
                 onSingleTap = {
-                    onClickUser(item.userModel.uid)
+                    item.userModel?.let { it1 -> it1.uid?.let { it2 -> onClickUser(it2) } }
                 },
                 onDoubleTap = { exoPlayer: ExoPlayer, offset: Offset -> },
                 onVideoDispose = {},
@@ -107,7 +107,7 @@ fun CreatorCard(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 AsyncImage(
-                    model = item.userModel.profilePic,
+                    model = item.userModel?.profilePic,
                     contentDescription = null,
                     modifier = Modifier
                         .padding(bottom = 4.dp)
@@ -118,19 +118,21 @@ fun CreatorCard(
                         .clip(shape = CircleShape),
                     contentScale = ContentScale.Crop
                 )
+                item.userModel?.let {
+                    Text(
+                        text = "${it.name}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.White
+                    )
+                }
                 Text(
-                    text = item.userModel.name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White
-                )
-                Text(
-                    text = "@${item.userModel.uniqueUserName}",
+                    text = "@${item.userModel?.uniqueUserName}",
                     style = MaterialTheme.typography.labelMedium,
                     color = WhiteAlpha95
                 )
                 Button(
                     onClick = {
-                        onClickFollow(item.userModel.uid)
+                        item.userModel?.let { it.uid?.let { it1 -> onClickFollow(it1) } }
                     }, modifier = Modifier
                         .padding(top = 2.dp)
                         .padding(horizontal = 36.dp)

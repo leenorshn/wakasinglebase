@@ -8,8 +8,8 @@ import javax.inject.Inject
 /**
  * Created by innov Victor on 3/15/2023.
  */
-class GetForYouPageFeedUseCase @Inject constructor(private val forYouRepository: ForYouRepository) {
-    operator fun invoke(): Flow<List<VideoModel>> {
-        return forYouRepository.getForYouPageFeeds()
+class VideoPageFeedUseCase @Inject constructor(private val videoRepository: ForYouRepository) {
+     suspend operator fun invoke(): Flow<List<VideoModel>> {
+        return videoRepository.getForYouPageFeeds()
     }
 }

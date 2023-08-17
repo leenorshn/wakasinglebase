@@ -11,7 +11,7 @@ import javax.inject.Inject
 class GetCreatorProfileUseCase @Inject constructor(
     private val creatorProfileRepository: CreatorProfileRepository
 ) {
-    operator fun invoke(id: String): Flow<UserModel?> {
+    suspend operator fun invoke(id: String): Flow<UserModel?> {
         return creatorProfileRepository.getCreatorDetails(id)
     }
 }

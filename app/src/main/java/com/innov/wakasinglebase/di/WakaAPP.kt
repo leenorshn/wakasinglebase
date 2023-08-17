@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase
+package com.innov.wakasinglebase.di
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
