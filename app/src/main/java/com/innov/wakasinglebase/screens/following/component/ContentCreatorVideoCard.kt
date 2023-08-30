@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.explore.component
+package com.innov.wakasinglebase.screens.following.component
 
 
 import androidx.compose.foundation.BorderStroke

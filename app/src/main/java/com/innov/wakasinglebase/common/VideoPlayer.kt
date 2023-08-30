@@ -33,8 +33,7 @@ import com.innov.wakasinglebase.data.model.VideoModel
 import com.innov.wakasinglebase.ui.theme.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import video.api.player.models.VideoOptions
-import video.api.player.models.VideoType
+
 
 /**
  * Created by innov Victor on 3/16/2023.
@@ -109,9 +108,10 @@ fun VideoPlayer(
             PlayerView(context).apply {
                 player = exoPlayer
                 useController = false
-                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
                 layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
                 )
             }
         }

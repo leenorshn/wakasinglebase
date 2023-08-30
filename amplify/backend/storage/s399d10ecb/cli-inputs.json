@@ -1,0 +1,18 @@
+{
+  "resourceName": "s399d10ecb",
+  "policyUUID": "99d10ecb",
+  "bucketName": "wakasinglebasebf562523245347b69b6ac68aa2462a78",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

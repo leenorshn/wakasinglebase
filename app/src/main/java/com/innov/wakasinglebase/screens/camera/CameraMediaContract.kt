@@ -9,6 +9,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.data.model.TemplateModel
+import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.signin.AuthData
 import kotlinx.parcelize.Parcelize
 
@@ -18,11 +19,11 @@ import kotlinx.parcelize.Parcelize
  */
 data class ViewState(
     val templates: List<TemplateModel>? = null,
-    val currentUser:AuthData?=null
+    val currentUser:UserModel?=null
 )
 @Parcelize
 data class UploadData(
-    val uri: Uri,
+    val uri: String,
     val fileName:String
 ): Parcelable
 

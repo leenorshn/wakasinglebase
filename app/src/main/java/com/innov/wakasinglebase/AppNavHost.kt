@@ -6,16 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.innov.wakasinglebase.screens.community.communityNavGraph
+import com.innov.wakasinglebase.screens.gift.communityNavGraph
 import com.innov.wakasinglebase.core.DestinationRoute.HOME_SCREEN_ROUTE
 import com.innov.wakasinglebase.screens.camera.cameraMediaNavGraph
-import com.innov.wakasinglebase.screens.camera.uploadNavGraph
+import com.innov.wakasinglebase.screens.camera.publication.publicationNavGraph
+import com.innov.wakasinglebase.screens.camera.upload.uploadNavGraph
 import com.innov.wakasinglebase.screens.createprofile.creatorprofile.creatorProfileNavGraph
-import com.innov.wakasinglebase.screens.explore.followingNavGraph
+import com.innov.wakasinglebase.screens.following.followingNavGraph
 import com.innov.wakasinglebase.screens.home.homeNavGraph
 import com.innov.wakasinglebase.screens.myprofil.myProfileNavGraph
-import com.innov.wakasinglebase.signin.MainViewModel
-import com.innov.wakasinglebase.signin.authNavGraph
 
 
 /**
@@ -41,6 +40,7 @@ fun AppNavHost(
         creatorProfileNavGraph(navController)
         communityNavGraph(navController)
         uploadNavGraph(navController)
+        publicationNavGraph(navController)
         followingNavGraph(navController)
         myProfileNavGraph(navController)
     }

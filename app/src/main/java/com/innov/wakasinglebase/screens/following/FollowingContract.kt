@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.explore
+package com.innov.wakasinglebase.screens.following
 
 import com.innov.wakasinglebase.data.model.ContentCreatorFollowingModel
 

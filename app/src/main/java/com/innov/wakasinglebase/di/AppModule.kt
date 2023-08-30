@@ -8,6 +8,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import com.innov.wakasinglebase.signin.utils.GoogleAuthUiHelper
 import dagger.Module
 import dagger.Provides
@@ -19,6 +20,24 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule  {
+
+    @Singleton
+    @Provides
+    fun providesAuthRepository(@ApplicationContext context: Context,auth: FirebaseAuth):AuthRepository{
+        return AuthRepository(auth)
+    }
+
+    @Singleton
+    @Provides
+    fun providesFirebaseAuth(@ApplicationContext context: Context):FirebaseAuth{
+        return FirebaseAuth.getInstance()
+    }
+
+    @Singleton
+    @Provides
+    fun providesFirebaseFirestore(@ApplicationContext context: Context):FirebaseFirestore{
+        return FirebaseFirestore.getInstance()
+    }
 
     @Provides
     fun providesSignedClient(@ApplicationContext context: Context): SignInClient{

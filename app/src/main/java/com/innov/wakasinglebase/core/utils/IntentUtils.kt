@@ -14,7 +14,7 @@ import com.innov.wakasinglebase.core.AppContract.Type.YOUTUBE
 object IntentUtils {
     fun Context.share(
         type: String = "text/plain",
-        title: String = "",
+        title: String = "Partager avec ",
         text: String = ""
     ) {
         val intent = Intent(Intent.ACTION_SEND).apply {

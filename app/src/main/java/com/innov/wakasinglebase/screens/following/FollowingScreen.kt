@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.explore
+package com.innov.wakasinglebase.screens.following
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -21,7 +21,7 @@ import androidx.navigation.NavController
 import com.innov.wakasinglebase.core.DestinationRoute.CREATOR_PROFILE_ROUTE
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.data.model.ContentCreatorFollowingModel
-import com.innov.wakasinglebase.screens.explore.component.CreatorCard
+import com.innov.wakasinglebase.screens.following.component.CreatorCard
 import com.innov.wakasinglebase.ui.theme.DarkBlue
 
 import com.innov.wakasinglebase.ui.theme.SubTextColor

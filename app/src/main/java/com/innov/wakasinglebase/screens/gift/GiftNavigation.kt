@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.community
+package com.innov.wakasinglebase.screens.gift
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

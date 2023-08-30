@@ -1,10 +1,9 @@
-package com.innov.wakasinglebase.screens.explore
+package com.innov.wakasinglebase.screens.following
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.innov.wakasinglebase.core.DestinationRoute.EXPLORE_ROUTE
-import com.innov.wakasinglebase.core.DestinationRoute.HOME_SCREEN_ROUTE
 
 /**
  * Created by innov  on 3/14/2023.

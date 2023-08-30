@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.community
+package com.innov.wakasinglebase.screens.gift
 
 
 import androidx.lifecycle.viewModelScope
@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CommunityViewModel @Inject constructor(
+class GiftViewModel @Inject constructor(
     private val getTemplateUseCase: GetTemplateUseCase
 ) : BaseViewModel<ViewState, CommunityMediaEvent>() {
 

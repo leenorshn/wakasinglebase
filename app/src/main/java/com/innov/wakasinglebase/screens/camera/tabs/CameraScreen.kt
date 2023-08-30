@@ -55,7 +55,7 @@ import com.google.accompanist.permissions.shouldShowRationale
 import com.innov.wakasinglebase.R
 
 import com.innov.wakasinglebase.common.CaptureButton
-import com.innov.wakasinglebase.core.DestinationRoute
+import com.innov.wakasinglebase.core.DestinationRoute.UPLOAD_ROUTE
 import com.innov.wakasinglebase.core.extension.MediumSpace
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.core.utils.openAppSetting
@@ -107,6 +107,7 @@ fun CameraScreen(
     }
 
 
+
     val fileLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent(),
             onResult = {uri->
@@ -115,19 +116,12 @@ fun CameraScreen(
 
                 fileName=t ?:""
                 uriG=uri
-                navController.currentBackStackEntry?.savedStateHandle?.set(
-                    key="uploadData",
-                    value = UploadData(uri = uri,fileName= fileName)
-                )
-                navController.navigate("upload_route"){
-//                    popUpTo(DestinationRoute.CAMERA_ROUTE){
-//                        inclusive=true
-//                    }
-                }
+                val uriEncoded = URLEncoder.encode(
+                    uri.toString(),
+                    StandardCharsets.UTF_8.toString()
+                )// User is a data class.
 
-
-
-                    //UploadScreen(navController = navController, uri = uri, fileName = fileName)
+                    navController.navigate(UPLOAD_ROUTE.replace("{uri}",uriEncoded))
 
             })
 
@@ -384,15 +378,9 @@ fun CameraPreview(
                                             StandardCharsets.UTF_8.toString()
                                         )
                                         var t= getFileNameFromUri(context,uri)
-                                        navController.currentBackStackEntry?.savedStateHandle?.set(
-                                            key="uploadData",
-                                            value = UploadData(uri = uri,fileName= t?:"")
-                                        )
-                                        navController.navigate("upload_route"){
-//                                            popUpTo(DestinationRoute.CAMERA_ROUTE){
-//                                                inclusive=false
-//                                            }
-                                        }
+                                        var data=UploadData(uri = uriEncoded,fileName= t?:"")
+
+                                        navController.navigate(UPLOAD_ROUTE.replace("{data}","$data",true))
                                     }
                                 }
                             }

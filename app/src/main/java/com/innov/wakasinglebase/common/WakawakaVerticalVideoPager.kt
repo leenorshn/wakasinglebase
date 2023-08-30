@@ -245,7 +245,7 @@ fun SideItems(
                 .clickable {
                     onClickShare?.let { onClickShare.invoke() } ?: run {
                         context.share(
-                            text = "https://github.com/innov-Victor"
+                            text = item.videoLink
                         )
                     }
                 }

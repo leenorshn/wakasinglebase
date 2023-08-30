@@ -83,7 +83,7 @@ class MainActivity : ComponentActivity() {
                     SignInScreen(
                         isLoading = uiState.isLoading,
                         currentUser = uiState.currentUser,
-                        error = uiState.signinError?:"Erreur inconnue",
+                        error = uiState.signinError?:"",
                         onSignInClick = {
                             lifecycleScope.launch {
                                 val signInIntentSender = googleAuthUiHelper.actionSignIn()

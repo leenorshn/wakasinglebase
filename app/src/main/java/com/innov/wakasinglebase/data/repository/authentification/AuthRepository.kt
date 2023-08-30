@@ -18,9 +18,11 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
-class AuthRepository @Inject constructor(){
+class AuthRepository @Inject constructor(
+    private val auth: FirebaseAuth
+){
 
-    val auth:FirebaseAuth= FirebaseAuth.getInstance()
+
     suspend fun signOut(oneTapClient : SignInClient) = flow {
         emit(Loading)
         oneTapClient.signOut().await()

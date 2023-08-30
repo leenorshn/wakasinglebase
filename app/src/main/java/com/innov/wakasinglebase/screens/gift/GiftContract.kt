@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.community
+package com.innov.wakasinglebase.screens.gift
 
 import com.innov.wakasinglebase.data.model.TemplateModel
 

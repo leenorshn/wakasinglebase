@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.camera
+package com.innov.wakasinglebase.screens.camera.upload
 
 import android.graphics.Bitmap
 import android.net.Uri
@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -32,7 +31,6 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import com.innov.wakasinglebase.core.utils.FileUtils
-import com.innov.wakasinglebase.data.model.VideoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
