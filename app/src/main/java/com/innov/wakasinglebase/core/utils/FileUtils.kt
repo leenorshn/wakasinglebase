@@ -185,4 +185,20 @@ object FileUtils {
         }
         return bitmap
     }
+
+      fun getFileNameFromUri(context: Context, uri: Uri):String?{
+        var fileName:String?=null
+        val projection= arrayOf(MediaStore.MediaColumns.DISPLAY_NAME)
+        val cursor: Cursor?=context.contentResolver.query(uri,projection,null,null,null)
+
+        cursor?.use {
+            if(it.moveToFirst()){
+                val columnIndex:Int=it.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
+                if(columnIndex!=-1){
+                    fileName=it.getString(columnIndex)
+                }
+            }
+        }
+        return fileName
+    }
 }

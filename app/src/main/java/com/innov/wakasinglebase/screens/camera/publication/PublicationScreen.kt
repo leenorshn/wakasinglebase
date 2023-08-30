@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.innov.wakasinglebase.common.TopBar
 
 @Composable
 fun PublicationScreen(
@@ -25,12 +26,15 @@ fun PublicationScreen(
 ) {
    Scaffold(
        topBar = {
-           TopAppBar (
-               title = {Text("Publication")},
+           TopBar (
+               title = "Publication",
                actions = {
                    IconButton(onClick = { /*TODO*/ }) {
                        Icon(Icons.Default.Done,"done")
                    }
+               },
+               onClickNavIcon = {
+                   navController.navigateUp()
                }
            )
        }

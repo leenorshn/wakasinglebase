@@ -36,7 +36,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import com.innov.wakasinglebase.core.DestinationRoute
+import com.innov.wakasinglebase.signin.utils.UploadVideoOnS3
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -56,7 +59,12 @@ fun UploadScreen(
         bottomBar = {
            Box(modifier = Modifier.padding(start = 24.dp, end = 24.dp)) {
                Button(onClick = {
-                   navController.navigate(DestinationRoute.PUBLICATION_SCREEN_ROUTE.replace("{uri}",uri.toString()))
+                   val uriEncoded = URLEncoder.encode(
+                       uri.toString(),
+                       StandardCharsets.UTF_8.toString()
+
+                   )
+                   navController.navigate(DestinationRoute.PUBLICATION_SCREEN_ROUTE.replace("{uri}",uriEncoded))
                },
                    modifier= Modifier
                        .fillMaxWidth()
@@ -117,7 +125,7 @@ fun UploadScreen(
 //            }
 //        }
 //        viewModel.uiState.value.currentUser?.let {user->
-//
+////
 //                    UploadVideoOnS3(context = context, videoUri = Uri.parse(uri),
 //                        videoKey = "$fileName",
 //                        user = user,
@@ -136,21 +144,7 @@ fun UploadScreen(
 
 }
 
-private  fun getFileNameFromUri(context: Context, uri: Uri):String?{
-    var fileName:String?=null
-    val projection= arrayOf(MediaStore.MediaColumns.DISPLAY_NAME)
-    val cursor: Cursor?=context.contentResolver.query(uri,projection,null,null,null)
 
-    cursor?.use {
-        if(it.moveToFirst()){
-            val columnIndex:Int=it.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME)
-            if(columnIndex!=-1){
-                fileName=it.getString(columnIndex)
-            }
-        }
-    }
-    return fileName
-}
 
 
 

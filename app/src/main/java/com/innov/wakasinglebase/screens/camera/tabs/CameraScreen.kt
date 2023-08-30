@@ -116,11 +116,12 @@ fun CameraScreen(
 
                 fileName=t ?:""
                 uriG=uri
+
                 val uriEncoded = URLEncoder.encode(
                     uri.toString(),
                     StandardCharsets.UTF_8.toString()
-                )// User is a data class.
 
+                )// User is a data class.
                     navController.navigate(UPLOAD_ROUTE.replace("{uri}",uriEncoded))
 
             })
