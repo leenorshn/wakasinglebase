@@ -1,6 +1,5 @@
 package com.innov.wakasinglebase.screens.home.foryou
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,12 +13,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import aws.smithy.kotlin.runtime.util.length
 import com.innov.wakasinglebase.common.WakawakaVerticalVideoPager
+import com.innov.wakasinglebase.core.DestinationRoute.COMMENT_BOTTOM_SHEET_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.CREATOR_PROFILE_ROUTE
 import com.innov.wakasinglebase.ui.theme.DarkBlue
 import com.innov.wakasinglebase.ui.theme.DarkPink
-import com.innov.wakasinglebase.core.DestinationRoute.COMMENT_BOTTOM_SHEET_ROUTE
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
 
 /**

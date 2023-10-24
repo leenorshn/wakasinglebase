@@ -1,36 +1,104 @@
 package com.innov.wakasinglebase.data.source
 
 
-import android.util.Log
-import com.google.firebase.firestore.FirebaseFirestore
+import com.apollographql.apollo3.ApolloClient
+import com.innov.wakasinglebase.core.base.BaseResponse
+import com.innov.wakasinglebase.data.mapper.toAuthModel
+import com.innov.wakasinglebase.data.mapper.toUserModel
+import com.innov.wakasinglebase.data.model.AuthModel
 import com.innov.wakasinglebase.data.model.UserModel
+import com.wakabase.LoginOrCreateAccountMutation
+import com.wakabase.MeQuery
+import com.wakabase.UpdateUserMutation
+import com.wakabase.VerifyPhoneMutation
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 /**
  * Created by innov Victor on 3/18/2023.
  */
-object UsersDataSource {
+class UserDataSource @Inject constructor(
+   private val apolloClient: ApolloClient
+) {
 
     suspend fun fetchSpecificUser(userId: String): Flow<UserModel?> {
-        var db=FirebaseFirestore.getInstance();
-        Log.e("Waka",userId)
-        val res=db.collection("users").document(userId).get().await()
+
+
         return flow {
             val user = UserModel(
                 uid = userId,
-                name = res.data?.get("name").toString(),
-                phone = res.data?.get("phone").toString(),
-                uniqueUserName = res.data?.get("name").toString().replace(" ","_"),
-                bio = res.data?.get("bio").toString(),
-                city = res.data?.get("city").toString(),
-                email = res.data?.get("email").toString(),
-                profilePic = res.data?.get("profilePic").toString()
             )
             emit(user)
         }
     }
+
+    suspend fun verifyPhone(phone: String): Flow<BaseResponse<Boolean>> {
+        return flow {
+            emit(BaseResponse.Loading)
+            //emit(true)
+            var res=apolloClient.mutation(VerifyPhoneMutation(phone)).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("error ${res.errors?.joinToString ()}"))
+            }
+            if (res.data?.sendCode==true){
+                emit(BaseResponse.Success(true))
+            }
+        }.catch {
+            emit(BaseResponse.Error("error ${it.message}"))
+        }
+    }
+    suspend fun verifyCode(phone:String,code:String): Flow<BaseResponse<AuthModel?>> {
+        return flow {
+            emit(BaseResponse.Loading)
+            //emit(true)
+            val res=apolloClient.mutation(LoginOrCreateAccountMutation(phone,code)).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("code error in verification"))
+            }
+            if (res.data?.loginOrCreateAccount!=null){
+                val data=res.data?.loginOrCreateAccount?.toAuthModel()
+                emit(BaseResponse.Success(data))
+            }
+        }.catch {
+            emit(BaseResponse.Error("code error in verification"))
+        }
+    }
+    suspend fun me(): Flow<BaseResponse<UserModel?>> {
+
+
+        return flow {
+            emit(BaseResponse.Loading)
+          val res= apolloClient.query(MeQuery()).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("error user login"))
+            }
+            if(res.data!=null){
+                val user=res.data?.me?.toUserModel()
+                emit(BaseResponse.Success(user))
+            }
+        }.catch {
+            emit(BaseResponse.Error("error user login"))
+        }
+    }
+
+    suspend fun updateUserData(name:String,avatar:String):Flow<BaseResponse<Boolean>>{
+        return flow {
+            emit(BaseResponse.Loading)
+            val res=apolloClient.mutation(UpdateUserMutation(name,avatar)).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+            }
+            if (res.data!=null){
+                emit(BaseResponse.Success(true))
+            }
+        }.catch {
+            emit(BaseResponse.Error("Error when updating profile"))
+        }
+    }
+
+
 
 }
 

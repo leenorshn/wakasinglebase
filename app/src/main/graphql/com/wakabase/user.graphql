@@ -1,0 +1,28 @@
+mutation verifyPhone($phone:String!){
+    sendCode(phone:$phone)
+}
+
+mutation loginOrCreateAccount($phone:String!,$code:String!){
+    loginOrCreateAccount(phone:$phone,verifiedCode:$code){
+        token
+    }
+}
+
+mutation updateUser($name:String,$avatar:String!){
+    updateProfile(updateUser:{name:$name,profilePic:$avatar})
+}
+
+query me{
+    me{
+        id
+        name
+        siteWeb
+        city
+        phone
+        bio
+        balance
+        profilePic
+        isVerified
+        hasContract
+    }
+}

@@ -9,7 +9,7 @@ import java.text.DecimalFormat
  */
 
 val decimalFormat = DecimalFormat("#.#")
-fun Long.formattedCount(): String {
+fun Int.formattedCount(): String {
     return if (this < 10000) {
         this.toString()
     } else if (this < 1000000) {

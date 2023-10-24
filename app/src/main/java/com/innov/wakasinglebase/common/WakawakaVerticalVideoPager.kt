@@ -31,11 +31,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.core.utils.IntentUtils.share
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.innov.wakasinglebase.ui.theme.*
-import com.innov.wakasinglebase.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -58,7 +58,12 @@ fun WakawakaVerticalVideoPager(
     onClickFavourite: (isFav: Boolean) -> Unit = {},
     onClickShare: (() -> Unit)? = null
 ) {
-    val pagerState = rememberPagerState(initialPage = initialPage ?: 0)
+    val pagerState = rememberPagerState(
+        initialPage = initialPage ?: 0,
+        initialPageOffsetFraction = 0f,
+        pageCount = {videos.size}
+
+    )
     val coroutineScope = rememberCoroutineScope()
     val localDensity = LocalDensity.current
 
@@ -69,7 +74,6 @@ fun WakawakaVerticalVideoPager(
     )
 
     VerticalPager(
-        pageCount = videos.size,
         state = pagerState,
         flingBehavior = fling,
         beyondBoundsPageCount = 1,
@@ -355,7 +359,7 @@ fun FooterUi(
         val audioInfo: String = item.audioModel?.run {
             "Original sound - ${audioAuthor.uniqueUserName} - ${audioAuthor.name}"
         }
-            ?: item.run { "Original sound - ${item.authorDetails?.uniqueUserName} - ${item.authorDetails?.name}" }
+            ?: item.run { "Original sound - ${item.videoTitle} - ${item.description}" }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),

@@ -1,6 +1,7 @@
 package com.innov.wakasinglebase.screens.camera.tabs
 //package com.innov.cameramedia.tabs
 //
+
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
@@ -53,7 +54,6 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.innov.wakasinglebase.R
-
 import com.innov.wakasinglebase.common.CaptureButton
 import com.innov.wakasinglebase.core.DestinationRoute.UPLOAD_ROUTE
 import com.innov.wakasinglebase.core.extension.MediumSpace
@@ -62,14 +62,11 @@ import com.innov.wakasinglebase.core.utils.openAppSetting
 import com.innov.wakasinglebase.screens.camera.CameraCaptureOptions
 import com.innov.wakasinglebase.screens.camera.CameraController
 import com.innov.wakasinglebase.screens.camera.CameraMediaViewModel
-
 import com.innov.wakasinglebase.screens.camera.PermissionType
 import com.innov.wakasinglebase.screens.camera.Tabs
-import com.innov.wakasinglebase.screens.camera.UploadData
 import com.innov.wakasinglebase.ui.theme.LightGreenColor
 import com.innov.wakasinglebase.ui.theme.TealColor
 import com.innov.wakasinglebase.ui.theme.White
-
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import dev.chrisbanes.snapper.SnapOffsets
 import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
@@ -100,49 +97,60 @@ fun CameraScreen(
     )
     var fileName by remember { mutableStateOf("") }
     var uriG by remember { mutableStateOf<Uri?>(null) }
-    LaunchedEffect(key1 = Unit) {
-        if (!multiplePermissionState.permissions[0].status.isGranted) {
-            multiplePermissionState.launchMultiplePermissionRequest()
-        }
-    }
-
-
-
     val fileLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent(),
             onResult = {uri->
 
-               var t= getFileNameFromUri(context,uri!!)
+                var t= getFileNameFromUri(context,uri!!)
 
                 fileName=t ?:""
                 uriG=uri
+
 
                 val uriEncoded = URLEncoder.encode(
                     uri.toString(),
                     StandardCharsets.UTF_8.toString()
 
                 )// User is a data class.
-                    navController.navigate(UPLOAD_ROUTE.replace("{uri}",uriEncoded))
+                navController.navigate(UPLOAD_ROUTE.replace("{uri}",uriEncoded))
 
             })
+    LaunchedEffect(key1 = Unit) {
+//        if (!multiplePermissionState.permissions[0].status.isGranted) {
+//            multiplePermissionState.launchMultiplePermissionRequest()
+//        }
+        //fileLauncher.launch("video/*")
+    }
+
+
+
+
 
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxSize()) {
-        //if(fileName.isNotEmpty()&&uriG!=null){
-
-          //  UploadScreen(uri =uriG !!, fileName = fileName)
-       // }else{
+//        if(fileName.isNotEmpty()&&uriG!=null){
+//
+//           // UploadScreen(uri =uriG !!, fileName = fileName)
+//        }else{
             if (multiplePermissionState.permissions[0].status.isGranted) {
-                CameraPreview(cameraOpenType,
-                    onClickCancel = { navController.navigateUp() },
-                    navController=navController,
-                    onClickOpenFile = {
+
+                //fileLauncher.launch("video/*")
+//                CameraPreview(cameraOpenType,
+//                    onClickCancel = { navController.navigateUp() },
+//                    navController=navController,
+//                    onClickOpenFile = {
+//                        fileLauncher.launch("video/*")
+//                    }
+//
+//                )
+
+                SelectFileScreen(
+                    onSelectFileClicked = {
                         fileLauncher.launch("video/*")
                     }
-
                 )
             } else {
                 CameraMicrophoneAccessPage(multiplePermissionState.permissions[1].status.isGranted,
@@ -161,9 +169,9 @@ fun CameraScreen(
                         }
                     }
                 }
-        }
 
-        //}
+
+            }
     }
 }
 
@@ -306,7 +314,7 @@ fun CameraPreview(
     val cameraProviderFuture = remember {
         ProcessCameraProvider.getInstance(context)
     }
-    var defaultCameraFacing by remember { mutableStateOf(CameraSelector.DEFAULT_FRONT_CAMERA) }
+    var defaultCameraFacing by remember { mutableStateOf(CameraSelector.DEFAULT_BACK_CAMERA) }
     val cameraProvider = cameraProviderFuture.get()
     val preview = remember { Preview.Builder().build() }
    // val previewView: PreviewView = remember { PreviewView(context) }
@@ -378,10 +386,9 @@ fun CameraPreview(
                                             uri.toString(),
                                             StandardCharsets.UTF_8.toString()
                                         )
-                                        var t= getFileNameFromUri(context,uri)
-                                        var data=UploadData(uri = uriEncoded,fileName= t?:"")
 
-                                        navController.navigate(UPLOAD_ROUTE.replace("{data}","$data",true))
+
+                                        navController.navigate(UPLOAD_ROUTE.replace("{uri}","$uriEncoded",true))
                                     }
                                 }
                             }

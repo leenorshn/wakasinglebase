@@ -1,31 +1,28 @@
 package com.innov.wakasinglebase.signin
 
 //import com.innov.wakasinglebase.core.DestinationRoute.LOGIN_OR_SIGNUP_WITH_PHONE_ROUTE
-import android.graphics.drawable.PaintDrawable
-import android.widget.Toast
-import androidx.compose.animation.ExperimentalAnimationApi
+
+
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -38,9 +35,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.common.CustomButton
-import com.innov.wakasinglebase.common.CustomIconButton
-import com.innov.wakasinglebase.common.CustomTextField
-import com.innov.wakasinglebase.common.DisplayAutoBackgroundSlider
 import com.innov.wakasinglebase.core.AppContract.Annotate.ANNOTATED_PRIVACY_POLICY
 import com.innov.wakasinglebase.core.AppContract.Annotate.ANNOTATED_TAG
 import com.innov.wakasinglebase.core.AppContract.Annotate.ANNOTATED_TERMS_OF_SERVICE
@@ -50,35 +44,11 @@ import com.innov.wakasinglebase.ui.theme.SubTextColor
 import com.innov.wakasinglebase.ui.theme.fontFamily
 
 
-
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-
-import androidx.compose.ui.unit.dp
-import com.google.firebase.firestore.auth.User
-import com.innov.wakasinglebase.data.model.UserModel
-
-
 @Composable
 fun SignInScreen(
-    isLoading : Boolean,
-    currentUser: UserModel?,
-    error:String,
-    onSignInClick : ()-> Unit
-){
+    navController: NavController,
+    onSignInClick: () -> Unit
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize()
 
@@ -123,31 +93,29 @@ fun SignInScreen(
                     modifier = Modifier.size(124.dp)
                 )
                 20.dp.Space()
-                if (isLoading){
-                    CircularProgressIndicator(color= PrimaryColor)
-                }
+//                if (isLoading){
+//                    CircularProgressIndicator(color= PrimaryColor)
+//                }
                 Spacer(modifier = Modifier.weight(1f))
-                if(isLoading || currentUser == null){
-                    CustomButton(
-                        modifier=Modifier.width(340.dp),
-                        shape = RoundedCornerShape(16),
-                        buttonText = "Commencer",
-                        containerColor= PrimaryColor,
-                        onClickButton = onSignInClick
-                    )
-
-                }
-                if(error!=null || currentUser == null){
-                    Text(text = "$error", style = TextStyle(color=Color.Red))
-                }
+                // if(isLoading || currentUser == null){
+                CustomButton(
+                    modifier = Modifier.width(340.dp),
+                    shape = RoundedCornerShape(16),
+                    buttonText = "Commencer",
+                    containerColor = PrimaryColor,
+                    onClickButton = onSignInClick
+                )
                 Spacer(modifier = Modifier.weight(1f))
                 PrivacyPolicyFooter()
+
             }
+//                if(error!=null || currentUser == null){
+//                    Text(text = "$error", style = TextStyle(color=Color.Red))
+//                }
+
         }
     }
 }
-
-
 
 
 @Composable
@@ -192,6 +160,7 @@ fun PrivacyPolicyFooter() {
                     ANNOTATED_TERMS_OF_SERVICE -> {
 
                     }
+
                     ANNOTATED_PRIVACY_POLICY -> {
 
                     }

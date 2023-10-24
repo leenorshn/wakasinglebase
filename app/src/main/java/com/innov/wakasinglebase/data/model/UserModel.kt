@@ -13,10 +13,14 @@ data class UserModel(
     val city:String?="",
     val phone:String?="",
     val bio: String?="",
-    val balance: Long=0,
+    val balance: Double =0.0,
     val profilePic: String?="",
     val isVerified: Boolean=false,
     val hasContract: Boolean = false,
+)
+
+data class AuthModel(
+    val token:String=""
 )
 
 

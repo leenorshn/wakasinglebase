@@ -2,10 +2,7 @@ package com.innov.wakasinglebase.screens.camera.upload
 
 
 
-import android.content.Context
-import android.database.Cursor
 import android.net.Uri
-import android.provider.MediaStore
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,13 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,7 +30,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import com.innov.wakasinglebase.core.DestinationRoute
-import com.innov.wakasinglebase.signin.utils.UploadVideoOnS3
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets

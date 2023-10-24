@@ -2,10 +2,9 @@ package com.innov.wakasinglebase.screens.myprofil
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.identity.SignInClient
+import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
-import com.innov.wakasinglebase.signin.Result
 import com.innov.wakasinglebase.signin.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -30,23 +29,23 @@ class SettingViewModel @Inject constructor(
 
     private fun getSignedInUser() {
         viewModelScope.launch {
-            repository.getSignedInUser().collect {result->
+            repository.me().collect {result->
                 when(result){
-                    is Result.Loading->{
+                    is BaseResponse.Loading->{
                         uiState.value = uiState.value.copy(
                             isLoading = true
                         )
                     }
-                    is Result.Success->{
+                    is BaseResponse.Success->{
                         uiState.value = uiState.value.copy(
                             isLoading = false, currentUser = result.data
                         )
                     }
-                    is Result.Error->{
+                    is BaseResponse.Error->{
                         uiState.value = uiState.value.copy(
                             isLoading = false,
                             currentUser = null,
-                            signinError = result.e?.message
+                            signinError = result.error
                         )
                     }
                 }
@@ -56,29 +55,7 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    fun signOut(oneTapClient : SignInClient){
-        viewModelScope.launch {
-            repository.signOut(oneTapClient).collect{result->
-                when(result){
-                    is Result.Loading->{
-                        uiState.value = uiState.value.copy(
-                            isLoading = true
-                        )
-                    }
-                    is Result.Success->{
-                        uiState.value = uiState.value.copy(
-                            isLoading = false, currentUser = null
-                        )
-                    }
-                    is Result.Error->{
-                        uiState.value = uiState.value.copy(
-                            isLoading = false
-                        )
-                    }
-                }
-            }
-        }
-    }
+
 
 
 }

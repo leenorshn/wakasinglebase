@@ -1,5 +1,6 @@
 package com.innov.wakasinglebase.screens.gift
 
+//import com.innov.core.DestinationRoute.AUTHENTICATION_ROUTE
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
@@ -30,15 +31,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.innov.wakasinglebase.common.TopBar
-//import com.innov.core.DestinationRoute.AUTHENTICATION_ROUTE
 import com.innov.wakasinglebase.core.extension.LargeSpace
 import com.innov.wakasinglebase.core.extension.MediumSpace
 import com.innov.wakasinglebase.core.extension.SmallSpace
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.data.model.TemplateModel
+import com.innov.wakasinglebase.ui.theme.PrimaryColor
 import com.innov.wakasinglebase.ui.theme.SubTextColor
 import kotlin.math.absoluteValue
-import com.innov.wakasinglebase.ui.theme.PrimaryColor
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,7 +98,9 @@ fun GiftScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ColumnScope.TemplatePager(templates: List<TemplateModel>) {
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(
+        0,0f
+    ) { templates.size }
 
     val currentItem by remember {
         derivedStateOf {
@@ -115,7 +117,6 @@ fun ColumnScope.TemplatePager(templates: List<TemplateModel>) {
     )
     MediumSpace()
     HorizontalPager(
-        pageCount = templates.size,
         contentPadding = PaddingValues(horizontal = 64.dp),
         state = pagerState,
         modifier = Modifier.weight(1f)

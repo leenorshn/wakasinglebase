@@ -9,7 +9,8 @@ import com.innov.wakasinglebase.core.extension.randomUploadDate
 data class VideoModel(
     val videoId: String,
     val authorDetails: UserModel?,
-    val videoStats: VideoStats,
+    val videoStats: VideoStats?,
+    val videoTitle:String? = "unDefined",
     val videoLink: String,
     val description: String,
     val currentViewerInteraction: ViewerInteraction = ViewerInteraction(),
@@ -18,11 +19,11 @@ data class VideoModel(
     val hasTag: List<HasTag> = listOf(),
 ) {
     data class VideoStats(
-        var like: Long,
-        var comment: Long,
-        var share: Long,
+        var like: Int,
+        var comment: Int,
+        var share: Int,
 
-        var views: Long = (like.plus(500)..like.plus(100000)).random()
+        var views: Int = (like.plus(500)..like.plus(100000)).random()
     ) {
         var formattedLikeCount: String = ""
         var formattedCommentCount: String = ""
@@ -40,7 +41,7 @@ data class VideoModel(
     }
 
     data class HasTag(
-        val id: Long,
+        val id: String?,
         val title: String
     )
 

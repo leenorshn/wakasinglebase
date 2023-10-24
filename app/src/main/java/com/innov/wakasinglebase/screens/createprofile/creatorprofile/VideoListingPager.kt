@@ -21,13 +21,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-
 import com.innov.wakasinglebase.data.model.VideoModel
+import com.innov.wakasinglebase.screens.createprofile.creatorprofile.tabs.LikeVideoTab
+import com.innov.wakasinglebase.screens.createprofile.creatorprofile.tabs.PublicVideoTab
 import com.innov.wakasinglebase.ui.theme.Black
 import com.innov.wakasinglebase.ui.theme.Gray
 import com.innov.wakasinglebase.ui.theme.SeparatorColor
-import com.innov.wakasinglebase.screens.createprofile.creatorprofile.tabs.LikeVideoTab
-import com.innov.wakasinglebase.screens.createprofile.creatorprofile.tabs.PublicVideoTab
 import kotlinx.coroutines.launch
 
 /**
@@ -42,8 +41,13 @@ fun VideoListingPager(
     viewModel: CreatorProfileViewModel,
     onClickVideo: (video: VideoModel, index: Int) -> Unit
 ) {
-    val pagerState = rememberPagerState()
+
     val tabs = ProfilePagerTabs.values().asList()
+    val pagerState = rememberPagerState(
+        0,
+        0f,
+        pageCount = {tabs.size}
+    )
     val coroutineScope = rememberCoroutineScope()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
@@ -101,7 +105,7 @@ fun VideoListingPager(
         }
         item {
             HorizontalPager(
-                pageCount = tabs.size, state = pagerState
+                 state = pagerState
             ) {
                 when (it) {
                     0 -> {

@@ -1,0 +1,139 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+##
+
+directive @auth on FIELD | FIELD_DEFINITION
+
+type HasTag {
+    id: ID!
+    title: String!
+}
+
+type VideoStats {
+    id: ID!
+    like: Int!
+    comment: Int
+    share: Int!
+    views: Int!
+    videoId: ID!
+}
+
+type Video {
+    id: ID!
+    author: User!
+    title: String!
+    link: String!
+    category: String!
+    videoStats: VideoStats
+    description: String!
+    hasTag: [HasTag!]!
+    createdAt: Float!
+}
+
+type User {
+    id: ID!
+    name: String!
+    email: String!
+    siteWeb: String
+    city: String
+    phone: String!
+    bio: String!
+    balance: Float!
+    profilePic: String
+    isVerified: Boolean
+    hasContract: Boolean
+}
+
+type AudioModel {
+    audioCoverImage: String
+    isOriginal: Boolean
+    audioAuthor: User
+    numberOfPost: Float
+    originalVideoUrl: String
+}
+
+type Like {
+    user: User!
+    video: Video!
+}
+
+type Auth {
+    token: String
+}
+
+type Verification {
+    code: String!
+    phone: String!
+    isVerified: Boolean!
+}
+
+type Query {
+    videos(limit: Int): [Video!]!
+    audio: [AudioModel!]!
+    users: [User!]! @auth
+    friends: [User!]! @auth
+    user(id: ID!): User
+    me: User! @auth
+    verifyCode(phone: String!, code: String!): Verification!
+
+    likes: [Like!]!
+    userByPhone(phone: String!): User @auth
+    hasTags: [HasTag!]!
+    videoStats: [VideoStats!]! @auth
+    videoStat: VideoStats! @auth
+}
+
+type Mutation {
+    createTags(tags: [String!]!): Boolean! @auth
+    createVideo(newVideo: NewVideoInput!): Boolean! @auth
+    createUser(newUser: NewUserInput!): Boolean!
+    loginOrCreateAccount(phone: String!, verifiedCode: String!): Auth!
+    updateProfile(updateUser: UpdateUserInput!): Boolean! @auth
+    followUser(id: ID!): Boolean! @auth
+    likeVideo(id: ID!): Boolean! @auth
+    shareVideo(id: ID!): Boolean! @auth
+    viewVideo(id: ID!): Boolean! @auth
+    voteVideo(id: ID!): Boolean! @auth
+
+    sendCode(phone: String!): Boolean!
+}
+
+input NewVideoInput {
+    author: String!
+    title: String!
+    link: String!
+    category: String!
+    videoStats: NewVideoStats
+    description: String!
+    hasTag: [String!]!
+}
+
+input NewVideoStats {
+    like: Int!
+    comment: Int
+    share: Int!
+    views: Int!
+    videoId: ID!
+}
+
+input NewUserInput {
+    name: String
+    siteWeb: String
+    city: String
+    phone: String!
+    bio: String
+    balance: Float
+    profilePic: String
+    isVerified: Boolean!
+    hasContract: Boolean!
+}
+
+input UpdateUserInput {
+    name: String
+    siteWeb: String
+    city: String
+    bio: String
+    balance: Float
+    profilePic: String
+}

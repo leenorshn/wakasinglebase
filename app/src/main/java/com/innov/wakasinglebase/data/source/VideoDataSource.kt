@@ -1,78 +1,77 @@
 package com.innov.wakasinglebase.data.source
 
 
-import android.util.Log
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.snapshots
+
+import com.apollographql.apollo3.ApolloClient
+import com.innov.wakasinglebase.core.base.BaseResponse
+import com.innov.wakasinglebase.data.mapper.toVideoModel
 import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.model.VideoModel
-import com.innov.wakasinglebase.screens.home.foryou.Result
+import com.wakabase.CreateVideoMutation
+import com.wakabase.VideosQuery
+import com.wakabase.type.NewVideoInput
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 /**
  * Created by innov Victor on 3/18/2023.
  */
-object VideoDataSource{
+class VideoDataSource @Inject constructor(
+  private val apolloClient: ApolloClient
+){
 
-
-
-val db=FirebaseFirestore.getInstance()
-
-
-
-    suspend fun fetchVideos(): Flow<List<VideoModel>> {
-        var listData:List<VideoModel>?=null
-       val snap= db.collection("videos").get().await()
-
-         listData=  snap.documents.map {
-               // Log.d("ORIO",it.data.toString())
-               var authDetails: UserModel? = null
-               //uIudd2raZaZwnmN2duKedfTD4U43
-               //uIudd2raZaZwnmN2duKedfTD4U43
-               //Log.e("Waka", ">>>${it.data?.get("authorDetails")?.toString()}")
-               UsersDataSource.fetchSpecificUser(it.data?.get("authorDetails").toString())
-                   .collect { d ->
-                       if (d != null) {
-                           authDetails = UserModel(
-                               uid = d.uid,
-                               name = d.name,
-                               profilePic = d.profilePic,
-                               email = d.email,
-                               city = d.city,
-                               bio = d.bio,
-                               uniqueUserName = d.uniqueUserName,
-                               phone = d.phone,
-                               isVerified = d.isVerified,
-                               hasContract = d.hasContract,
-                               balance = d.balance
-                           )
-                       }
-                   }
-
-
-                   VideoModel(
-                       videoId = it.data?.get("videoId").toString(),
-                       videoLink = it.data?.get("videoLink").toString(),
-                       description = it.data?.get("description").toString(),
-                       authorDetails = authDetails,
-                       videoStats = VideoModel.VideoStats(
-                           like = it.data?.get("like").toString().toLong() ,
-                           share = it.data?.get("share").toString().toLong(),
-                           comment = 0,
-                           views =  100
-                       )
-
-               )
-
-           }
-
-
+    suspend fun createVideo(
+        videoId: String,
+        category: String,
+        title: String,
+        author: UserModel,
+        description: String
+    ): Flow<BaseResponse<Boolean>> {
 
 
         return flow {
-            listData?.let { emit(it.shuffled()) }
+            emit(BaseResponse.Loading)
+            apolloClient.mutation(CreateVideoMutation(data= NewVideoInput(
+                description=description,
+                title=title,
+                category=category,
+                author="${author.uid}",
+                link="https://d2y4y6koqmb0v7.cloudfront.net/$videoId",
+                hasTag = emptyList()
+            )
+
+            ))
+            emit(BaseResponse.Success(true))
+
+        }.catch {
+            emit(BaseResponse.Error("some think want rong"))
+        }
+    }
+
+
+
+
+
+    suspend fun fetchVideos(limit:Int): Flow<BaseResponse<List<VideoModel>>> {
+        var listData:List<VideoModel>?=null
+
+
+        return flow {
+            emit(BaseResponse.Loading)
+       var resp= apolloClient.query(VideosQuery(limit)).execute()
+
+        if(resp.hasErrors()){
+            emit(BaseResponse.Error("Error hard to load videos"))
+        }
+        if (resp.data?.videos!=null){
+            var videos=resp.data?.videos?.map { it.toVideoModel() }?: emptyList()
+            emit(BaseResponse.Success(videos.shuffled()))
+
+        }
+        }.catch {
+            emit(BaseResponse.Error("Error hard to load videos"))
         }
     }
 
@@ -82,8 +81,16 @@ val db=FirebaseFirestore.getInstance()
         val videosList = arrayListOf<VideoModel>()
 
 
-        fetchVideos().collect{
-            videosList.addAll(it)
+        fetchVideos(100).collect{
+            when(it){
+                is BaseResponse.Error -> {}
+                BaseResponse.Loading -> {
+
+                }
+                is BaseResponse.Success -> {
+                    videosList.addAll(it.data)
+                }
+            }
         }
         return flow {
             val userVideoList = videosList.filter { it.authorDetails?.uid == userId }

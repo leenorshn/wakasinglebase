@@ -2,9 +2,9 @@ package com.innov.wakasinglebase.core.utils
 
 import android.content.Context
 import android.content.res.AssetFileDescriptor
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
-import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -14,8 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
-
-
+import java.util.Random
 
 
 /**
@@ -94,7 +93,7 @@ object FileUtils {
                 // Set the data source using the video URL
                 val headers = HashMap<String, String>()
                // retriever.setDataSource()
-                //retriever.setDataSource(videoUrl, headers)
+               // retriever.setDataSource(videoUrl, headers)
 
                 retriever.setDataSource(context,videoUrl)
 
@@ -200,5 +199,19 @@ object FileUtils {
             }
         }
         return fileName
+    }
+
+    fun generateFileNameString():String{
+        val currentTimeMillis=System.currentTimeMillis()
+        val random= Random(currentTimeMillis)
+        val charPool:List<Char> = ('a'..'z')+('A'..'Z')+('0'..'9')
+        val randomString=(1..32)
+            .map{
+                random.nextInt(charPool.size)
+
+            }.map (
+                charPool::get
+            ).joinToString ("")
+        return  randomString
     }
 }

@@ -1,17 +1,11 @@
 package com.innov.wakasinglebase.signin
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.identity.SignInClient
+import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
-
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,23 +29,23 @@ class MainViewModel @Inject constructor(
 
     private fun getSignedInUser() {
         viewModelScope.launch {
-            repository.getSignedInUser().collect {result->
+            repository.me().collect {result->
                 when(result){
-                    is Result.Loading->{
+                    is BaseResponse.Loading->{
                         uiState.value = uiState.value.copy(
                             isLoading = true
                         )
                     }
-                    is Result.Success->{
+                    is BaseResponse.Success->{
                         uiState.value = uiState.value.copy(
                             isLoading = false, currentUser = result.data
                         )
                     }
-                    is Result.Error->{
+                    is BaseResponse.Error->{
                         uiState.value = uiState.value.copy(
                             isLoading = false,
                             currentUser = null,
-                            signinError = result.e?.message
+                            signinError = result.error
                         )
                     }
                 }
@@ -61,29 +55,7 @@ class MainViewModel @Inject constructor(
        }
     }
 
-    fun signOut(oneTapClient : SignInClient){
-        viewModelScope.launch {
-            repository.signOut(oneTapClient).collect{result->
-                when(result){
-                    is Result.Loading->{
-                        uiState.value = uiState.value.copy(
-                            isLoading = true
-                        )
-                    }
-                    is Result.Success->{
-                        uiState.value = uiState.value.copy(
-                            isLoading = false, currentUser = null
-                        )
-                    }
-                    is Result.Error->{
-                        uiState.value = uiState.value.copy(
-                            isLoading = false
-                        )
-                    }
-                }
-            }
-        }
-    }
+
 
 
 

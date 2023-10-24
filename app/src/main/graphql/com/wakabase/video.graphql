@@ -1,0 +1,39 @@
+mutation createVideo($data:NewVideoInput!){
+    createVideo(newVideo:$data)
+}
+
+query videos($limit:Int){
+    videos(limit:$limit){
+        id
+        author{
+            id
+            name
+            siteWeb
+            city
+            phone
+            bio
+            balance
+            profilePic
+            isVerified
+            hasContract
+        }
+        title
+        link
+        category
+        description
+        hasTag{
+            id
+            title
+        }
+        videoStats{
+            id
+            like
+            views
+            comment
+            share
+            videoId
+        }
+        createdAt
+
+    }
+}

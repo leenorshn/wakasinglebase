@@ -10,14 +10,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 @Composable
 fun CustomTextField(
     label:String,
-    value:String,
+    value:TextFieldValue,
     onChange:(value:TextFieldValue)->Unit
 
 ) {
     TextField(
-        value = TextFieldValue(
+        value =
             value
-        ),
+        ,
         label={
               Text(text = label)
         },

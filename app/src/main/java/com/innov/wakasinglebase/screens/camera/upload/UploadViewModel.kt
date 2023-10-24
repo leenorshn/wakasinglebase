@@ -2,11 +2,11 @@ package com.innov.wakasinglebase.screens.camera.upload
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
+import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import com.innov.wakasinglebase.screens.camera.CameraMediaEvent
 import com.innov.wakasinglebase.screens.camera.ViewState
-import com.innov.wakasinglebase.signin.Result
 import com.innov.wakasinglebase.signin.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -37,25 +37,25 @@ class UploadViewModel @Inject constructor(
 
     private fun getUser() {
         viewModelScope.launch {
-            repository.getSignedInUser().collect {result->
+            repository.me().collect {result->
 
                 //updateState((viewState.value ?: ViewState()).copy(currentUser = it.data))
                 when(result){
-                    is Result.Loading->{
+                    is BaseResponse.Loading->{
                         uiState.value = uiState.value.copy(
                             isLoading = true
                         )
                     }
-                    is Result.Success->{
+                    is BaseResponse.Success->{
                         uiState.value = uiState.value.copy(
                             isLoading = false, currentUser = result.data
                         )
                     }
-                    is Result.Error->{
+                    is BaseResponse.Error->{
                         uiState.value = uiState.value.copy(
                             isLoading = false,
                             currentUser = null,
-                            signinError = result.e?.message
+                            signinError = result.error
                         )
                     }
                 }

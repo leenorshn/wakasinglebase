@@ -1,10 +1,13 @@
 package com.innov.wakasinglebase
 
+//import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+//import com.google.accompanist.navigation.material.ModalBottomSheetLayout
+//import com.innov.core.DestinationRoute.CAMERA_ROUTE
+
 import android.app.Activity
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
-
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,21 +26,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.innov.wakasinglebase.core.DestinationRoute.AUTHENTICATION_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.CAMERA_ROUTE
-//import com.innov.core.DestinationRoute.CAMERA_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.COMMENT_BOTTOM_SHEET_ROUTE
-import com.innov.wakasinglebase.core.DestinationRoute.GIFT_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.EXPLORE_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.FORMATTED_COMPLETE_CREATOR_VIDEO_ROUTE
-
+import com.innov.wakasinglebase.core.DestinationRoute.GIFT_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.HOME_SCREEN_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.MY_PROFILE_ROUTE
-import com.innov.wakasinglebase.signin.MainViewModel
-
 import com.innov.wakasinglebase.ui.theme.WakabaseTheme
 
 
@@ -60,7 +57,7 @@ fun RootScreen() {
 
     val isShowBottomBar = when (currentDestination?.route) {
         HOME_SCREEN_ROUTE, GIFT_ROUTE, COMMENT_BOTTOM_SHEET_ROUTE,
-        EXPLORE_ROUTE, AUTHENTICATION_ROUTE, MY_PROFILE_ROUTE, null -> true
+        EXPLORE_ROUTE, MY_PROFILE_ROUTE, null -> true
         else -> false
     }
     val darkMode = when (currentDestination?.route) {
@@ -76,7 +73,7 @@ fun RootScreen() {
 
     WakabaseTheme(darkTheme = darkMode) {
         SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.background)
-        ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
+       // ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
             Scaffold(
                 topBar = {
 
@@ -99,7 +96,7 @@ fun RootScreen() {
         }
 
 
-    }
+   // }
 }
 
 @Composable
