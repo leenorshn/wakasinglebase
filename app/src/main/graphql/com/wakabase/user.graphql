@@ -26,3 +26,28 @@ query me{
         hasContract
     }
 }
+
+query users{
+    users {
+        id
+        name
+        siteWeb
+        city
+        phone
+        bio
+        balance
+        profilePic
+        isVerified
+        hasContract
+    }
+}
+
+query Followers{
+    friends{
+        id
+        name
+        phone
+        profilePic
+        bio
+    }
+}

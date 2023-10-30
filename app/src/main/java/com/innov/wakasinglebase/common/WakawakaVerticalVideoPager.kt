@@ -255,12 +255,12 @@ fun SideItems(
                 }
         )
         Text(
-            text = item.videoStats.formattedShareCount, style = MaterialTheme.typography.labelMedium
+            text = "${item.videoStats?.formattedShareCount}", style = MaterialTheme.typography.labelMedium
         )
         20.dp.Space()
 
         LikeIconButton(isLiked = isLiked,
-            likeCount = item.videoStats.formattedLikeCount,
+            likeCount = "${item.videoStats?.formattedLikeCount}",
             onLikedClicked = {
                 isLiked = it
                 item.currentViewerInteraction.isLikedByYou = it

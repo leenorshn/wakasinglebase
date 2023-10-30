@@ -9,6 +9,24 @@ type HasTag {
     id: ID!
     title: String!
 }
+type Ticket {
+    id: ID!
+    name: String!
+    price: Float!
+    goal: Float!
+    detail: String!
+    status: String! # active|| inactive
+    createdAt: Float!
+}
+
+type TicketLotted {
+    id: ID!
+    ticket: Ticket!
+    video: Video!
+    author: User!
+    amount: Int!
+    createdAt: Float!
+}
 
 type VideoStats {
     id: ID!
@@ -27,7 +45,7 @@ type Video {
     category: String!
     videoStats: VideoStats
     description: String!
-    hasTag: [HasTag!]!
+    hasTag: [String!]!
     createdAt: Float!
 }
 
@@ -41,6 +59,7 @@ type User {
     bio: String!
     balance: Float!
     profilePic: String
+    isMonetizated: Boolean! #default false
     isVerified: Boolean
     hasContract: Boolean
 }
@@ -70,6 +89,9 @@ type Verification {
 
 type Query {
     videos(limit: Int): [Video!]!
+    video(id: ID!): Video
+    myVideo(userID: ID!): [Video!]!
+
     audio: [AudioModel!]!
     users: [User!]! @auth
     friends: [User!]! @auth
@@ -79,24 +101,42 @@ type Query {
 
     likes: [Like!]!
     userByPhone(phone: String!): User @auth
-    hasTags: [HasTag!]!
     videoStats: [VideoStats!]! @auth
     videoStat: VideoStats! @auth
+
+    # ticket
+    allTicket: [Ticket!]! @auth
+    ticket(id: ID!): Ticket
+
+    myLottedTicket: [TicketLotted!]! @auth
+    lottedTickets: [TicketLotted!]! @auth
 }
 
 type Mutation {
-    createTags(tags: [String!]!): Boolean! @auth
-    createVideo(newVideo: NewVideoInput!): Boolean! @auth
+    # user
     createUser(newUser: NewUserInput!): Boolean!
     loginOrCreateAccount(phone: String!, verifiedCode: String!): Auth!
     updateProfile(updateUser: UpdateUserInput!): Boolean! @auth
+    changeAccountStatus(id: ID!): Boolean!
+
+    # video
+    createVideo(newVideo: NewVideoInput!): Boolean! @auth
     followUser(id: ID!): Boolean! @auth
     likeVideo(id: ID!): Boolean! @auth
     shareVideo(id: ID!): Boolean! @auth
     viewVideo(id: ID!): Boolean! @auth
     voteVideo(id: ID!): Boolean! @auth
 
+    # sms
     sendCode(phone: String!): Boolean!
+
+    # create a lotterie ticket
+    lotTicket(data: NewLottedTicket!): Boolean!
+    deleteLottedTicket(id: ID!): Boolean!
+
+    #ticket
+    createTicket(data: NewTicket!): Boolean!
+    changeTicketStatus(id: ID!): Boolean!
 }
 
 input NewVideoInput {
@@ -136,4 +176,19 @@ input UpdateUserInput {
     bio: String
     balance: Float
     profilePic: String
+}
+
+input NewLottedTicket {
+    ticket: String!
+    video: String!
+    author: String!
+    amount: Int!
+}
+
+input NewTicket {
+    name: String!
+    price: Float!
+    goal: Float!
+    detail: String!
+    status: String!
 }

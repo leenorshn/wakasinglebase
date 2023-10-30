@@ -30,10 +30,12 @@ import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.innov.wakasinglebase.core.DestinationRoute.CAMERA_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.COMMENT_BOTTOM_SHEET_ROUTE
-import com.innov.wakasinglebase.core.DestinationRoute.EXPLORE_ROUTE
+
 import com.innov.wakasinglebase.core.DestinationRoute.FORMATTED_COMPLETE_CREATOR_VIDEO_ROUTE
-import com.innov.wakasinglebase.core.DestinationRoute.GIFT_ROUTE
+import com.innov.wakasinglebase.core.DestinationRoute.FRIENDS_ROUTE
+
 import com.innov.wakasinglebase.core.DestinationRoute.HOME_SCREEN_ROUTE
+import com.innov.wakasinglebase.core.DestinationRoute.LOTTO_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.MY_PROFILE_ROUTE
 import com.innov.wakasinglebase.ui.theme.WakabaseTheme
 
@@ -56,8 +58,8 @@ fun RootScreen() {
 
 
     val isShowBottomBar = when (currentDestination?.route) {
-        HOME_SCREEN_ROUTE, GIFT_ROUTE, COMMENT_BOTTOM_SHEET_ROUTE,
-        EXPLORE_ROUTE, MY_PROFILE_ROUTE, null -> true
+        HOME_SCREEN_ROUTE, LOTTO_ROUTE, COMMENT_BOTTOM_SHEET_ROUTE,
+        FRIENDS_ROUTE, MY_PROFILE_ROUTE, null -> true
         else -> false
     }
     val darkMode = when (currentDestination?.route) {

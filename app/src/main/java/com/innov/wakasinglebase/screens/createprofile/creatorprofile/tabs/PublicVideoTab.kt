@@ -20,6 +20,7 @@ fun PublicVideoTab(
     onClickVideo: (video: VideoModel, index: Int) -> Unit
 ) {
     val creatorPublicVideos by viewModel.publicVideosList.collectAsState()
+
     VideoGrid(
         scrollState = scrollState,
         videoList = creatorPublicVideos,

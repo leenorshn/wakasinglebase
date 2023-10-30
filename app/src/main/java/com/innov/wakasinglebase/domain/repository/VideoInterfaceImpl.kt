@@ -37,11 +37,11 @@ class VideoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAllVideos(): Flow<BaseResponse<List<VideoModel>>> {
-        return videoDataSource.fetchVideos(100)
+        return videoDataSource.fetchVideos(1000)
     }
 
     override suspend fun getAuthorVideos(authorId: String): Flow<BaseResponse<List<VideoModel>>> {
-        TODO("Not yet implemented")
+        return videoDataSource.fetchVideosOfParticularUser(authorId)
     }
 
     override suspend fun getVideo(videoId: String): Flow<BaseResponse<VideoModel>> {

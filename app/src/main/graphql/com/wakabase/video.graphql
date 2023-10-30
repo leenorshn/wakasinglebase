@@ -21,10 +21,72 @@ query videos($limit:Int){
         link
         category
         description
-        hasTag{
+        hasTag
+        videoStats{
             id
-            title
+            like
+            views
+            comment
+            share
+            videoId
         }
+        createdAt
+
+    }
+}
+
+query myVideo($UID:ID!){
+    myVideo(userID:$UID){
+        id
+        author{
+            id
+            name
+            siteWeb
+            city
+            phone
+            bio
+            balance
+            profilePic
+            isVerified
+            hasContract
+        }
+        title
+        link
+        category
+        description
+        hasTag
+        videoStats{
+            id
+            like
+            views
+            comment
+            share
+            videoId
+        }
+        createdAt
+    }
+}
+
+query video($id:ID!){
+    video(id:$id){
+        id
+        author{
+            id
+            name
+            siteWeb
+            city
+            phone
+            bio
+            balance
+            profilePic
+            isVerified
+            hasContract
+        }
+        title
+        link
+        category
+        description
+        hasTag
         videoStats{
             id
             like

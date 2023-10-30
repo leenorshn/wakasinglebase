@@ -34,6 +34,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.innov.wakasinglebase.common.Avatar
 import com.innov.wakasinglebase.common.CustomButton
 import com.innov.wakasinglebase.common.CustomTextField
+import com.innov.wakasinglebase.core.DestinationRoute.MAIN_NAV_ROUTE
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.core.utils.FileUtils.getFileNameFromUri
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
@@ -78,15 +79,11 @@ fun FirstProfileScreen(
 
             })
 
-    LaunchedEffect(key1 = uriG){
-        if (uriG!=null){
-            firstProfileViewModel.onEvent(FirstProfileEvent.OnImageUpload)
-        }
-    }
+
 
     LaunchedEffect(key1 = updateUserState.success, ){
         if(updateUserState.success){
-            navController.navigate("main")
+            navController.navigate(MAIN_NAV_ROUTE)
         }
     }
 
@@ -103,9 +100,14 @@ fun FirstProfileScreen(
             .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,) {
             72.dp.Space()
-            Avatar(image =state.userModel?.profilePic?: "https://uxwing.com/wp-content/themes/uxwing/download/peoples-avatars/default-profile-picture-grey-male-icon.png", onClick ={
+            Avatar(image ="${state.userModel?.profilePic}", onClick ={
                 fileLauncher.launch("image/*")
             }, size = 80.dp )
+            if (uriG!=null){
+                CustomButton(buttonText = "update image") {
+                    firstProfileViewModel.onEvent(FirstProfileEvent.OnImageUpload)
+                }
+            }
             56.dp.Space()
             CustomTextField(label = "Votre nom", value =name , onChange = {
                 name=it

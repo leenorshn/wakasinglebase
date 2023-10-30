@@ -2,12 +2,13 @@ package com.innov.wakasinglebase.screens.createprofile.creatorvideo
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.innov.wakasinglebase.domain.creatorprofile.GetCreatorProfileUseCase
-import com.innov.wakasinglebase.domain.creatorprofile.GetCreatorPublicVideoUseCase
 import com.innov.wakasinglebase.core.DestinationRoute.PassedKey.USER_ID
 import com.innov.wakasinglebase.core.DestinationRoute.PassedKey.VIDEO_INDEX
+import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
 import com.innov.wakasinglebase.data.model.VideoModel
+import com.innov.wakasinglebase.domain.creatorprofile.GetCreatorProfileUseCase
+import com.innov.wakasinglebase.domain.creatorprofile.GetCreatorPublicVideoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +28,7 @@ class CreatorVideoPagerViewModel
     val userId: String? = savedStateHandle[USER_ID]
     val videoIndex: Int? = savedStateHandle[VIDEO_INDEX]
 
-    private val _videosList = MutableStateFlow<List<VideoModel>>(arrayListOf())
+    private val _videosList = MutableStateFlow<List<VideoModel>>(ArrayList())
     val publicVideosList = _videosList.asStateFlow()
 
     override fun onTriggerEvent(event: CreatorVideoEvent) {
@@ -43,9 +44,26 @@ class CreatorVideoPagerViewModel
     private fun fetchCreatorVideo(id: String) {
         viewModelScope.launch {
             getCreatorPublicVideoUseCase(id).collect {
-                updateState(ViewState(creatorVideosList = it))
+                when(it){
+                    is BaseResponse.Error -> {
+                        updateState(ViewState(error = it.error))
+                    }
+                    BaseResponse.Loading -> {
+                        updateState(ViewState(isLoading = true))
+                    }
+                    is BaseResponse.Success -> {
+                        updateState(ViewState(creatorVideosList = it.data))
+                    }
+                }
+
             }
         }
     }
 
 }
+
+data class VideoState(
+    val videos:List<VideoModel> = emptyList(),
+    val error:String?=null,
+    val isLoading:Boolean=false
+)

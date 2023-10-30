@@ -2,8 +2,8 @@
     <string name="app_name">Waka-waka</string>
 
     <string name="home">Home</string>
-    <string name="explore">Explore</string>
-    <string name="gift">Gift</string>
+    <string name="friends">Friends</string>
+    <string name="event">Events</string>
     <string name="profile">Account</string>
 
     <string name="following">Following</string>
@@ -66,7 +66,6 @@
     <!-- settings -->
     <string name="settings_and_privacy">Settings</string>
     <string name="account">Account</string>
-    <string name="my_account">My account</string>
     <string name="live">Mon compte</string>
     <string name="playback">Stats</string>
     <string name="language">Language</string>
@@ -103,5 +102,6 @@
     <string name="flash">Flash</string>
     <string name="upload_photos">Upload photos</string>
     <string name="waka_waka">Waka-waka</string>
+    <string name="logout">logout</string>
 
 </resources>

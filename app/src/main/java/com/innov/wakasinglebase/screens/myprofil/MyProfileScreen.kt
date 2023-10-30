@@ -3,7 +3,6 @@ package com.innov.wakasinglebase.screens.myprofil
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,8 +12,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -27,7 +24,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.common.TopBar
-import com.innov.wakasinglebase.core.DestinationRoute.AUTHENTICATION_ROUTE
+import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.extension.MediumSpace
 import com.innov.wakasinglebase.core.extension.SmallSpace
 import com.innov.wakasinglebase.core.extension.Space
@@ -49,11 +46,7 @@ fun MyProfileScreen(
 
     val scrollState = rememberScrollState()
 
-//    val isCollapsed: Boolean by remember {
-//        derivedStateOf {
-//            scrollState.value.dp > expandedTitleHeight
-//        }
-//    }
+
 
     Scaffold(
         topBar = { TopBar(title =  stringResource(id = R.string.settings_and_privacy)) { navController.navigateUp() } }
@@ -115,7 +108,10 @@ fun MyProfileScreen(
                 it.forEach {
                     GroupedUiCardSection(item = it.key ,items= it.value, onClickItem = { titleId ->
                         when (titleId) {
-                            R.string.my_account -> navController.navigate(AUTHENTICATION_ROUTE)
+                            R.string.live -> {
+                                settingViewModel.onTriggerEvent(SettingEvent.OnLogout)
+                                navController.navigate(DestinationRoute.AUTH_ROUTE)
+                            }
                         }
                     })
                 }
@@ -173,9 +169,9 @@ fun GroupedUiCardSection(item: String,items: List<RowItem>, onClickItem: (Int) -
                         modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.bodyMedium
                     )
-                    if (it.title == R.string.my_account) {
+                    if (it.title == R.string.live) {
                         Text(
-                            text = stringResource(id = R.string.sign_up),
+                            text = stringResource(id = R.string.logout),
                             style = MaterialTheme.typography.labelMedium,
                             color = White,
                             modifier = Modifier

@@ -13,12 +13,7 @@ fun VideosQuery.VideoStats.toVideoStats():VideoModel.VideoStats{
     )
 }
 
-fun VideosQuery.HasTag.toHasTag():VideoModel.HasTag{
-    return VideoModel.HasTag(
-        id=id,
-        title=title
-    )
-}
+
 
 fun VideosQuery.Author.toAuthor():UserModel{
     return UserModel(
@@ -40,7 +35,7 @@ fun VideosQuery.Video.toVideoModel():VideoModel{
         videoStats = videoStats?.toVideoStats(),
         videoTitle = title,
         description = description,
-        hasTag = hasTag.map { VideoModel.HasTag(title=it.title,id=it.id) },
+        hasTag = hasTag,
         createdAt = "$createdAt",
         authorDetails = author.toAuthor()
     )

@@ -16,7 +16,7 @@ data class VideoModel(
     val currentViewerInteraction: ViewerInteraction = ViewerInteraction(),
     val createdAt: String = randomUploadDate(),
     val audioModel: AudioModel? = null,
-    val hasTag: List<HasTag> = listOf(),
+    val hasTag: List<String> = listOf(),
 ) {
     data class VideoStats(
         var like: Int,

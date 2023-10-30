@@ -1,10 +1,9 @@
 package com.innov.wakasinglebase.screens.home.foryou
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
-import com.innov.wakasinglebase.domain.foryou.VideoPageFeedUseCase
-
+import com.innov.wakasinglebase.domain.repository.VideoRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -14,7 +13,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ForYouViewModel @Inject constructor(
-    private val getForYouPageFeedUseCase: VideoPageFeedUseCase
+    private val videoRepository: VideoRepositoryImpl
 ) : BaseViewModel<ViewState, ForYouEvent>() {
     init {
         getForYouPageFeeds()
@@ -25,8 +24,25 @@ class ForYouViewModel @Inject constructor(
 
     private fun getForYouPageFeeds() {
         viewModelScope.launch {
-            getForYouPageFeedUseCase().collect {
-                updateState(ViewState(forYouPageFeed = it))
+            videoRepository.getAllVideos().collect{
+                when(it){
+                    is BaseResponse.Error -> {
+                        updateState(ViewState(
+                            error = "Loading error"
+                        ))
+                    }
+                    BaseResponse.Loading -> {
+                        updateState(ViewState(
+                            isLoading = true
+                        ))
+                    }
+                    is BaseResponse.Success -> {
+                        updateState(ViewState(
+                            forYouPageFeed = it.data,
+                            isLoading = false
+                        ))
+                    }
+                }
             }
         }
     }

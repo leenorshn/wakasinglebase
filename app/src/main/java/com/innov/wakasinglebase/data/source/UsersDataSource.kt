@@ -6,10 +6,14 @@ import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.data.mapper.toAuthModel
 import com.innov.wakasinglebase.data.mapper.toUserModel
 import com.innov.wakasinglebase.data.model.AuthModel
+import com.innov.wakasinglebase.data.model.FriendModel
 import com.innov.wakasinglebase.data.model.UserModel
+import com.innov.wakasinglebase.data.model.toFriendModel
+import com.wakabase.FollowersQuery
 import com.wakabase.LoginOrCreateAccountMutation
 import com.wakabase.MeQuery
 import com.wakabase.UpdateUserMutation
+import com.wakabase.UsersQuery
 import com.wakabase.VerifyPhoneMutation
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -71,6 +75,7 @@ class UserDataSource @Inject constructor(
         return flow {
             emit(BaseResponse.Loading)
           val res= apolloClient.query(MeQuery()).execute()
+
             if (res.hasErrors()){
                 emit(BaseResponse.Error("error user login"))
             }
@@ -98,6 +103,37 @@ class UserDataSource @Inject constructor(
         }
     }
 
+   suspend fun getFriends(): Flow<BaseResponse<List<FriendModel>>> {
+        return flow {
+            emit(BaseResponse.Loading)
+            val res=apolloClient.query(FollowersQuery()).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+            }
+            val friends=   res.data?.friends?.map {
+               it.toFriendModel()
+            }?:emptyList()
+            emit(BaseResponse.Success(friends))
+        }.catch {
+            emit(BaseResponse.Error("Error when updating profile"))
+        }
+    }
+
+    suspend fun getUsers(): Flow<BaseResponse<List<UserModel>>> {
+        return flow {
+            emit(BaseResponse.Loading)
+            val res=apolloClient.query(UsersQuery()).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+            }
+            val users=   res.data?.users?.map {
+                it.toUserModel()
+            }?:emptyList()
+            emit(BaseResponse.Success(users))
+        }.catch {
+            emit(BaseResponse.Error("Error when updating profile"))
+        }
+    }
 
 
 }

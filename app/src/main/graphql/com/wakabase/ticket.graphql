@@ -1,0 +1,44 @@
+query tickets{
+    allTicket{
+        id
+        name
+        goal
+        price
+        status
+    }
+}
+
+mutation createLotTicket($data:NewLottedTicket!){
+    lotTicket(data:$data)
+}
+
+query ticketLotted{
+    myLottedTicket{
+        id
+        amount
+        ticket{
+            id
+            name
+            price
+            status
+            detail
+            goal
+        }
+        author{
+            id
+            name
+            phone
+            profilePic
+        }
+        video{
+            id
+            link
+            title
+            videoStats{
+                id
+                like
+                views
+            }
+        }
+    }
+}

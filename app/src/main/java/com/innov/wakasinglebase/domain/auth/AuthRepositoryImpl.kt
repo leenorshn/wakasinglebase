@@ -2,6 +2,7 @@ package com.innov.wakasinglebase.domain.auth
 
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.data.model.AuthModel
+import com.innov.wakasinglebase.data.model.FriendModel
 import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import com.innov.wakasinglebase.data.source.UserDataSource
@@ -25,5 +26,13 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun me(): Flow<BaseResponse<UserModel?>> {
         return userDataSource.me()
+    }
+
+    override suspend fun friends(): Flow<BaseResponse<List<FriendModel>>> {
+        return  userDataSource.getFriends()
+    }
+
+    override suspend fun users(): Flow<BaseResponse<List<UserModel>>> {
+        return  userDataSource.getUsers()
     }
 }

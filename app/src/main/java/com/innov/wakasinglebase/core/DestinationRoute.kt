@@ -7,6 +7,7 @@ import com.innov.wakasinglebase.core.DestinationRoute.PassedKey.VIDEO_INDEX
  * Created by Victor on 3/19/2023.
  */
 object DestinationRoute {
+    const val FOLLOWER_ROUTE="follower_route"
     const val LOADING_SCREEN= "loading_screen"
     const val MAIN_NAV_ROUTE="main_route"
     const val AUTH_ROUTE="auth_route"
@@ -20,9 +21,9 @@ object DestinationRoute {
     const val FORMATTED_COMPLETE_CREATOR_VIDEO_ROUTE =
         "$CREATOR_VIDEO_ROUTE/{$USER_ID}/{$VIDEO_INDEX}"
 
-    const val GIFT_ROUTE = "gift_route"
+    const val LOTTO_ROUTE = "Lotto_route"
     const val MY_PROFILE_ROUTE = "my_profile_route"
-    const val EXPLORE_ROUTE = "explore_route"
+    const val FRIENDS_ROUTE = "friends_screen_route"
     const val CAMERA_ROUTE = "camera_route"
 
     const val AUTHENTICATION_ROUTE = "authentication_route"

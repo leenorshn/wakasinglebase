@@ -15,7 +15,7 @@ data class ViewState(
 )
 
 sealed class SettingEvent {
-
+    object OnLogout:SettingEvent()
 }
 
 data class UiState(

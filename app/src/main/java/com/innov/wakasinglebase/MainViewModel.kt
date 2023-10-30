@@ -3,6 +3,7 @@ package com.innov.wakasinglebase
 
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.base.BaseResponse
@@ -36,13 +37,15 @@ class MainViewModel @Inject constructor(
             userRepository.me().collect{resp->
                 when(resp){
                     is BaseResponse.Error -> {
+                        Log.e("AUTH_STATE",resp.error)
                         _state.value=_state.value.copy(
-                            loading = true,
+                            loading = false,
                             error = "Error of load",
                             success = false
                         )
                     }
                     is BaseResponse.Loading -> {
+                        Log.e("AUTH_STATE","Isloading ....")
                         _state.value=_state.value.copy(
                             loading = true,
                             error = null,
@@ -51,12 +54,14 @@ class MainViewModel @Inject constructor(
                     }
                     is BaseResponse.Success -> {
                         if(resp.data==null){
+                            Log.e("AUTH_STATE","user not found")
                             _state.value=_state.value.copy(
                                 loading = false,
                                 error = "user not found",
                                 success = false
                             )
                         }else{
+                            Log.e("AUTH_STATE","done")
                             _state.value=_state.value.copy(
                                 loading = false,
                                 error = null,
@@ -65,6 +70,7 @@ class MainViewModel @Inject constructor(
                         }
                     }
                     null -> {
+                        Log.e("AUTH_STATE","Unknown error")
                         _state.value=_state.value.copy(
                             loading = false,
                             error = "Unknown error",

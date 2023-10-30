@@ -77,24 +77,28 @@ class VideoDataSource @Inject constructor(
 
 
 
-    suspend fun fetchVideosOfParticularUser(userId: String): Flow<List<VideoModel>> {
+    suspend fun fetchVideosOfParticularUser(userId: String): Flow<BaseResponse<List<VideoModel>>> {
         val videosList = arrayListOf<VideoModel>()
 
 
         fetchVideos(100).collect{
             when(it){
-                is BaseResponse.Error -> {}
+                is BaseResponse.Error -> {
+                    println()
+                }
                 BaseResponse.Loading -> {
-
+                    println()
                 }
                 is BaseResponse.Success -> {
                     videosList.addAll(it.data)
                 }
+
+
             }
         }
         return flow {
             val userVideoList = videosList.filter { it.authorDetails?.uid == userId }
-            emit(userVideoList)
+            emit(BaseResponse.Success(userVideoList))
         }
     }
 }
