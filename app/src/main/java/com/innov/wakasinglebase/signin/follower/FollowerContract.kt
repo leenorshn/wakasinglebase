@@ -4,7 +4,7 @@ import com.innov.wakasinglebase.data.model.UserModel
 
 
 data class ViewState(
-    val listUser:List<UserModel> = emptyList(),
+    val listUser:List<UserModel>? =null ,
     val error:String?=null,
     val isLoading:Boolean=false,
     val followerList:List<UserModel> = emptyList()

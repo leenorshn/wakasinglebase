@@ -74,6 +74,7 @@ class UserDataSource @Inject constructor(
 
         return flow {
             emit(BaseResponse.Loading)
+
           val res= apolloClient.query(MeQuery()).execute()
 
             if (res.hasErrors()){
@@ -91,7 +92,7 @@ class UserDataSource @Inject constructor(
     suspend fun updateUserData(name:String,avatar:String):Flow<BaseResponse<Boolean>>{
         return flow {
             emit(BaseResponse.Loading)
-            val res=apolloClient.mutation(UpdateUserMutation(name,avatar)).execute()
+            val res=apolloClient.mutation(UpdateUserMutation(name,"$avatar")).execute()
             if (res.hasErrors()){
                 emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
             }

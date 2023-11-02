@@ -34,7 +34,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.innov.wakasinglebase.common.Avatar
 import com.innov.wakasinglebase.common.CustomButton
 import com.innov.wakasinglebase.common.CustomTextField
-import com.innov.wakasinglebase.core.DestinationRoute.MAIN_NAV_ROUTE
+import com.innov.wakasinglebase.core.DestinationRoute.FOLLOWER_ROUTE
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.core.utils.FileUtils.getFileNameFromUri
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
@@ -83,7 +83,7 @@ fun FirstProfileScreen(
 
     LaunchedEffect(key1 = updateUserState.success, ){
         if(updateUserState.success){
-            navController.navigate(MAIN_NAV_ROUTE)
+            navController.navigate(FOLLOWER_ROUTE)
         }
     }
 
