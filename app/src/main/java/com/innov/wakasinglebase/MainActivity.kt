@@ -12,15 +12,30 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+
+
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
 
+
+
         installSplashScreen()
+
         super.onCreate(savedInstanceState)
         setContent {
+
             RootScreen()
 
         }
+        //
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+
+
+
     }
 
 }

@@ -3,9 +3,10 @@ package com.innov.wakasinglebase.data.source
 
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.data.mapper.toVideoModel
-import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.wakabase.CreateVideoMutation
 import com.wakabase.VideosQuery
@@ -26,27 +27,33 @@ class VideoDataSource @Inject constructor(
         videoId: String,
         category: String,
         title: String,
-        author: UserModel,
+       // author: UserModel,
         description: String
     ): Flow<BaseResponse<Boolean>> {
 
 
         return flow {
             emit(BaseResponse.Loading)
-            apolloClient.mutation(CreateVideoMutation(data= NewVideoInput(
+
+          val res = apolloClient.mutation(
+              CreateVideoMutation(data= NewVideoInput(
                 description=description,
                 title=title,
                 category=category,
-                author="${author.uid}",
-                link="https://d2y4y6koqmb0v7.cloudfront.net/$videoId",
+               // author="${author.uid}",
+                link=videoId,
                 hasTag = emptyList()
-            )
+            ))).execute()
 
-            ))
-            emit(BaseResponse.Success(true))
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("Error when creating video"))
+            }else{
+                emit(BaseResponse.Success(true))
+            }
+
 
         }.catch {
-            emit(BaseResponse.Error("some think want rong"))
+            emit(BaseResponse.Error("Error when creating video"))
         }
     }
 
@@ -56,11 +63,16 @@ class VideoDataSource @Inject constructor(
 
     suspend fun fetchVideos(limit:Int): Flow<BaseResponse<List<VideoModel>>> {
         var listData:List<VideoModel>?=null
+//        val client = ApiVideoClient("RtSnicPKEEeYc3KWVNW31UIqKhayYt1KX61gy1XZlfC")
+//        val videos=client.videos()
+//
+//val video=videos.get("vi70Egph6GaUpgPqvVK9uGyt")
 
+       // Log.e("VIDEO",video.videoId+video.title)
 
         return flow {
             emit(BaseResponse.Loading)
-       var resp= apolloClient.query(VideosQuery(limit)).execute()
+       var resp= apolloClient.query(VideosQuery(limit)).fetchPolicy(FetchPolicy.NetworkFirst).execute()
 
         if(resp.hasErrors()){
             emit(BaseResponse.Error("Error hard to load videos"))
@@ -84,15 +96,16 @@ class VideoDataSource @Inject constructor(
         fetchVideos(100).collect{
             when(it){
                 is BaseResponse.Error -> {
-                    println()
+                    println(it.error)
+                    it.error
                 }
                 BaseResponse.Loading -> {
-                    println()
+                    println(it)
+                    true
                 }
                 is BaseResponse.Success -> {
                     videosList.addAll(it.data)
                 }
-
 
             }
         }

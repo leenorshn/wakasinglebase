@@ -8,8 +8,12 @@ mutation loginOrCreateAccount($phone:String!,$code:String!){
     }
 }
 
-mutation updateUser($name:String,$avatar:String!){
-    updateProfile(updateUser:{name:$name,profilePic:$avatar})
+mutation updateUser($name:String,$avatar:String,$bio:String){
+    updateProfile(updateUser:{name:$name,profilePic:$avatar,bio: $bio})
+}
+
+mutation updateUserOnline($state:Boolean!){
+    updateUserOnlineState(state: $state)
 }
 
 query me{
@@ -23,6 +27,8 @@ query me{
         balance
         profilePic
         isVerified
+        isOnline
+        isMonetizated
         hasContract
     }
 }
@@ -37,17 +43,43 @@ query users{
         bio
         balance
         profilePic
+        isOnline
+        isMonetizated
         isVerified
         hasContract
     }
 }
 
-query Followers{
-    friends{
+query user($id:ID!){
+    user(id: $id) {
         id
         name
+        siteWeb
+        city
         phone
-        profilePic
         bio
+        balance
+        profilePic
+        isOnline
+        isMonetizated
+        isVerified
+        hasContract
     }
+}
+query Followers{
+    friends{
+        follower{
+            id
+            name
+            phone
+            profilePic
+            bio
+            isOnline
+        }
+
+    }
+}
+
+mutation FollowMe($id:ID!){
+    followUser(id:$id)
 }

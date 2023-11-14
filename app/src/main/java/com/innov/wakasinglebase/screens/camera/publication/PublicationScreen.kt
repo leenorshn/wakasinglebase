@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,11 +45,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.amplifyframework.core.Amplify
 import com.innov.wakasinglebase.common.CustomButton
 import com.innov.wakasinglebase.common.TopBar
 import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.extension.LargeSpace
+import com.innov.wakasinglebase.core.extension.MediumSpace
 import com.innov.wakasinglebase.core.extension.SmallSpace
 import com.innov.wakasinglebase.core.utils.FileUtils
 import com.innov.wakasinglebase.core.utils.FileUtils.getFileNameFromUri
@@ -56,6 +57,7 @@ import com.innov.wakasinglebase.ui.theme.Gray
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
 @Composable
 fun PublicationScreen(
@@ -63,51 +65,47 @@ fun PublicationScreen(
     uri: Uri?,
     viewModel: PublicationViewModel = hiltViewModel()
 ) {
+
+    val uiState by viewModel.stateFlow.collectAsState()
+    val uploadVideoState by viewModel.uploadState.collectAsState()
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     var thumbnail by remember {
         mutableStateOf<Pair<Bitmap?, Boolean>>(Pair(null, true))  //bitmap, isShow
     }
 
-    var fileName = getFileNameFromUri(context, uri!!)
+    val fileName = getFileNameFromUri(context, uri!!)
 
-//    val fileNamee = remember{
-//        FileUtils.generateFileNameString() + fileName
-//    }
-    var isLoading by remember {
-        mutableStateOf(false)
-    }
+
+
 
     LaunchedEffect(key1 = true) {
         withContext(Dispatchers.IO) {
             val bm = FileUtils.extractThumbnailFromUri(
                 context,
-                uri!!
+                uri
             )
             withContext(Dispatchers.Main) {
                 thumbnail = thumbnail.copy(first = bm, second = thumbnail.second)
             }
 
         }
-        val stream = context.contentResolver.openInputStream(uri!!)
-        isLoading = true
-        Amplify.Storage.uploadInputStream(
-            "$fileName",
-            stream!!,
-            {
-                isLoading = false
-            },
+        fileName?.let { PublicationEvent.OnVideoUpload(uri, it) }
+            ?.let { viewModel.onTriggerEvent(it) }
+    }
 
-            {
-                isLoading = false
-            })
+    LaunchedEffect(key1 = uiState.success){
+        if (uiState.success){
+            // todo show toast
+            navController.navigate(DestinationRoute.HOME_SCREEN_ROUTE)
+        }
     }
 
     var description by rememberSaveable { mutableStateOf("") }
     var title by rememberSaveable { mutableStateOf("") }
 
 
-    val radioOptions = listOf("PUB", "NORMAL", "CHALLENGE", "AUTRE")
+    val radioOptions = listOf("PUB", "NORMAL", "CHALLENGE", "Other")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[1]) }
     Scaffold(
         topBar = {
@@ -117,15 +115,6 @@ fun PublicationScreen(
                 onClickNavIcon = {
                     navController.navigateUp()
                 },
-                actions = {
-                    AsyncImage(
-                        model = viewModel.uiState.value.currentUser?.profilePic,
-                        contentDescription = "",
-                        modifier = Modifier
-                            .size(64.dp)
-                            .clip(RoundedCornerShape(50))
-                    )
-                }
             )
         }
     ) { paddingValues ->
@@ -147,7 +136,11 @@ fun PublicationScreen(
                             .clip(
                                 RoundedCornerShape(16.dp)
                             )
-                            .background(if (isLoading) Color.Yellow else Color(0xFF21CE99))
+                            .background(
+                                if (uploadVideoState.isLoading) Color.Yellow else if(uploadVideoState.error!=null) Color.Red else Color(
+                                    0xFF21CE99
+                                )
+                            )
 
                             .padding(4.dp)
                             .clip(
@@ -165,7 +158,7 @@ fun PublicationScreen(
                                 contentDescription = "image preview",
                                 modifier = Modifier.size(180.dp)
                             )
-                            LoadingIndicator(isLoading)
+                            LoadingIndicator(uploadVideoState.isLoading)
                         }
                     }
                 }
@@ -178,7 +171,7 @@ fun PublicationScreen(
                         title = it
                     },
                     placeholder = {
-                        Text("titre de votre video")
+                        Text("video title here")
                     },
                     modifier = Modifier.fillMaxWidth(),
                     isError = title.isEmpty(),
@@ -198,7 +191,7 @@ fun PublicationScreen(
                     minLines = 1,
                     maxLines = 4,
                     placeholder = {
-                        Text("Resume un peu votre video")
+                        Text("Tape video summary here")
                     },
                     modifier = Modifier.fillMaxWidth(),
                     isError = title.isEmpty(),
@@ -233,7 +226,7 @@ fun PublicationScreen(
                                 )
                             )
                             Text(
-                                text = text.toLowerCase(),
+                                text = text.lowercase(Locale.ROOT),
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.padding(start = 16.dp)
                             )
@@ -242,22 +235,31 @@ fun PublicationScreen(
                     }
                 }
                 LargeSpace()
-                CustomButton(
-                    buttonText = "Envoyer",
-                    containerColor = PrimaryColor,
-                    shape = RoundedCornerShape(24.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    viewModel.publishVideoData(
-                        fileName = fileName!!,
-                        category = selectedOption,
-                        title = title,
-                        description = description
-                    ).let {
-                        navController.navigate(DestinationRoute.HOME_SCREEN_ROUTE)
-                    }
-
+                if(uploadVideoState.error!=null){
+                    Text(text = "${uploadVideoState.error}", color = Color.Red)
+                    MediumSpace()
                 }
+               if (uploadVideoState.error==null ){
+                   if (!uploadVideoState.isLoading) {
+                       CustomButton(
+                           buttonText = if (uiState.isLoading) "wait ..." else "Publish",
+                           containerColor = PrimaryColor,
+                           shape = RoundedCornerShape(24.dp),
+                           modifier = Modifier.fillMaxWidth(),
+                           isEnabled = !uiState.isLoading
+                       ) {
+
+                           viewModel.onTriggerEvent(
+                               PublicationEvent.OnCreateVideoEvent(
+                                   fileName = fileName!!,
+                                   category = selectedOption,
+                                   title = title,
+                                   description = description
+                               )
+                           )
+                       }
+                   }
+               }
             }
         }
     }
@@ -280,7 +282,7 @@ fun LoadingIndicator(isLoading: Boolean) {
                     RoundedCornerShape(10.dp)
                 )
         ) {
-            Text(text = "uploading ...")
+            Text(text = "Uploading ...")
         }
     } else {
         Box(

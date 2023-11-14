@@ -4,9 +4,10 @@ package com.innov.wakasinglebase
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.base.BaseResponse
+import com.innov.wakasinglebase.core.base.BaseViewModel
+import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.repository.authentification.TokenRepository
 import com.innov.wakasinglebase.domain.auth.AuthRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,7 @@ class MainViewModel @Inject constructor(
     private val tokenRepository: TokenRepository,
     private val userRepository: AuthRepositoryImpl,
     @ApplicationContext context: Context
-):ViewModel() {
+):BaseViewModel<ViewState,MainEvent>() {
     private val _state = MutableStateFlow(AuthState())
 
     val uiState : StateFlow<AuthState> = _state.asStateFlow()
@@ -84,6 +85,21 @@ class MainViewModel @Inject constructor(
 
     }
 
+    override fun onTriggerEvent(event: MainEvent) {
+        when(event){
+            MainEvent.OnOffline -> {
+                viewModelScope.launch {
+                    userRepository.updateUserOnlineState(false)
+                }
+            }
+            MainEvent.OnOnline -> {
+                viewModelScope.launch {
+                    userRepository.updateUserOnlineState(false)
+                }
+            }
+        }
+    }
+
 
 }
 
@@ -92,3 +108,12 @@ data class AuthState(
     val error: String?=null,
     val loading:Boolean=false
 )
+
+data class ViewState(
+    val success: UserModel
+)
+
+sealed class MainEvent{
+    object OnOnline:MainEvent()
+    object OnOffline:MainEvent()
+}

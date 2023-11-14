@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.core.extension.Space
+import com.innov.wakasinglebase.core.extension.formattedCount
 import com.innov.wakasinglebase.core.utils.IntentUtils.share
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.innov.wakasinglebase.ui.theme.*
@@ -53,6 +54,7 @@ fun WakawakaVerticalVideoPager(
     onclickComment: (videoId: String) -> Unit,
     onClickLike: (videoId: String, likeStatus: Boolean) -> Unit,
     onclickFavourite: (videoId: String) -> Unit,
+    onClickVote:(videoId:String)->Unit,
     onClickAudio: (VideoModel) -> Unit,
     onClickUser: (userId: String) -> Unit,
     onClickFavourite: (isFav: Boolean) -> Unit = {},
@@ -61,7 +63,7 @@ fun WakawakaVerticalVideoPager(
     val pagerState = rememberPagerState(
         initialPage = initialPage ?: 0,
         initialPageOffsetFraction = 0f,
-        pageCount = {videos.size}
+        pageCount = { videos.size }
 
     )
     val coroutineScope = rememberCoroutineScope()
@@ -126,7 +128,7 @@ fun WakawakaVerticalVideoPager(
                             .fillMaxWidth()
                             .weight(1f),
                         item = videos[it],
-                        showUploadDate=showUploadDate,
+                        showUploadDate = showUploadDate,
                         onClickAudio = onClickAudio,
                         onClickUser = onClickUser,
                     )
@@ -138,7 +140,8 @@ fun WakawakaVerticalVideoPager(
                         onclickComment = onclickComment,
                         onClickUser = onClickUser,
                         onClickFavourite = onClickFavourite,
-                        onClickShare = onClickShare
+                        onClickShare = onClickShare,
+                        onClickVote = onClickVote
                     )
                 }
                 12.dp.Space()
@@ -163,7 +166,7 @@ fun WakawakaVerticalVideoPager(
             AnimatedVisibility(visible = doubleTapState.second,
                 enter = scaleIn(spring(Spring.DampingRatioMediumBouncy), initialScale = 1.3f),
                 exit = scaleOut(
-                    tween(600), targetScale = 1.58f
+                    tween(700), targetScale = 1.58f
                 ) + fadeOut(tween(600)) + slideOutVertically(
                     tween(600)
                 ),
@@ -202,25 +205,13 @@ fun SideItems(
     doubleTabState: Triple<Offset, Boolean, Float>,
     onclickComment: (videoId: String) -> Unit,
     onClickUser: (userId: String) -> Unit,
+    onClickVote: (videoId: String) -> Unit,
     onClickShare: (() -> Unit)? = null,
     onClickFavourite: (isFav: Boolean) -> Unit
 ) {
 
     val context = LocalContext.current
     Column(modifier = modifier, horizontalAlignment = Alignment.End) {
-
-//        Image(
-//            painter = painterResource(id = R.drawable.ic_plus),
-//            contentDescription = null,
-//            modifier = Modifier
-//                .offset(y = (-10).dp)
-//                .size(20.dp)
-//                .clip(CircleShape)
-//                .background(color = MaterialTheme.colorScheme.primary)
-//                .padding(5.5.dp),
-//            colorFilter = ColorFilter.tint(Color.White)
-//       )
-
         12.dp.Space()
 
         var isLiked by remember {
@@ -233,39 +224,59 @@ fun SideItems(
             }
         }
 
-
-
-
-
-
-
-
-        Icon(
-            painter = painterResource(id = R.drawable.ic_share),
-            contentDescription = null,
-            tint = Color.Unspecified,
-            modifier = Modifier
-                .size(32.dp)
-                .clickable {
-                    onClickShare?.let { onClickShare.invoke() } ?: run {
-                        context.share(
-                            text = item.videoLink
-                        )
-                    }
+        if (item.category == "CHALLENGE") {
+            VoteIconButton(
+                item = item,
+                likeCount = item.like.formattedCount(),
+                onClickVote ={
+                    onClickVote.invoke(
+                        it
+                    )
                 }
-        )
-        Text(
-            text = "${item.videoStats?.formattedShareCount}", style = MaterialTheme.typography.labelMedium
-        )
+            )
+        }else {
+            LikeIconButton(
+                isLiked = isLiked,
+                likeCount = item.view.formattedCount(),
+                onLikedClicked = {
+                    isLiked = it
+                    item.currentViewerInteraction.isLikedByYou = it
+                })
+        }
         20.dp.Space()
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(painter = painterResource(id = R.drawable.ic_comment),
+                contentDescription = null,
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .size(33.dp)
+                    .clickable {
+                        onclickComment(item.videoId)
+                    })
+            Text(
+                text = item.comment.formattedCount(),
+                style = MaterialTheme.typography.labelMedium
+            )
 
-        LikeIconButton(isLiked = isLiked,
-            likeCount = "${item.videoStats?.formattedLikeCount}",
-            onLikedClicked = {
-                isLiked = it
-                item.currentViewerInteraction.isLikedByYou = it
-            })
+        }
 
+        20.dp.Space()
+        ShareIconButton(
+            item = item,
+            onClickShare={
+                onClickShare?.let { onClickShare.invoke() } ?: run {
+                    context.share(
+                        text = "https://d2y4y6koqmb0v7.cloudfront.net/${item.videoId}"
+                    )
+                }
+            }
+        )
+
+
+
+        32.dp.Space()
     }
 }
 
@@ -275,14 +286,85 @@ fun LikeIconButton(
 ) {
 
     val maxSize = 38.dp
-    val iconSize by animateDpAsState(targetValue = if (isLiked) 33.dp else 32.dp,
+    val iconSize by animateDpAsState(
+        targetValue = if (isLiked) 34.dp else 32.dp,
         animationSpec = keyframes {
             durationMillis = 400
             24.dp.at(50)
             maxSize.at(190)
             26.dp.at(330)
             32.dp.at(400).with(FastOutLinearInEasing)
-        })
+        }, label = "like button"
+    )
+
+    Column(
+        modifier = Modifier
+            //.height(40.dp)
+            //.clip(RoundedCornerShape(10.dp))
+            //.background(color = MaterialTheme.colorScheme.primary)
+            .clickable(interactionSource = MutableInteractionSource(), indication = null) {
+                onLikedClicked(!isLiked)
+            },
+        horizontalAlignment = Alignment.CenterHorizontally,
+        //verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_heart),
+            contentDescription = null,
+            tint = if (isLiked) MaterialTheme.colorScheme.primary else Color.White,
+            modifier = Modifier.size(iconSize)
+        )
+        8.dp.Space()
+        Text(text = likeCount, style = MaterialTheme.typography.labelMedium)
+       // 16.dp.Space()
+    }
+
+
+}
+
+@Composable
+fun ShareIconButton(
+    item: VideoModel,
+    onClickShare:()->Unit
+) {
+   // val context= LocalContext.current
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(4.dp)
+    ){
+        Icon(
+            painter = painterResource(id = R.drawable.ic_share),
+            contentDescription = null,
+            tint = Color.Unspecified,
+            modifier = Modifier
+                .size(32.dp)
+                .clickable {
+                    onClickShare.invoke()
+                }
+        )
+
+    }
+}
+
+@Composable
+fun VoteIconButton(
+
+     likeCount: String,
+     item: VideoModel,
+     onClickVote: (videoId: String) -> Unit
+) {
+
+//    val maxSize = 38.dp
+//    val iconSize by animateDpAsState(
+//        targetValue = if (isLiked) 33.dp else 32.dp,
+//        animationSpec = keyframes {
+//            durationMillis = 400
+//            24.dp.at(50)
+//            maxSize.at(190)
+//            26.dp.at(330)
+//            32.dp.at(400).with(FastOutLinearInEasing)
+//        }, label = "like button"
+//    )
 
     Box(
         modifier = Modifier
@@ -291,21 +373,24 @@ fun LikeIconButton(
             .clip(RoundedCornerShape(10.dp))
             .background(color = MaterialTheme.colorScheme.primary)
             .clickable(interactionSource = MutableInteractionSource(), indication = null) {
-                onLikedClicked(!isLiked)
+                onClickVote.invoke(item.videoId)
             }, contentAlignment = Alignment.Center
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-modifier = Modifier.padding(vertical = 8.dp, horizontal = 10.dp,
-)
-        ){
-            Text(text = "Voter",style= TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
+            modifier = Modifier.padding(
+                vertical = 8.dp, horizontal = 10.dp,
+            )
+        ) {
+
+
+            Text(text = "Voter", style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold))
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_heart),
                 contentDescription = null,
-                tint = if (isLiked) MaterialTheme.colorScheme.primary else Color.White,
-                modifier = Modifier.size(iconSize)
+                tint =  Color.White,
+                modifier = Modifier.size(34.dp)
             )
         }
     }
@@ -327,24 +412,44 @@ fun FooterUi(
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
             item.authorDetails?.let { it.uid?.let { it1 -> onClickUser(it1) } }
         }) {
-            AsyncImage(
-                model = item.authorDetails?.profilePic,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(50.dp)
-                    .border(
-                        BorderStroke(width = 1.dp, color = White), shape = CircleShape
-                    )
-                    .clip(shape = CircleShape)
-                    .clickable {
-                        item.authorDetails?.let { it.uid?.let { it1 -> onClickUser.invoke(it1) } }
-                    },
-                contentScale = ContentScale.Crop
-            )
+            //
+            if (item.authorDetails?.profilePic.isNullOrEmpty()) {
+                AsyncImage(
+                    model = "https://d2y4y6koqmb0v7.cloudfront.net/profil.png",
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .border(
+                            BorderStroke(width = 1.dp, color = White), shape = CircleShape
+                        )
+                        .clip(shape = CircleShape)
+                        .clickable {
+                            item.authorDetails?.let { it.uid?.let { it1 -> onClickUser.invoke(it1) } }
+                        },
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                AsyncImage(
+                    model = item.authorDetails?.profilePic,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .border(
+                            BorderStroke(width = 1.dp, color = White), shape = CircleShape
+                        )
+                        .clip(shape = CircleShape)
+                        .clickable {
+                            item.authorDetails?.let { it.uid?.let { it1 -> onClickUser.invoke(it1) } }
+                        },
+                    contentScale = ContentScale.Crop
+                )
+            }
             Spacer(modifier = Modifier.width(16.dp))
             item.authorDetails?.let {
+                val name=if(!it.name.isNullOrEmpty()) it.name else "${"@User" + it.uid?.substring(0, 8) }-Waka"
                 Text(
-                    text = "${it.name}", style = MaterialTheme.typography.bodyMedium
+                    text =name ,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             if (showUploadDate) {
@@ -387,25 +492,32 @@ fun FooterUi(
 
 @Composable
 fun RotatingAudioView() {
-    val infiniteTransition = rememberInfiniteTransition()
+    val infiniteTransition = rememberInfiniteTransition(label = "infinity loop")
     val angle by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 360f,
-        animationSpec = infiniteRepeatable(animation = keyframes { durationMillis = 7000 })
+        animationSpec = infiniteRepeatable(animation = keyframes { durationMillis = 7000 }),
+        label = "rotating audio"
     )
 
-    Box(){
-        Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically,
+    Box() {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     start = 12.dp,
                     end = 12.dp,
                     top = 8.dp
-                )) {
-            Text(text = stringResource(R.string.waka_waka), style = TextStyle(color = Color.White,
-                fontSize = 24.sp,fontWeight = FontWeight.Bold,
-            ))
+                )
+        ) {
+            Text(
+                text = stringResource(R.string.waka_waka), style = TextStyle(
+                    color = PrimaryColor,
+                    fontSize = 24.sp, fontWeight = FontWeight.Bold,
+                )
+            )
             Box(modifier = Modifier.rotate(angle)) {
                 Box(
                     modifier = Modifier
@@ -420,9 +532,9 @@ fun RotatingAudioView() {
                 ) {
 //Image(painter = , contentDescription = )
                     Image(
-                        painter= painterResource(id = R.drawable.logo_tiktok_compose),
+                        painter = painterResource(id = R.drawable.logo_tiktok_compose),
 
-                        contentDescription ="logo",
+                        contentDescription = "logo",
                         modifier = Modifier
                             .size(28.dp)
                             .clip(CircleShape),

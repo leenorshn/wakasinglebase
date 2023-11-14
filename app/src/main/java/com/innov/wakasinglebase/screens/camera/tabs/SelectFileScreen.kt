@@ -17,6 +17,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -28,20 +29,20 @@ import com.innov.wakasinglebase.common.CustomButton
 import com.innov.wakasinglebase.core.extension.LargeSpace
 import com.innov.wakasinglebase.core.extension.MediumSpace
 import com.innov.wakasinglebase.core.extension.SmallSpace
-import com.innov.wakasinglebase.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectFileScreen(
     modifier: Modifier = Modifier,
-    onSelectFileClicked: () -> Unit
+    onSelectFileClicked: () -> Unit,
+    error: String? = null,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(text = "Galerie") })
-        }, modifier = modifier
-            .fillMaxSize()
-            .background(White)
+        },
+        modifier = modifier.fillMaxSize().background(Color.White)
+            //.background(White)
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
             Card(
@@ -56,14 +57,14 @@ fun SelectFileScreen(
                         .padding(vertical = 32.dp, horizontal = 24.dp)
                 ) {
                     Text(
-                        text = "Waka-Waka \nvideo",
+                        text = "Waka-Waka \n\n video",
                         textAlign = TextAlign.Center,
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
                     )
                     MediumSpace()
                     Text(
-                        text = "Cliquer ici pour selectionner votre contenu",
+                        text = "Click here to select you best video to publish",
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center
                     )
@@ -75,7 +76,7 @@ fun SelectFileScreen(
                     )
                     LargeSpace()
                     CustomButton(
-                        buttonText = "Selectionner votre video",
+                        buttonText = "Select video",
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         onSelectFileClicked.invoke()
@@ -85,10 +86,17 @@ fun SelectFileScreen(
                     Image(
                         painter = painterResource(id = R.drawable.logo_tiktok_compose),
                         contentDescription = "images",
-                        modifier=Modifier.size(56.dp)// decorative element
+                        modifier = Modifier.size(56.dp)// decorative element
                     )
                     SmallSpace()
-                    Text(text = "(Nous supportons une video de MAXIMUM 3 min.)", textAlign = TextAlign.Center)
+                    Text(
+                        text = "(We are supporting for now 3 min max as video timeline length.)",
+                        textAlign = TextAlign.Center
+                    )
+
+                    if(error!=null){
+                        Text(text = "$error", textAlign = TextAlign.Center, color = Color.Red)
+                    }
                 }
             }
         }

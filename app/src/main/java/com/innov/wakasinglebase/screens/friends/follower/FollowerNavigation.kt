@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.signin.follower
+package com.innov.wakasinglebase.screens.friends.follower
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

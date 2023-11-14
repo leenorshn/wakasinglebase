@@ -20,8 +20,8 @@ class AuthRepositoryImpl @Inject constructor(
         return userDataSource.verifyCode(phone,code)
     }
 
-    override suspend fun updateUserData(name: String, avatar: String): Flow<BaseResponse<Boolean>> {
-        return userDataSource.updateUserData(name,avatar)
+    override suspend fun updateUserData(name: String?, avatar: String?,bio:String?): Flow<BaseResponse<Boolean>> {
+        return userDataSource.updateUserData(name,avatar,bio)
     }
 
     override suspend fun me(): Flow<BaseResponse<UserModel?>> {
@@ -34,5 +34,13 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun users(): Flow<BaseResponse<List<UserModel>>> {
         return  userDataSource.getUsers()
+    }
+
+    override suspend fun follow(id: String): Flow<BaseResponse<Boolean>> {
+        return userDataSource.followMe(id)
+    }
+
+    override suspend fun updateUserOnlineState(state: Boolean): Flow<BaseResponse<Boolean>> {
+        return userDataSource.updateUserOnline(state)
     }
 }

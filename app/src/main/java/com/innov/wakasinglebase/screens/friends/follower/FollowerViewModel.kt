@@ -1,12 +1,12 @@
-package com.innov.wakasinglebase.signin.follower
+package com.innov.wakasinglebase.screens.friends.follower
 
 import androidx.lifecycle.viewModelScope
 import aws.smithy.kotlin.runtime.util.length
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
-import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.domain.auth.AuthRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,7 +14,9 @@ import javax.inject.Inject
 @HiltViewModel
 class FollowerViewModel @Inject constructor(
     private val repository: AuthRepositoryImpl
-):BaseViewModel<ViewState,FollowerEvent>() {
+):BaseViewModel<ViewState, FollowerEvent>() {
+
+    val followState = MutableStateFlow(FollowState())
     init {
         loadUsers()
     }
@@ -22,7 +24,9 @@ class FollowerViewModel @Inject constructor(
     override fun onTriggerEvent(event: FollowerEvent) {
         when(event){
             is FollowerEvent.OnFollowingUser -> {
-                addInFollowerList(event.user)
+                followerUser(event.uid)
+                addInFollowerList(event.uid)
+
             }
             FollowerEvent.OnLoadUsers -> {
                 loadUsers()
@@ -30,13 +34,45 @@ class FollowerViewModel @Inject constructor(
         }
     }
 
-    private fun addInFollowerList(user:UserModel){
-        var list= mutableListOf<UserModel>()
+    private fun followerUser(id:String){
+        viewModelScope.launch {
+            repository.follow(id).collect{
+                when(it){
+                    is BaseResponse.Error -> {
+                        followState.value=followState.value.copy(
+                            error=it.error,
+                            done = false,
+                            isLoading = false
+                        )
+                    }
+                    BaseResponse.Loading -> {
+                        followState.value=followState.value.copy(
+                            error=null,
+                            done = false,
+                            isLoading = true
+                        )
+                    }
+                    is BaseResponse.Success -> {
+                        followState.value=followState.value.copy(
+                            error=null,
+                            done = true,
+                            isLoading = false
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+
+
+    private fun addInFollowerList(user:String){
+        var list= mutableListOf<String>()
         list.add(user)
         updateState((viewState.value ?: ViewState()).copy(followerList = list))
     }
 
-    fun isValidFollowerList()= viewState.value?.followerList?.toList()?.length!! > 3
+    fun isValidFollowerList()= viewState.value?.followerList?.toList()?.length!! >= 3
 
 
     private fun loadUsers(){

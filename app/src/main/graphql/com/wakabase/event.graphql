@@ -1,0 +1,22 @@
+query events{
+    allEvents{
+        id
+        name
+        image
+        owner {
+            id
+            name
+            phone
+            profilePic
+        }
+        price
+        status
+        detail
+        createdAt
+    }
+}
+
+mutation createEvent($data:NewEvent!){
+    createEvent(data:$data)
+}
+

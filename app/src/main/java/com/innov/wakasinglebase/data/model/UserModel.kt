@@ -14,6 +14,7 @@ data class UserModel(
     val phone:String="",
     val bio: String?=null,
     val balance: Double =0.0,
+    val isMonetizated:Boolean=false,
     val profilePic: String?=null,
     val isVerified: Boolean=false,
     val hasContract: Boolean = false,

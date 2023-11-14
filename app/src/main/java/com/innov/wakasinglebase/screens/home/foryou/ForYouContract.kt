@@ -1,6 +1,5 @@
 package com.innov.wakasinglebase.screens.home.foryou
 
-import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.model.VideoModel
 
 
@@ -14,6 +13,7 @@ data class ViewState(
 )
 
 sealed class ForYouEvent {
+    object OnLoadVideo:ForYouEvent()
 }
 
 sealed class Result<T>(val data : T? = null, val e : Throwable? = null){

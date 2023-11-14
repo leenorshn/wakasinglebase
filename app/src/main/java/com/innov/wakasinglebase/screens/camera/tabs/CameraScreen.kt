@@ -58,6 +58,7 @@ import com.innov.wakasinglebase.common.CaptureButton
 import com.innov.wakasinglebase.core.DestinationRoute.UPLOAD_ROUTE
 import com.innov.wakasinglebase.core.extension.MediumSpace
 import com.innov.wakasinglebase.core.extension.Space
+import com.innov.wakasinglebase.core.utils.FileUtils
 import com.innov.wakasinglebase.core.utils.openAppSetting
 import com.innov.wakasinglebase.screens.camera.CameraCaptureOptions
 import com.innov.wakasinglebase.screens.camera.CameraController
@@ -95,6 +96,10 @@ fun CameraScreen(
             android.Manifest.permission.CAMERA, android.Manifest.permission.RECORD_AUDIO
         )
     )
+
+    var error by remember {
+        mutableStateOf("")
+    }
     var fileName by remember { mutableStateOf("") }
     var uriG by remember { mutableStateOf<Uri?>(null) }
     val fileLauncher =
@@ -112,15 +117,15 @@ fun CameraScreen(
                     StandardCharsets.UTF_8.toString()
 
                 )// User is a data class.
+                val videoInf=FileUtils.getVideoInfo(context = context,uriG!!)
+                if (videoInf?.duration!!<=180_000) {
                 navController.navigate(UPLOAD_ROUTE.replace("{uri}",uriEncoded))
+                }else{
+                    error="Error video is to large!!! chose an other video"
+                }
 
             })
-    LaunchedEffect(key1 = Unit) {
-//        if (!multiplePermissionState.permissions[0].status.isGranted) {
-//            multiplePermissionState.launchMultiplePermissionRequest()
-//        }
-        //fileLauncher.launch("video/*")
-    }
+
 
 
 
@@ -147,10 +152,15 @@ fun CameraScreen(
 //
 //                )
 
+
+
                 SelectFileScreen(
                     onSelectFileClicked = {
-                        fileLauncher.launch("video/*")
-                    }
+
+                            fileLauncher.launch("video/*")
+
+                    },
+                    error = error
                 )
             } else {
                 CameraMicrophoneAccessPage(multiplePermissionState.permissions[1].status.isGranted,

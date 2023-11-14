@@ -13,12 +13,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.common.ContentSearchBar
 import com.innov.wakasinglebase.common.WakawakaVerticalVideoPager
-
-import com.innov.wakasinglebase.ui.theme.SubTextColor
-import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.data.model.VideoModel
+import com.innov.wakasinglebase.ui.theme.SubTextColor
 
 /**
  * Created by innov Victor on 3/22/2023.
@@ -59,6 +58,7 @@ fun CreatorVideoPagerScreen(
                     onclickFavourite = {},
                     onClickAudio = onClickAudio,
                     onClickUser = onClickUser,
+                    onClickVote={},
                     initialPage = viewModel.videoIndex,
                     modifier = Modifier.weight(1f)
                 )

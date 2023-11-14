@@ -2,6 +2,8 @@ package com.innov.wakasinglebase.data.source
 
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.data.mapper.toAuthModel
 import com.innov.wakasinglebase.data.mapper.toUserModel
@@ -9,10 +11,13 @@ import com.innov.wakasinglebase.data.model.AuthModel
 import com.innov.wakasinglebase.data.model.FriendModel
 import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.model.toFriendModel
+import com.wakabase.FollowMeMutation
 import com.wakabase.FollowersQuery
 import com.wakabase.LoginOrCreateAccountMutation
 import com.wakabase.MeQuery
 import com.wakabase.UpdateUserMutation
+import com.wakabase.UpdateUserOnlineMutation
+import com.wakabase.UserQuery
 import com.wakabase.UsersQuery
 import com.wakabase.VerifyPhoneMutation
 import kotlinx.coroutines.flow.Flow
@@ -27,14 +32,26 @@ class UserDataSource @Inject constructor(
    private val apolloClient: ApolloClient
 ) {
 
-    suspend fun fetchSpecificUser(userId: String): Flow<UserModel?> {
+//    suspend fun fetchSpecificUser(userId: String): Flow<UserModel?> {
+//
+//
+//        return flow {
+//            val user = UserModel(
+//                uid = userId,
+//            )
+//            emit(user)
+//        }
+//    }
 
-
+    suspend fun updateUserOnline(state:Boolean):Flow<BaseResponse<Boolean>>{
         return flow {
-            val user = UserModel(
-                uid = userId,
-            )
-            emit(user)
+            emit(BaseResponse.Loading)
+            val res= apolloClient.mutation(UpdateUserOnlineMutation(state)).execute()
+            if(res.data?.updateUserOnlineState!=null){
+                emit(BaseResponse.Success(true))
+            }
+        }.catch {
+            emit(BaseResponse.Error("Error of network"))
         }
     }
 
@@ -50,6 +67,7 @@ class UserDataSource @Inject constructor(
                 emit(BaseResponse.Success(true))
             }
         }.catch {
+
             emit(BaseResponse.Error("error ${it.message}"))
         }
     }
@@ -89,10 +107,10 @@ class UserDataSource @Inject constructor(
         }
     }
 
-    suspend fun updateUserData(name:String,avatar:String):Flow<BaseResponse<Boolean>>{
+    suspend fun updateUserData(name:String?,avatar:String?,bio:String?):Flow<BaseResponse<Boolean>>{
         return flow {
             emit(BaseResponse.Loading)
-            val res=apolloClient.mutation(UpdateUserMutation(name,"$avatar")).execute()
+            val res=apolloClient.mutation(UpdateUserMutation(name,avatar,bio)).execute()
             if (res.hasErrors()){
                 emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
             }
@@ -107,23 +125,24 @@ class UserDataSource @Inject constructor(
    suspend fun getFriends(): Flow<BaseResponse<List<FriendModel>>> {
         return flow {
             emit(BaseResponse.Loading)
-            val res=apolloClient.query(FollowersQuery()).execute()
+            val res=apolloClient.query(FollowersQuery()).fetchPolicy(FetchPolicy.NetworkFirst).execute()
             if (res.hasErrors()){
                 emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
             }
-            val friends=   res.data?.friends?.map {
-               it.toFriendModel()
+            val friends=   res.data?.friends?.map {friend->
+               friend.follower.toFriendModel()
             }?:emptyList()
             emit(BaseResponse.Success(friends))
         }.catch {
-            emit(BaseResponse.Error("Error when updating profile"))
+
+            emit(BaseResponse.Error("Error when updating profile ${it.message}"))
         }
     }
 
     suspend fun getUsers(): Flow<BaseResponse<List<UserModel>>> {
         return flow {
             emit(BaseResponse.Loading)
-            val res=apolloClient.query(UsersQuery()).execute()
+            val res=apolloClient.query(UsersQuery()).fetchPolicy(FetchPolicy.NetworkFirst).execute()
             if (res.hasErrors()){
                 emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
             }
@@ -133,6 +152,34 @@ class UserDataSource @Inject constructor(
             emit(BaseResponse.Success(users))
         }.catch {
             emit(BaseResponse.Error("Error when updating profile"))
+        }
+    }
+
+    suspend fun followMe(id:String):Flow<BaseResponse<Boolean>>{
+        return flow {
+            emit(BaseResponse.Loading)
+            val res=apolloClient.mutation(FollowMeMutation(id)).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("error"))
+            }
+            emit(BaseResponse.Success(true))
+        }.catch {
+            emit(BaseResponse.Error("error"))
+        }
+    }
+
+     fun fetchSpecificUser(id: String): Flow<BaseResponse<UserModel>> {
+        return flow {
+            emit(BaseResponse.Loading)
+
+            val res=apolloClient.query(UserQuery(id)).fetchPolicy(FetchPolicy.NetworkFirst).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+            }
+            val user=   res.data?.user?.toUserModel()
+            emit(BaseResponse.Success(user!!))
+        }.catch {
+            emit(BaseResponse.Error("error ${it.message}"))
         }
     }
 

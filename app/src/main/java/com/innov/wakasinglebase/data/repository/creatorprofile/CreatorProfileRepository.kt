@@ -15,7 +15,7 @@ class CreatorProfileRepository @Inject constructor(
   private val dataSource: UserDataSource,
     private val videoDataSource: VideoDataSource,
 ) {
-    suspend fun getCreatorDetails(id: String): Flow<UserModel?> {
+    suspend fun getCreatorDetails(id: String): Flow<BaseResponse<UserModel>> {
         return dataSource.fetchSpecificUser(id)
     }
 

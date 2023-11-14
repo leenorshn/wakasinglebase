@@ -2,7 +2,6 @@ package com.innov.wakasinglebase.domain.repository
 
 
 import com.innov.wakasinglebase.core.base.BaseResponse
-import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.innov.wakasinglebase.data.repository.video.VideoRepository
 import com.innov.wakasinglebase.data.source.VideoDataSource
@@ -24,14 +23,12 @@ class VideoRepositoryImpl @Inject constructor(
         videoId: String,
         category: String,
         title: String,
-        author: UserModel,
         description: String
     ): Flow<BaseResponse<Boolean>> {
         return videoDataSource.createVideo(
             videoId = videoId,
             category = category,
             title = title,
-            author = author,
             description = description
         )
     }

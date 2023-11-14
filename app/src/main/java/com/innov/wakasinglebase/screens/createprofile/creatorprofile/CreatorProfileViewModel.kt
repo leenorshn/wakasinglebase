@@ -37,7 +37,7 @@ class CreatorProfileViewModel
     }
 
     init {
-        Log.e("USER_ID",userId?:"$userId")
+        Log.e("USER_ID", userId ?: "$userId")
         userId?.let {
             fetchUser(it)
             fetchCreatorPublicVideo(it)
@@ -47,7 +47,33 @@ class CreatorProfileViewModel
     private fun fetchUser(id: String) {
         viewModelScope.launch {
             getCreatorProfileUseCase(id).collect {
-                updateState(ViewState(creatorProfile = it))
+                when (it) {
+                    is BaseResponse.Error -> {
+
+                        updateState(
+                            ViewState(
+                                isLoading = false,
+                                error = it.error,
+                                creatorProfile = null
+                            )
+                        )
+
+                    }
+
+                    BaseResponse.Loading -> {
+                        updateState(
+                            ViewState(
+                                isLoading = true,
+                                error = null,
+                                creatorProfile = null
+                            )
+                        )
+                    }
+
+                    is BaseResponse.Success -> {
+                        updateState(ViewState(creatorProfile = it.data))
+                    }
+                }
             }
         }
     }
@@ -56,18 +82,20 @@ class CreatorProfileViewModel
         viewModelScope.launch {
             getCreatorPublicVideoUseCase(id).collect {
                 //Log.d("DEBUG", "my video si ${it}")
-                when(it){
+                when (it) {
                     is BaseResponse.Error -> {
                         _publicVideosList.value = _publicVideosList.value.copy(
-                            error="Loading error"
+                            error = "Loading error"
                         )
                     }
+
                     BaseResponse.Loading -> {
                         _publicVideosList.value = _publicVideosList.value.copy(
                             isLoading = true,
                             error = null
                         )
                     }
+
                     is BaseResponse.Success -> {
                         _publicVideosList.value = _publicVideosList.value.copy(
                             isLoading = false,
@@ -83,13 +111,13 @@ class CreatorProfileViewModel
 }
 
 data class PublicVideoState(
-    val videos:List<VideoModel> = emptyList(),
-    val error:String?=null,
-    val isLoading:Boolean=false
+    val videos: List<VideoModel> = emptyList(),
+    val error: String? = null,
+    val isLoading: Boolean = false
 )
 
 data class LikedVideoState(
-    val videos:List<VideoModel> = emptyList(),
-    val error:String?=null,
-    val isLoading:Boolean=false
+    val videos: List<VideoModel> = emptyList(),
+    val error: String? = null,
+    val isLoading: Boolean = false
 )

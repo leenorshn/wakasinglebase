@@ -22,14 +22,10 @@ query videos($limit:Int){
         category
         description
         hasTag
-        videoStats{
-            id
-            like
-            views
-            comment
-            share
-            videoId
-        }
+        like
+        isLikedBy
+        view
+        comment
         createdAt
 
     }
@@ -55,14 +51,10 @@ query myVideo($UID:ID!){
         category
         description
         hasTag
-        videoStats{
-            id
-            like
-            views
-            comment
-            share
-            videoId
-        }
+        like
+        isLikedBy
+        view
+        comment
         createdAt
     }
 }
@@ -87,14 +79,10 @@ query video($id:ID!){
         category
         description
         hasTag
-        videoStats{
-            id
-            like
-            views
-            comment
-            share
-            videoId
-        }
+        like
+        isLikedBy
+        view
+        comment
         createdAt
 
     }

@@ -35,13 +35,12 @@ data class RowItem(
 
 val settingUiModel: Map<String, List<RowItem>> = mapOf(
     "Account" to listOf(
-        RowItem(icon = R.drawable.ic_dollar, title = R.string.live),
-        RowItem(icon = R.drawable.ic_graph, title = R.string.playback),
-        RowItem(icon = R.drawable.ic_cle, title = R.string.data_saver),
+        RowItem(icon = R.drawable.ic_dollar, title = R.string.balance),
+        RowItem(icon = R.drawable.ic_graph, title = R.string.myvideo),
+        RowItem(icon = R.drawable.ic_cle, title = R.string.mybusiness),
     ),
     "Support & About" to listOf(
-        RowItem(icon = R.drawable.ic_flag, title = R.string.report_a_problem),
-        RowItem(icon = R.drawable.ic_support, title = R.string.support),
+        RowItem(icon = R.drawable.ic_support, title = R.string.about),
         RowItem(icon = R.drawable.ic_info, title = R.string.terms_and_policies)
     )
 )

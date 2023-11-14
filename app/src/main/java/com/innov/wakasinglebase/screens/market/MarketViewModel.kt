@@ -4,29 +4,37 @@ package com.innov.wakasinglebase.screens.market
 import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
-import com.innov.wakasinglebase.domain.ticket.TicketRepositoryImpl
+import com.innov.wakasinglebase.domain.ticket.EventRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MarketViewModel @Inject constructor(
-    private val repository: TicketRepositoryImpl
+    private val repository: EventRepositoryImpl
 ) : BaseViewModel<ViewState, MarketMediaEvent>() {
 
     init {
-        getTickets()
+        viewModelScope.launch {
+            getTickets()
+        }
     }
 
     override fun onTriggerEvent(event: MarketMediaEvent) {
         when (event) {
-            MarketMediaEvent.EventFetchTemplate -> getTickets()
+            MarketMediaEvent.EventFetchTemplate -> {
+                viewModelScope.launch {
+                    getTickets()
+                }
+            }
         }
     }
 
-    private fun getTickets() {
+    private suspend fun getTickets() = withContext(Dispatchers.IO){
         viewModelScope.launch {
-            repository.getAllTicket().collect {
+            repository.getAllEvents().collect {
                 when(it){
                     is BaseResponse.Error -> {
 

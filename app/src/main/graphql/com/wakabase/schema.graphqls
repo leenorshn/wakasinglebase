@@ -5,36 +5,19 @@
 
 directive @auth on FIELD | FIELD_DEFINITION
 
-type HasTag {
-    id: ID!
-    title: String!
-}
-type Ticket {
+directive @isMonetizatedAccount on FIELD | FIELD_DEFINITION
+
+directive @isClient on FIELD | FIELD_DEFINITION
+
+type Event {
     id: ID!
     name: String!
     price: Float!
-    goal: Float!
+    image: String!
+    owner: User!
     detail: String!
     status: String! # active|| inactive
     createdAt: Float!
-}
-
-type TicketLotted {
-    id: ID!
-    ticket: Ticket!
-    video: Video!
-    author: User!
-    amount: Int!
-    createdAt: Float!
-}
-
-type VideoStats {
-    id: ID!
-    like: Int!
-    comment: Int
-    share: Int!
-    views: Int!
-    videoId: ID!
 }
 
 type Video {
@@ -43,7 +26,10 @@ type Video {
     title: String!
     link: String!
     category: String!
-    videoStats: VideoStats
+    like: Int!
+    comment: Int!
+    view: Int!
+    isLikedBy: [String!]!
     description: String!
     hasTag: [String!]!
     createdAt: Float!
@@ -60,8 +46,9 @@ type User {
     balance: Float!
     profilePic: String
     isMonetizated: Boolean! #default false
-    isVerified: Boolean
-    hasContract: Boolean
+    isVerified: Boolean!
+    isOnline: Boolean!
+    hasContract: Boolean!
 }
 
 type AudioModel {
@@ -72,9 +59,34 @@ type AudioModel {
     originalVideoUrl: String
 }
 
+type Course {
+    id: ID!
+    title: String!
+    theme: String!
+    coverImage: String!
+    author: User!
+    createdAt: Float!
+    price: Float
+    isForSell: Boolean!
+    chapters: [Chapter!]!
+}
+
+type Chapter {
+    id: ID!
+    courseID: String!
+    name: String!
+    file: String!
+    isFree: Boolean!
+}
+
 type Like {
     user: User!
     video: Video!
+}
+
+type Friend {
+    follower: User!
+    user: User!
 }
 
 type Auth {
@@ -84,7 +96,35 @@ type Auth {
 type Verification {
     code: String!
     phone: String!
-    isVerified: Boolean!
+    #isVerified: Boolean!
+}
+
+type Trans {
+    id: ID!
+    user: User!
+    sender: User!
+    receiver: User!
+    amount: Float!
+    cost: Float!
+    operation: String!
+    createdAt: Float!
+}
+
+type Operation {
+    id: ID!
+    type: String!
+    amount: Float!
+    phoneNumber: String!
+    user: User!
+    verificationCode: String
+    createdAt: Float!
+}
+
+type Comment {
+    id: ID!
+    author: User!
+    comment: String!
+    createdAt: Float!
 }
 
 type Query {
@@ -92,24 +132,31 @@ type Query {
     video(id: ID!): Video
     myVideo(userID: ID!): [Video!]!
 
+    #comments
+    comments(videoId: String!): [Comment!]!
+
     audio: [AudioModel!]!
     users: [User!]! @auth
-    friends: [User!]! @auth
+    friends: [Friend!]! @auth
     user(id: ID!): User
     me: User! @auth
     verifyCode(phone: String!, code: String!): Verification!
 
-    likes: [Like!]!
     userByPhone(phone: String!): User @auth
-    videoStats: [VideoStats!]! @auth
-    videoStat: VideoStats! @auth
 
     # ticket
-    allTicket: [Ticket!]! @auth
-    ticket(id: ID!): Ticket
+    allEvents: [Event!]! @auth
+    event(id: ID!): Event
 
-    myLottedTicket: [TicketLotted!]! @auth
-    lottedTickets: [TicketLotted!]! @auth
+    # courses
+    courses: [Course!]!
+    myCourses: [Course!]!
+    course(id: ID!): Course
+
+    # Trans & operations
+    allTrans: [Trans!]!
+    userTrans(phone: String!): [Trans!]!
+    trans(id: ID!): Trans
 }
 
 type Mutation {
@@ -117,44 +164,89 @@ type Mutation {
     createUser(newUser: NewUserInput!): Boolean!
     loginOrCreateAccount(phone: String!, verifiedCode: String!): Auth!
     updateProfile(updateUser: UpdateUserInput!): Boolean! @auth
-    changeAccountStatus(id: ID!): Boolean!
+    changeAccountStatus(id: ID!): Boolean! @auth
+    updateUserOnlineState(state: Boolean!): Boolean! @auth
 
     # video
     createVideo(newVideo: NewVideoInput!): Boolean! @auth
     followUser(id: ID!): Boolean! @auth
     likeVideo(id: ID!): Boolean! @auth
-    shareVideo(id: ID!): Boolean! @auth
+    createComment(newComment: NewComment!): Boolean! @auth
+
     viewVideo(id: ID!): Boolean! @auth
     voteVideo(id: ID!): Boolean! @auth
 
     # sms
     sendCode(phone: String!): Boolean!
 
-    # create a lotterie ticket
-    lotTicket(data: NewLottedTicket!): Boolean!
-    deleteLottedTicket(id: ID!): Boolean!
-
     #ticket
-    createTicket(data: NewTicket!): Boolean!
-    changeTicketStatus(id: ID!): Boolean!
+    createEvent(data: NewEvent!): Boolean! @auth
+    changeEventStatus(id: ID!): Boolean! @auth
+
+    # course
+    createCourse(data: NewCourse!): Boolean! @auth
+    addChapter(data: NewChapter!): Boolean! @auth
+
+    # trans
+    sendTrans(data: NewTrans!): Boolean! @auth
+    buyTrans(data: NewSelle!): Boolean! @auth
+    withdrawTrans(data: NewTrans!): Boolean! @auth
+    recharge(data: NewTrans!): Boolean! @auth
+
+    #operation
+    rechargeOper(data: NewOperation!): Boolean! @auth
+    withdrawOper(data: NewOperation!): Boolean! @auth
+}
+
+input NewChapter {
+    courseID: String!
+    name: String!
+    file: String!
+    isFree: Boolean!
+}
+
+input NewOperation {
+    type: String!
+    amount: Float!
+    phoneNumber: String!
+    verificationCode: String
+}
+
+input NewSelle {
+    amount: Float!
+    cost: Float!
+    product: String!
+    client: String!
+    marchant: String!
+}
+
+input NewTrans {
+    sender: String! #phone sender
+    receiver: String! #phone receiver
+    amount: Float!
+    cost: Float!
+    operation: String!
+}
+
+input NewCourse {
+    title: String!
+    theme: String!
+    coverImage: String!
+    price: Float
+    isForSell: Boolean!
 }
 
 input NewVideoInput {
-    author: String!
     title: String!
     link: String!
     category: String!
-    videoStats: NewVideoStats
     description: String!
     hasTag: [String!]!
 }
 
-input NewVideoStats {
-    like: Int!
-    comment: Int
-    share: Int!
-    views: Int!
-    videoId: ID!
+input NewComment {
+    comment: String!
+    videoId: String!
 }
 
 input NewUserInput {
@@ -178,17 +270,10 @@ input UpdateUserInput {
     profilePic: String
 }
 
-input NewLottedTicket {
-    ticket: String!
-    video: String!
-    author: String!
-    amount: Int!
-}
-
-input NewTicket {
+input NewEvent {
     name: String!
     price: Float!
-    goal: Float!
+    image: String!
     detail: String!
     status: String!
 }

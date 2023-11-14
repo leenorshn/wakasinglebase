@@ -6,12 +6,12 @@ import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.network.okHttpClient
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import com.innov.wakasinglebase.data.repository.authentification.TokenRepository
-import com.innov.wakasinglebase.data.repository.tickets.TicketRepository
+import com.innov.wakasinglebase.data.repository.events.EventRepository
 import com.innov.wakasinglebase.data.source.TicketDataSource
 import com.innov.wakasinglebase.data.source.UserDataSource
 import com.innov.wakasinglebase.data.source.VideoDataSource
 import com.innov.wakasinglebase.domain.auth.AuthRepositoryImpl
-import com.innov.wakasinglebase.domain.ticket.TicketRepositoryImpl
+import com.innov.wakasinglebase.domain.ticket.EventRepositoryImpl
 import com.innov.wakasinglebase.signin.utils.AuthorizationInterceptor
 import dagger.Module
 import dagger.Provides
@@ -81,8 +81,8 @@ object AppModule  {
 
     @Singleton
     @Provides
-    fun providesTicketRepository(dataSource: TicketDataSource):TicketRepository{
-        return TicketRepositoryImpl(dataSource)
+    fun providesTicketRepository(dataSource: TicketDataSource): EventRepository {
+        return EventRepositoryImpl(dataSource)
     }
 
 

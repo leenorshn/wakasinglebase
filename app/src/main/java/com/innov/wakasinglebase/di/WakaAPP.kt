@@ -13,6 +13,8 @@ import dagger.hilt.android.HiltAndroidApp
  */
 @HiltAndroidApp
 class WakaAPP : Application() {
+
+
     override fun onCreate() {
         super.onCreate()
         try {
@@ -20,8 +22,16 @@ class WakaAPP : Application() {
             Amplify.addPlugin(AWSS3StoragePlugin())
             Amplify.configure(applicationContext)
             Log.i("ORIO","Amplify initialised with success")
+
+            //mainViewModel.onTriggerEvent(MainEvent.OnOnline)
         }catch (error: AmplifyException){
             Log.e("ORIO"," $error ")
         }
     }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        //mainViewModel.onTriggerEvent(MainEvent.OnOffline)
+    }
+
 }

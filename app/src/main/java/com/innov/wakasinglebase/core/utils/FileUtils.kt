@@ -1,7 +1,7 @@
 package com.innov.wakasinglebase.core.utils
 
 import android.content.Context
-import android.content.res.AssetFileDescriptor
+
 import android.database.Cursor
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
@@ -45,7 +45,8 @@ object FileUtils {
 
     private  fun getRealPathFromUri(context: Context, uri: Uri): String? {
         val projection = arrayOf(MediaStore.Video.Media.DATA, MediaStore.Video.Media.DISPLAY_NAME)
-        val cursor = context.contentResolver.query(uri, projection, null, null, null)
+        val cursor = context.contentResolver.query(uri, projection, null, emptyArray(), null)
+
         cursor?.use {
             val dataIndex = it.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
             val displayNameIndex = it.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME)
@@ -154,36 +155,36 @@ object FileUtils {
         }
     }
 
-    fun extractThumbnail(assetFileDesc: AssetFileDescriptor?, atTime: Int): Bitmap? {
-        var bitmap: Bitmap? = null
-        val retriever: MediaMetadataRetriever
-        if (assetFileDesc != null && assetFileDesc.fileDescriptor.valid()) try {
-            retriever = MediaMetadataRetriever()
-            assetFileDesc.apply {
-                retriever.setDataSource(
-                    fileDescriptor,
-                    startOffset,
-                    length
-                )
-            }
-
-            bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-                retriever.getScaledFrameAtTime(
-                    atTime.toLong(),
-                    MediaMetadataRetriever.OPTION_CLOSEST,
-                    1280,
-                    720
-                )
-            } else {
-                retriever.getFrameAtTime(atTime.toLong())
-            }
-            assetFileDesc.close()
-            retriever.release()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return bitmap
-    }
+//    fun extractThumbnail(assetFileDesc: AssetFileDescriptor?, atTime: Int): Bitmap? {
+//        var bitmap: Bitmap? = null
+//        val retriever: MediaMetadataRetriever
+//        if (assetFileDesc != null && assetFileDesc.fileDescriptor.valid()) try {
+//            retriever = MediaMetadataRetriever()
+//            assetFileDesc.apply {
+//                retriever.setDataSource(
+//                    fileDescriptor,
+//                    startOffset,
+//                    length
+//                )
+//            }
+//
+//            bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+//                retriever.getScaledFrameAtTime(
+//                    atTime.toLong(),
+//                    MediaMetadataRetriever.OPTION_CLOSEST,
+//                    1280,
+//                    720
+//                )
+//            } else {
+//                retriever.getFrameAtTime(atTime.toLong())
+//            }
+//            assetFileDesc.close()
+//            retriever.release()
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//        return bitmap
+//    }
 
       fun getFileNameFromUri(context: Context, uri: Uri):String?{
         var fileName:String?=null
@@ -214,4 +215,34 @@ object FileUtils {
             ).joinToString ("")
         return  randomString
     }
+
+    fun getVideoInfo(context: Context, videoUri: Uri): VideoInfo? {
+        val retriever = MediaMetadataRetriever()
+        retriever.setDataSource(context, videoUri)
+
+        val duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        val width = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)
+        val height = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+        val size =retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)
+
+        retriever.release()
+
+        if (duration != null && width != null && height != null) {
+            return VideoInfo(
+                duration = duration.toLong(),
+                width = width.toInt(),
+                height = height.toInt(),
+                size=size?.toInt()
+            )
+        }
+
+        return null
+    }
 }
+
+data class VideoInfo(
+    val duration: Long,
+    val width: Int,
+    val height: Int,
+    val size: Int?
+)

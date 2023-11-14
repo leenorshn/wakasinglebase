@@ -4,14 +4,7 @@ import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.wakabase.VideosQuery
 
-fun VideosQuery.VideoStats.toVideoStats():VideoModel.VideoStats{
-    return VideoModel.VideoStats(
-        like=like,
-        views=views,
-        comment = comment?:0,
-        share = share
-    )
-}
+
 
 
 
@@ -32,11 +25,14 @@ fun VideosQuery.Video.toVideoModel():VideoModel{
     return VideoModel(
         videoId =id,
         videoLink = link,
-        videoStats = videoStats?.toVideoStats(),
         videoTitle = title,
         description = description,
         hasTag = hasTag,
         createdAt = "$createdAt",
-        authorDetails = author.toAuthor()
+        category=category,
+        authorDetails = author.toAuthor(),
+        like = like,
+        view = view,
+        comment = comment
     )
 }

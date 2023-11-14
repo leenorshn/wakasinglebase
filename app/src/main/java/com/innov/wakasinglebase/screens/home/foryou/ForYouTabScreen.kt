@@ -61,6 +61,7 @@ fun ForYouTabScreen(
                 onClickLike = { s: String, b: Boolean -> },
                 onclickFavourite = {},
                 onClickAudio = {},
+               onClickVote = {},
                 onClickUser = { userId -> navController.navigate("$CREATOR_PROFILE_ROUTE/$userId") }
             )
         } }

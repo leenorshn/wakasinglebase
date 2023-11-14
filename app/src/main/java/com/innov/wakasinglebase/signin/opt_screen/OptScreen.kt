@@ -38,7 +38,7 @@ fun OptScreen(
     var optState by optViewModel.uiState
     LaunchedEffect(key1 = optState.success){
         if (optState.success){
-            navController.navigate(DestinationRoute.FIRST_PROFILE)
+            navController.navigate(DestinationRoute.MAIN_NAV_ROUTE)
         }
     }
     Scaffold {

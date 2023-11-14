@@ -150,7 +150,7 @@ fun Context.VideoGridItem(item: VideoModel, index: Int, onClickVideo: (VideoMode
                 tint = Color.Gray
             )
             Text(
-                text = "${item.videoStats?.like} votes",
+                text = "${item.like} votes",
                 color = Color.White,
                 style = MaterialTheme.typography.labelMedium
             )

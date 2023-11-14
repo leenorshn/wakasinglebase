@@ -22,7 +22,8 @@ class OptViewModel @Inject constructor(
 
     init {
         tokenRepository.init(context)
-       // tokenRepository.getToken()
+       tokenRepository.removeToken()
+
     }
 
     var uiState= mutableStateOf(OptState())

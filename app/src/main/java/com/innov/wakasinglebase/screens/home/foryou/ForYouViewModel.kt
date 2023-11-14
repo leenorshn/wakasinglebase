@@ -5,7 +5,9 @@ import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
 import com.innov.wakasinglebase.domain.repository.VideoRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -16,13 +18,22 @@ class ForYouViewModel @Inject constructor(
     private val videoRepository: VideoRepositoryImpl
 ) : BaseViewModel<ViewState, ForYouEvent>() {
     init {
-        getForYouPageFeeds()
+        viewModelScope.launch {
+            getForYouPageFeeds()
+        }
     }
 
     override fun onTriggerEvent(event: ForYouEvent) {
+        when(event){
+            ForYouEvent.OnLoadVideo -> {
+                viewModelScope.launch {
+                    getForYouPageFeeds()
+                }
+            }
+        }
     }
 
-    private fun getForYouPageFeeds() {
+    private suspend fun getForYouPageFeeds() = withContext(Dispatchers.IO){
         viewModelScope.launch {
             videoRepository.getAllVideos().collect{
                 when(it){

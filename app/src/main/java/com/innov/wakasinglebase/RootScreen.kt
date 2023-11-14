@@ -4,6 +4,8 @@ package com.innov.wakasinglebase
 //import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 //import com.innov.core.DestinationRoute.CAMERA_ROUTE
 
+//import androidx.compose.material.ModalBottomSheetLayout
+
 import android.app.Activity
 import android.os.Build
 import androidx.activity.compose.BackHandler
@@ -26,14 +28,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.BottomSheetNavigator
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.innov.wakasinglebase.core.DestinationRoute.CAMERA_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.COMMENT_BOTTOM_SHEET_ROUTE
-
 import com.innov.wakasinglebase.core.DestinationRoute.FORMATTED_COMPLETE_CREATOR_VIDEO_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.FRIENDS_ROUTE
-
 import com.innov.wakasinglebase.core.DestinationRoute.HOME_SCREEN_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.LOTTO_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.MY_PROFILE_ROUTE
@@ -46,7 +47,7 @@ import com.innov.wakasinglebase.ui.theme.WakabaseTheme
  */
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(
-     ExperimentalMaterialNavigationApi::class
+     ExperimentalMaterialNavigationApi::class, ExperimentalMaterialApi::class
 )
 @Composable
 fun RootScreen() {
@@ -75,7 +76,7 @@ fun RootScreen() {
 
     WakabaseTheme(darkTheme = darkMode) {
         SetupSystemUi(rememberSystemUiController(), MaterialTheme.colorScheme.background)
-       // ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator) {
+       ModalBottomSheetLayout(bottomSheetNavigator = bottomSheetNavigator,) {
             Scaffold(
                 topBar = {
 
@@ -98,7 +99,7 @@ fun RootScreen() {
         }
 
 
-   // }
+    }
 }
 
 @Composable
@@ -116,12 +117,10 @@ fun SetupSystemUi(
 @Composable
 fun rememberBottomSheetNavigator(
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-    skipHalfExpanded: Boolean = true,
 ): BottomSheetNavigator {
     val sheetState = rememberModalBottomSheetState(
         ModalBottomSheetValue.Hidden,
         animationSpec,
-        //skipHalfExpanded,
     )
     return remember(sheetState) {
         BottomSheetNavigator(sheetState = sheetState)

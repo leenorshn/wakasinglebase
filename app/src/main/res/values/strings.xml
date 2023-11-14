@@ -66,14 +66,15 @@
     <!-- settings -->
     <string name="settings_and_privacy">Settings</string>
     <string name="account">Account</string>
-    <string name="live">Mon compte</string>
-    <string name="playback">Stats</string>
+    <string name="balance">Balance</string>
+    <string name="myvideo">My videos</string>
+    <string name="monetisated">Monetize your account</string>
     <string name="language">Language</string>
     <string name="free_up_space">Free up space</string>
-    <string name="data_saver">Securité</string>
+    <string name="mybusiness">My business</string>
     <string name="wallpaper">Wallpaper</string>
     <string name="report_a_problem">Report a problem</string>
-    <string name="support">Support</string>
+    <string name="about">About us</string>
     <string name="terms_and_policies">Terms and policies</string>
 
     <!-- camera media -->
