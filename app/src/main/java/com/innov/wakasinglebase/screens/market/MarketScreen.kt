@@ -6,12 +6,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -22,13 +20,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.innov.wakasinglebase.core.extension.LargeSpace
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
@@ -75,38 +69,14 @@ fun MarketScreen(
 
 
             if (viewState?.tickets != null) {
-                items(viewState?.tickets!!) { ticket ->
+                viewState?.tickets?.let {tickets->
+                    items(tickets) { ticket ->
 
-                    Card(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) {
-                        Column {
-                            AsyncImage(
-                                model = ticket.image,
-                                contentDescription = "",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillParentMaxHeight(0.7f)
-                                    .fillMaxWidth()
-                            )
-                            Column (modifier = Modifier.padding(12.dp)){
-                                Text(
-                                    text = ticket.name,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                                Row (horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.fillMaxWidth()){
-                                    Text(text = "${ticket.price.toInt()} Fc")
-                                    OutlinedButton(onClick = { }) {
-                                        Text(text = "reserver")
-                                    }
-                                }
-                            }
-                        }
+                        Text("Miracle")
 
                     }
-
                 }
+
                 item {
                     80.dp.Space()
                 }

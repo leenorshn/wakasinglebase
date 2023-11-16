@@ -2,6 +2,10 @@ mutation createVideo($data:NewVideoInput!){
     createVideo(newVideo:$data)
 }
 
+mutation deleteVideo($id:ID!){
+    deleteVideo(id: $id)
+}
+
 query videos($limit:Int){
     videos(limit:$limit){
         id

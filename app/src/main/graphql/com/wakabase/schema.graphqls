@@ -5,9 +5,9 @@
 
 directive @auth on FIELD | FIELD_DEFINITION
 
-directive @isMonetizatedAccount on FIELD | FIELD_DEFINITION
-
 directive @isClient on FIELD | FIELD_DEFINITION
+
+directive @isAdmin on FIELD | FIELD_DEFINITION
 
 type Event {
     id: ID!
@@ -17,6 +17,7 @@ type Event {
     owner: User!
     detail: String!
     status: String! # active|| inactive
+    date: String!
     createdAt: Float!
 }
 
@@ -29,6 +30,7 @@ type Video {
     like: Int!
     comment: Int!
     view: Int!
+    thread: String
     isLikedBy: [String!]!
     description: String!
     hasTag: [String!]!
@@ -45,43 +47,32 @@ type User {
     bio: String!
     balance: Float!
     profilePic: String
+    role: String! # client|admin
     isMonetizated: Boolean! #default false
     isVerified: Boolean!
     isOnline: Boolean!
     hasContract: Boolean!
 }
 
-type AudioModel {
-    audioCoverImage: String
-    isOriginal: Boolean
-    audioAuthor: User
-    numberOfPost: Float
-    originalVideoUrl: String
-}
-
-type Course {
+type Thread {
     id: ID!
     title: String!
     theme: String!
     coverImage: String!
     author: User!
     createdAt: Float!
-    price: Float
+    price: Float!
+    isArchived: Boolean!
     isForSell: Boolean!
     chapters: [Chapter!]!
 }
 
 type Chapter {
     id: ID!
-    courseID: String!
+    threadID: String!
     name: String!
     file: String!
     isFree: Boolean!
-}
-
-type Like {
-    user: User!
-    video: Video!
 }
 
 type Friend {
@@ -127,6 +118,15 @@ type Comment {
     createdAt: Float!
 }
 
+type DemandMonetization {
+    id: ID!
+    title: String!
+    content: String!
+    author: User!
+    status: String! # waiting, reject, done
+    createdAt: Float!
+}
+
 type Query {
     videos(limit: Int): [Video!]!
     video(id: ID!): Video
@@ -135,7 +135,6 @@ type Query {
     #comments
     comments(videoId: String!): [Comment!]!
 
-    audio: [AudioModel!]!
     users: [User!]! @auth
     friends: [Friend!]! @auth
     user(id: ID!): User
@@ -149,14 +148,18 @@ type Query {
     event(id: ID!): Event
 
     # courses
-    courses: [Course!]!
-    myCourses: [Course!]!
-    course(id: ID!): Course
+    threads: [Thread!]!
+    myThreads: [Thread!]!
+    thread(id: ID!): Thread
 
     # Trans & operations
     allTrans: [Trans!]!
     userTrans(phone: String!): [Trans!]!
     trans(id: ID!): Trans
+
+    # monetizations
+    demanderMonetisations: [DemandMonetization!]!
+    #demanderMonetisation(id: ID!): DemandMonetization
 }
 
 type Mutation {
@@ -164,8 +167,12 @@ type Mutation {
     createUser(newUser: NewUserInput!): Boolean!
     loginOrCreateAccount(phone: String!, verifiedCode: String!): Auth!
     updateProfile(updateUser: UpdateUserInput!): Boolean! @auth
-    changeAccountStatus(id: ID!): Boolean! @auth
     updateUserOnlineState(state: Boolean!): Boolean! @auth
+
+    #admin auth
+    login(username: String!, passoword: String!): Auth!
+    demanderMonetisation: Boolean! @auth
+    monetizate(phone: String!): Boolean! @isAdmin
 
     # video
     createVideo(newVideo: NewVideoInput!): Boolean! @auth
@@ -175,6 +182,8 @@ type Mutation {
 
     viewVideo(id: ID!): Boolean! @auth
     voteVideo(id: ID!): Boolean! @auth
+    linkWithThread(videoId: ID!, threadId: ID!): Boolean! @auth
+    deleteVideo(id: ID!): Boolean! @auth
 
     # sms
     sendCode(phone: String!): Boolean!
@@ -182,9 +191,12 @@ type Mutation {
     #ticket
     createEvent(data: NewEvent!): Boolean! @auth
     changeEventStatus(id: ID!): Boolean! @auth
+    modifyEvent(id: ID!, data: UpdateEvent!): Boolean! @auth
+    deleteEvent(id: ID!): Boolean! @auth
 
     # course
-    createCourse(data: NewCourse!): Boolean! @auth
+    createThread(data: NewThread!): Boolean! @auth
+    archiveThread(id: ID!): Boolean! @auth
     addChapter(data: NewChapter!): Boolean! @auth
 
     # trans
@@ -228,7 +240,7 @@ input NewTrans {
     operation: String!
 }
 
-input NewCourse {
+input NewThread {
     title: String!
     theme: String!
     coverImage: String!
@@ -255,7 +267,8 @@ input NewUserInput {
     city: String
     phone: String!
     bio: String
-    balance: Float
+    balance: Float!
+    role: String
     profilePic: String
     isVerified: Boolean!
     hasContract: Boolean!
@@ -276,4 +289,14 @@ input NewEvent {
     image: String!
     detail: String!
     status: String!
+    date: String!
+}
+
+input UpdateEvent {
+    name: String
+    price: Float
+    image: String
+    detail: String
+    status: String
+    date: String
 }

@@ -4,10 +4,10 @@ package com.innov.wakasinglebase
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.innov.wakasinglebase.core.DestinationRoute.CAMERA_ROUTE
-import com.innov.wakasinglebase.core.DestinationRoute.FRIENDS_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.HOME_SCREEN_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.LOTTO_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.MY_PROFILE_ROUTE
+import com.innov.wakasinglebase.core.DestinationRoute.THREADS_ROUTE
 
 /**
  * Created by innov Victor on 3/14/2023.
@@ -31,10 +31,10 @@ enum class BottomBarDestination(
     ),
 
     EXPLORE(
-        route = FRIENDS_ROUTE,
-        title = R.string.friends,
-        unFilledIcon = R.drawable.utilisateurs_24,
-        filledIcon = R.drawable.utilisateurs_alt_24
+        route = THREADS_ROUTE,
+        title = R.string.threads,
+        unFilledIcon = R.drawable.comment_24,
+        filledIcon = R.drawable.comment_alt_24
     ),
 
     ADD(

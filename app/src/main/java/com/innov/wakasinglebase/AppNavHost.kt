@@ -18,14 +18,15 @@ import com.innov.wakasinglebase.screens.camera.publication.publicationNavGraph
 import com.innov.wakasinglebase.screens.camera.upload.uploadNavGraph
 import com.innov.wakasinglebase.screens.comment.commentListingNavGraph
 import com.innov.wakasinglebase.screens.createprofile.creatorprofile.creatorProfileNavGraph
-import com.innov.wakasinglebase.screens.friends.follower.followerNavGraph
-import com.innov.wakasinglebase.screens.friends.friendsNavGraph
 import com.innov.wakasinglebase.screens.home.homeNavGraph
 import com.innov.wakasinglebase.screens.home.video_detail.videoDetailNavGraph
 import com.innov.wakasinglebase.screens.market.marketNavGraph
 import com.innov.wakasinglebase.screens.myprofil.edit_profile.firstProfileNavGraph
 import com.innov.wakasinglebase.screens.myprofil.myProfileNavGraph
+import com.innov.wakasinglebase.screens.myprofil.mybusiness.myBusinessNavGraph
 import com.innov.wakasinglebase.screens.myprofil.myvideos.myVideosNavGraph
+import com.innov.wakasinglebase.screens.threads.follower.followerNavGraph
+import com.innov.wakasinglebase.screens.threads.friendsNavGraph
 import com.innov.wakasinglebase.signin.authNavGraph
 import com.innov.wakasinglebase.signin.opt_screen.optNavGraph
 import com.innov.wakasinglebase.signin.phoneScreen.phoneNavGraph
@@ -76,6 +77,7 @@ fun AppNavHost(
            followerNavGraph(navController)
            videoDetailNavGraph(navController)
            myVideosNavGraph(navController)
+           myBusinessNavGraph(navController)
        }
         navigation(DestinationRoute.AUTHENTICATION_ROUTE,DestinationRoute.AUTH_ROUTE){
             //welcome,phone,code,Profile

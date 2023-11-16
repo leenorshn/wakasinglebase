@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.friends.follower
+package com.innov.wakasinglebase.screens.threads.follower
 
 import com.innov.wakasinglebase.data.model.UserModel
 

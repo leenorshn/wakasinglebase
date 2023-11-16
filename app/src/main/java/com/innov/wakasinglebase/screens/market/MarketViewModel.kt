@@ -32,20 +32,39 @@ class MarketViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTickets() = withContext(Dispatchers.IO){
+    private suspend fun getTickets() = withContext(Dispatchers.IO) {
         viewModelScope.launch {
             repository.getAllEvents().collect {
-                when(it){
+                when (it) {
                     is BaseResponse.Error -> {
 
-                        updateState((viewState.value ?: ViewState()).copy(error = it.error, isLoading = false))
+                        updateState(
+                            (viewState.value ?: ViewState()).copy(
+                                error = it.error,
+                                isLoading = false,
+                                tickets = null
+                            )
+                        )
                     }
+
                     BaseResponse.Loading -> {
-                        updateState((viewState.value ?: ViewState()).copy(isLoading = true, error = null))
+                        updateState(
+                            (viewState.value ?: ViewState()).copy(
+                                isLoading = true,
+                                error = null,
+                                tickets = null
+                            )
+                        )
                     }
+
                     is BaseResponse.Success -> {
-                        updateState((viewState.value ?: ViewState()).copy(tickets  = it.data,
-                            isLoading = false, error = null))
+                        updateState(
+                            (viewState.value ?: ViewState()).copy(
+                                tickets = it.data,
+                                isLoading = false,
+                                error = null
+                            )
+                        )
                     }
                 }
             }

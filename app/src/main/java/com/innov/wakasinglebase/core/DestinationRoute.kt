@@ -8,6 +8,7 @@ import com.innov.wakasinglebase.core.DestinationRoute.PassedKey.VIDEO_INDEX
  */
 object DestinationRoute {
     const val MY_VIDEO_ROUTE= "MY_VIDEO_ROUTE/id={videoId}"
+    const val MY_BUSINESS_ROUTE= "MY_BUSINESS_ROUTE/"
     const val EDIT_PROFILE="EDIT_PROFILE_ROUTE"
     const val PROFILE_SCREEN_AVATAR="PROFILE_SCREEN_AVATAR"
     const val FOLLOWER_ROUTE="follower_route"
@@ -26,7 +27,7 @@ object DestinationRoute {
 
     const val LOTTO_ROUTE = "Lotto_route"
     const val MY_PROFILE_ROUTE = "my_profile_route"
-    const val FRIENDS_ROUTE = "friends_screen_route"
+    const val THREADS_ROUTE = "THREADS_ROUTE"
     const val CAMERA_ROUTE = "camera_route"
 
     const val AUTHENTICATION_ROUTE = "authentication_route"

@@ -1,0 +1,66 @@
+
+query threads{
+    threads {
+        id
+        createdAt
+        price
+        author {
+            id
+            name
+            profilePic
+        }
+        coverImage
+        isArchived
+        isForSell
+        theme
+        title
+    }
+}
+
+query myThreads{
+    myThreads {
+        id
+        createdAt
+        price
+        author {
+            id
+            name
+            profilePic
+        }
+        coverImage
+        isArchived
+        isForSell
+        theme
+        title
+    }
+}
+
+query thread($id:ID!){
+    thread(id:$id) {
+        id
+        createdAt
+        price
+        author {
+            id
+            name
+            profilePic
+        }
+        coverImage
+        isArchived
+        isForSell
+        theme
+        title
+    }
+}
+
+mutation createNewThread($data:NewThread!){
+    createThread(data: $data)
+}
+
+mutation archiveThread($id:ID!){
+    archiveThread(id: $id)
+}
+
+mutation attacheVideoToThread($videoId:ID!,$threadId:ID!){
+    linkWithThread(videoId: $videoId,threadId: $threadId)
+}

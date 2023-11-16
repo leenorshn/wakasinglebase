@@ -165,7 +165,9 @@ fun MyProfileScreen(
                     )
                     if(uiState.currentUser?.isMonetizated==true){
                         SettingItem(
-                            onClickItem = { /*TODO*/ },
+                            onClickItem = {
+                                navController.navigate(DestinationRoute.MY_BUSINESS_ROUTE)
+                            },
                             icon = R.drawable.ic_dollar,
                             title = R.string.mybusiness,
                         )

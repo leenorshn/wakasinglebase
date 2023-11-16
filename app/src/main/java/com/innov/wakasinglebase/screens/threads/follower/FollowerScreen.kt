@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.friends.follower
+package com.innov.wakasinglebase.screens.threads.follower
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

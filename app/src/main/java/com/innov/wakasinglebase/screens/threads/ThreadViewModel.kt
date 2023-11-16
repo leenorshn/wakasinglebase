@@ -1,35 +1,36 @@
-package com.innov.wakasinglebase.screens.friends
+package com.innov.wakasinglebase.screens.threads
 
 import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
-import com.innov.wakasinglebase.domain.auth.AuthRepositoryImpl
+import com.innov.wakasinglebase.domain.threads.ThreadsRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
-class FriendViewModel @Inject constructor(
-    private val repository: AuthRepositoryImpl
-) : BaseViewModel<ViewState, FriendEvent>() {
+class ThreadViewModel @Inject constructor(
+    private val repository: ThreadsRepositoryImpl
+) : BaseViewModel<ViewState, ThreadsEvent>() {
 
     init {
         getFriends()
     }
-    override fun onTriggerEvent(event: FriendEvent) {
+    override fun onTriggerEvent(event: ThreadsEvent) {
         when(event){
-            FriendEvent.OnFriendLoadEvent -> getFriends()
+            ThreadsEvent.OnThreadsLoadEvent -> getFriends()
         }
     }
 
     private fun getFriends() {
         viewModelScope.launch {
-            repository.friends().collect {
+            repository.getAllThreads().collect {
                 when (it) {
                     is BaseResponse.Error -> {
                         updateState(
                             (viewState.value ?: ViewState()).copy(
                                 error = it.error,
-                                isLoading = false
+                                isLoading = false,
+                                threads = null
                             )
                         )
                     }
@@ -38,7 +39,8 @@ class FriendViewModel @Inject constructor(
                         updateState(
                             (viewState.value ?: ViewState()).copy(
                                 error = null,
-                                isLoading = true
+                                isLoading = true,
+                                threads = null
                             )
                         )
                     }
@@ -48,7 +50,7 @@ class FriendViewModel @Inject constructor(
                             (viewState.value ?: ViewState()).copy(
                                 error = null,
                                 isLoading = false,
-                                friends = it.data
+                                threads = it.data
                             )
                         )
                     }

@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.friends.follower
+package com.innov.wakasinglebase.screens.threads.follower
 
 import androidx.lifecycle.viewModelScope
 import aws.smithy.kotlin.runtime.util.length

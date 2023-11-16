@@ -55,7 +55,7 @@ fun OptScreen(
             Text(text = "Waka-Waka", fontSize = 32.sp, fontWeight = FontWeight.Bold)
             32.dp.Space()
             Text(
-                text = "Vous allez recevoir un SMS code au $phone, ce pour verifier que c'est un humain!",
+                text = "You will receive an SMS code at $phone to verify that you are human!",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
