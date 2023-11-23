@@ -2,7 +2,6 @@ package com.innov.wakasinglebase.domain.auth
 
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.data.model.AuthModel
-import com.innov.wakasinglebase.data.model.FriendModel
 import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import com.innov.wakasinglebase.data.source.UserDataSource
@@ -28,9 +27,14 @@ class AuthRepositoryImpl @Inject constructor(
         return userDataSource.me()
     }
 
-    override suspend fun friends(): Flow<BaseResponse<List<FriendModel>>> {
-        return  userDataSource.getFriends()
+    override suspend fun friends(id: String): Flow<BaseResponse<List<UserModel>>> {
+        return userDataSource.fetchFriendUser(id)
     }
+
+    override suspend fun myFriends(): Flow<BaseResponse<List<UserModel>>> {
+        return userDataSource.fetchMyFriend()
+    }
+
 
     override suspend fun users(): Flow<BaseResponse<List<UserModel>>> {
         return  userDataSource.getUsers()
@@ -38,6 +42,10 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun follow(id: String): Flow<BaseResponse<Boolean>> {
         return userDataSource.followMe(id)
+    }
+
+    override suspend fun unFollow(id: String): Flow<BaseResponse<Boolean>> {
+        return userDataSource.unFollowMe(id)
     }
 
     override suspend fun updateUserOnlineState(state: Boolean): Flow<BaseResponse<Boolean>> {

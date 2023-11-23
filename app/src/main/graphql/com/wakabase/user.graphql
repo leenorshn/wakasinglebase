@@ -30,6 +30,8 @@ query me{
         isOnline
         isMonetizated
         hasContract
+        followers
+        following
     }
 }
 
@@ -47,6 +49,8 @@ query users{
         isMonetizated
         isVerified
         hasContract
+        followers
+        following
     }
 }
 
@@ -64,22 +68,53 @@ query user($id:ID!){
         isMonetizated
         isVerified
         hasContract
+        followers
+        following
     }
 }
-query Followers{
-    friends{
-        follower{
-            id
-            name
-            phone
-            profilePic
-            bio
-            isOnline
-        }
 
+query myFriends{
+    myFriends {
+        id
+        name
+        siteWeb
+        city
+        phone
+        bio
+        balance
+        profilePic
+        isOnline
+        isMonetizated
+        isVerified
+        hasContract
+        followers
+        following
     }
 }
+
+query friends($id:ID!){
+    friends(uid: $id) {
+        id
+        name
+        siteWeb
+        city
+        phone
+        bio
+        balance
+        profilePic
+        isOnline
+        isMonetizated
+        isVerified
+        hasContract
+        followers
+        following
+    }
+}
+
 
 mutation FollowMe($id:ID!){
     followUser(id:$id)
+}
+mutation unFollowMe($id:ID!){
+    unFollowUser(id: $id)
 }

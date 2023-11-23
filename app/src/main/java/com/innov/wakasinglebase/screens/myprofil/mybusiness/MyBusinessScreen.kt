@@ -1,6 +1,7 @@
 package com.innov.wakasinglebase.screens.myprofil.mybusiness
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircle
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -57,6 +59,11 @@ fun MyBusinessScreen(
             TopAppBar(
                 title = {
                     Text("My threads")
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = "")
+                    }
                 }
             )
         },
@@ -71,12 +78,12 @@ fun MyBusinessScreen(
         }
     ) {
         if (viewState?.isLoading == true) {
-            LinearProgressIndicator(color = PrimaryColor, modifier = Modifier.padding(it))
+            LinearProgressIndicator(color = PrimaryColor, modifier = Modifier.fillMaxWidth())
         }
 
         if (viewState?.error != null) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().padding(it),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
@@ -96,21 +103,21 @@ fun MyBusinessScreen(
         viewState?.myThreads?.let { threads ->
 
             if (threads.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column {
-                        Image(
-                            painter = painterResource(id = R.drawable.empty_image),
-                            contentDescription = ""
-                        )
-                        16.dp.Space()
-                        Text(text = "No thread")
-                    }
+
+                Column(modifier = Modifier.fillMaxSize().padding(it)
+                , horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,) {
+                    Image(
+                        painter = painterResource(id = R.drawable.empty_image),
+                        contentDescription = ""
+                    )
+                    16.dp.Space()
+                    Text(text = "No Trade")
                 }
+
             }
-            LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                item {
-                    Text("My threads")
-                }
+            LazyColumn(modifier = Modifier.fillMaxWidth().padding(it)) {
+
                 items(threads) { thread ->
                     var bg = if (thread.isArchived) Color(0xFFB6BCBE) else Color.White
                     ListItem(

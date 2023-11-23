@@ -16,6 +16,7 @@ data class VideoModel(
     val view:Int,
     val comment: Int,
     val category: String,
+    val product:String?=null,
     val currentViewerInteraction: ViewerInteraction = ViewerInteraction(),
     val createdAt: String = randomUploadDate(),
     val audioModel: AudioModel? = null,

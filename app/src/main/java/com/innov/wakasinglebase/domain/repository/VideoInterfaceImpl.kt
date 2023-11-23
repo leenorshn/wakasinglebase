@@ -33,6 +33,10 @@ class VideoRepositoryImpl @Inject constructor(
         )
     }
 
+    override suspend fun likeVideo(videoId: String): Flow<BaseResponse<Boolean>> {
+        return  videoDataSource.likeVideo(videoId)
+    }
+
     override suspend fun getAllVideos(): Flow<BaseResponse<List<VideoModel>>> {
         return videoDataSource.fetchVideos(1000)
     }

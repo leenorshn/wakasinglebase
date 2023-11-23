@@ -1,0 +1,49 @@
+
+
+
+query myProducts{
+    myProducts {
+        id
+        createdAt
+        price
+        author {
+            id
+            name
+            profilePic
+        }
+        coverImage
+        isArchived
+
+        theme
+        title
+    }
+}
+
+query product($id:ID!){
+    product(id:$id) {
+        id
+        createdAt
+        price
+        author {
+            id
+            name
+            profilePic
+        }
+        coverImage
+        isArchived
+        theme
+        title
+    }
+}
+
+mutation createNewProduct($data:NewProduct!){
+    createProduct(data: $data)
+}
+
+mutation archiveProduct($id:ID!){
+    archiveProduct(id: $id)
+}
+
+mutation attacheVideoToProduct($videoId:ID!,$productId:ID!){
+    linkWithProduct(videoId: $videoId,productId: $productId)
+}

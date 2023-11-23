@@ -16,3 +16,11 @@ class GetCreatorPublicVideoUseCase @Inject constructor(
         return creatorProfileRepository.getCreatorPublicVideo(id)
     }
 }
+
+class GetLikeVideoUseCase @Inject constructor(
+    private val creatorProfileRepository: CreatorProfileRepository
+) {
+    suspend operator fun invoke(id: String): Flow<BaseResponse<Boolean>> {
+        return creatorProfileRepository.likeVideo(id)
+    }
+}

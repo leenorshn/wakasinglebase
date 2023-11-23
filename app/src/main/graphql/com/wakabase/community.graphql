@@ -1,0 +1,81 @@
+
+mutation createCommunity($data:NewCommunity!){
+    createCommunity(data: $data)
+}
+
+mutation publishMessage($data:NewMessage!){
+    publishMessage(data: $data)
+}
+
+query community($id:ID!){
+    community(id:$id ) {
+        id
+        name
+        philosophy
+        subscription
+        logo
+        admins {
+            id
+            name
+            profilePic
+            phone
+        }
+
+        members {
+            id
+            name
+            profilePic
+            phone
+        }
+        messages {
+            id
+            audio
+            sender {
+                id
+                name
+                profilePic
+                phone
+            }
+            text
+            createdAt
+        }
+        createdAt
+    }
+}
+
+query communities{
+    communities {
+        id
+        name
+        philosophy
+        logo
+        subscription
+        admins {
+            id
+            name
+            profilePic
+            phone
+        }
+
+        members {
+            id
+            name
+            profilePic
+            phone
+        }
+        messages {
+            id
+            audio
+
+            sender {
+                id
+                name
+                profilePic
+                phone
+            }
+            text
+            createdAt
+        }
+        createdAt
+    }
+}

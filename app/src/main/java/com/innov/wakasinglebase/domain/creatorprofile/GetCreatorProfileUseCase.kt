@@ -16,3 +16,12 @@ class GetCreatorProfileUseCase @Inject constructor(
         return creatorProfileRepository.getCreatorDetails(id)
     }
 }
+
+
+class GetCreatorProfileFollowUseCase @Inject constructor(
+    private val creatorProfileRepository: CreatorProfileRepository
+) {
+    suspend operator fun invoke(id: String): Flow<BaseResponse<Boolean>> {
+        return creatorProfileRepository.followUser(id)
+    }
+}

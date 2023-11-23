@@ -14,7 +14,14 @@ data class ViewState(
     val creatorProfile: UserModel? = null,
 )
 
+data class FollowState(
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val success: Boolean = false,
+)
+
 sealed class CreatorProfileEvent {
+    data class OnFollowUser(val id:String):CreatorProfileEvent()
 }
 
 

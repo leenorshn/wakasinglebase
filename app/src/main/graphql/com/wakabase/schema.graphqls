@@ -30,7 +30,7 @@ type Video {
     like: Int!
     comment: Int!
     view: Int!
-    thread: String
+    product: String
     isLikedBy: [String!]!
     description: String!
     hasTag: [String!]!
@@ -47,6 +47,9 @@ type User {
     bio: String!
     balance: Float!
     profilePic: String
+    followers: [String!]!
+    following: [String!]!
+    communities: [String!]!
     role: String! # client|admin
     isMonetizated: Boolean! #default false
     isVerified: Boolean!
@@ -54,7 +57,21 @@ type User {
     hasContract: Boolean!
 }
 
-type Thread {
+type Conversation {
+    id: ID!
+    receiver: User!
+    sender: User!
+    chats: [Chat!]!
+}
+
+type Chat {
+    id: ID!
+    message: String!
+    sender: String!
+    createdAt: Float!
+}
+
+type Product {
     id: ID!
     title: String!
     theme: String!
@@ -63,7 +80,6 @@ type Thread {
     createdAt: Float!
     price: Float!
     isArchived: Boolean!
-    isForSell: Boolean!
     chapters: [Chapter!]!
 }
 
@@ -73,11 +89,6 @@ type Chapter {
     name: String!
     file: String!
     isFree: Boolean!
-}
-
-type Friend {
-    follower: User!
-    user: User!
 }
 
 type Auth {
@@ -127,7 +138,33 @@ type DemandMonetization {
     createdAt: Float!
 }
 
+type Community {
+    id: ID!
+    name: String!
+    philosophy: String!
+    logo: String
+    messages: [Message!]!
+    members: [User!]!
+    admins: [User!]!
+    subscription: Float!
+    createdAt: Float!
+}
+
+type Message {
+    id: ID!
+    audio: String
+    text: String
+    sender: User!
+    community: String!
+    createdAt: Float!
+}
+
+type TokenSMS {
+    token: String!
+}
+
 type Query {
+    #videos
     videos(limit: Int): [Video!]!
     video(id: ID!): Video
     myVideo(userID: ID!): [Video!]!
@@ -135,22 +172,28 @@ type Query {
     #comments
     comments(videoId: String!): [Comment!]!
 
+    #chats
+    conversations: [Conversation!]! @auth
+
+    #community
+    communities: [Community!]!
+    communitiesByTheme(theme: String!): [Community!]!
+    community(id: ID!): Community
+
+    #users
     users: [User!]! @auth
-    friends: [Friend!]! @auth
     user(id: ID!): User
     me: User! @auth
     verifyCode(phone: String!, code: String!): Verification!
 
     userByPhone(phone: String!): User @auth
+    friends(uid: ID): [User!]! @auth
+    myFriends: [User!]! @auth
 
-    # ticket
-    allEvents: [Event!]! @auth
-    event(id: ID!): Event
-
-    # courses
-    threads: [Thread!]!
-    myThreads: [Thread!]!
-    thread(id: ID!): Thread
+    # product
+    products: [Product!]!
+    myProducts: [Product!]!
+    product(id: ID!): Product
 
     # Trans & operations
     allTrans: [Trans!]!
@@ -160,43 +203,41 @@ type Query {
     # monetizations
     demanderMonetisations: [DemandMonetization!]!
     #demanderMonetisation(id: ID!): DemandMonetization
+
+    #token
 }
 
 type Mutation {
+    #Token
+
     # user
     createUser(newUser: NewUserInput!): Boolean!
     loginOrCreateAccount(phone: String!, verifiedCode: String!): Auth!
     updateProfile(updateUser: UpdateUserInput!): Boolean! @auth
     updateUserOnlineState(state: Boolean!): Boolean! @auth
+    followUser(id: ID!): Boolean! @auth
+    unFollowUser(id: ID!): Boolean! @auth
+    demanderMonetisation: Boolean! @auth
 
     #admin auth
     login(username: String!, passoword: String!): Auth!
-    demanderMonetisation: Boolean! @auth
     monetizate(phone: String!): Boolean! @isAdmin
 
     # video
     createVideo(newVideo: NewVideoInput!): Boolean! @auth
-    followUser(id: ID!): Boolean! @auth
     likeVideo(id: ID!): Boolean! @auth
     createComment(newComment: NewComment!): Boolean! @auth
-
     viewVideo(id: ID!): Boolean! @auth
     voteVideo(id: ID!): Boolean! @auth
-    linkWithThread(videoId: ID!, threadId: ID!): Boolean! @auth
+    linkWithProduct(videoId: ID!, productId: ID!): Boolean! @auth
     deleteVideo(id: ID!): Boolean! @auth
 
     # sms
     sendCode(phone: String!): Boolean!
 
-    #ticket
-    createEvent(data: NewEvent!): Boolean! @auth
-    changeEventStatus(id: ID!): Boolean! @auth
-    modifyEvent(id: ID!, data: UpdateEvent!): Boolean! @auth
-    deleteEvent(id: ID!): Boolean! @auth
-
-    # course
-    createThread(data: NewThread!): Boolean! @auth
-    archiveThread(id: ID!): Boolean! @auth
+    # product
+    createProduct(data: NewProduct!): Boolean! @auth
+    archiveProduct(id: ID!): Boolean! @auth
     addChapter(data: NewChapter!): Boolean! @auth
 
     # trans
@@ -208,6 +249,18 @@ type Mutation {
     #operation
     rechargeOper(data: NewOperation!): Boolean! @auth
     withdrawOper(data: NewOperation!): Boolean! @auth
+
+    #conversations
+    createConversation(receiver: ID!): Boolean! @auth
+    sendMessage(conversationId: ID!, message: String!): Boolean! @auth
+
+    #community
+    createCommunity(data: NewCommunity!): Boolean! @auth
+    JoinCommunity(communityId: ID!, uid: ID!): Boolean! @auth
+
+    deleteCommunity(id: ID!): Boolean! @auth
+    publishMessage(data: NewMessage!): Boolean! @auth
+    unPublishMessage(id: ID!): Boolean! @auth
 }
 
 input NewChapter {
@@ -240,12 +293,11 @@ input NewTrans {
     operation: String!
 }
 
-input NewThread {
+input NewProduct {
     title: String!
     theme: String!
     coverImage: String!
     price: Float
-    isForSell: Boolean!
 }
 
 input NewVideoInput {
@@ -283,20 +335,16 @@ input UpdateUserInput {
     profilePic: String
 }
 
-input NewEvent {
+input NewCommunity {
     name: String!
-    price: Float!
-    image: String!
-    detail: String!
-    status: String!
-    date: String!
+    philosophy: String!
+    logo: String
+    members: [String!]!
+    subscription: Float!
 }
 
-input UpdateEvent {
-    name: String
-    price: Float
-    image: String
-    detail: String
-    status: String
-    date: String
+input NewMessage {
+    audio: String
+    text: String
+    community: String!
 }

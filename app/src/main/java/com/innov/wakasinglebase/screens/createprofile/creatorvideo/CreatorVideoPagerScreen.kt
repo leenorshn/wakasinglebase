@@ -54,7 +54,9 @@ fun CreatorVideoPagerScreen(
                     videos = it,
                     showUploadDate = true,
                     onclickComment = onclickComment,
-                    onClickLike = { s: String, b: Boolean -> },
+                    onClickLike = {s:String,b:Boolean->
+                        viewModel.onTriggerEvent(CreatorVideoEvent.OnLikeVideoEvent(s))
+                    },
                     onclickFavourite = {},
                     onClickAudio = onClickAudio,
                     onClickUser = onClickUser,

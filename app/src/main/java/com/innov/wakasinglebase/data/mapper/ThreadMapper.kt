@@ -1,14 +1,13 @@
 package com.innov.wakasinglebase.data.mapper
 
-import com.innov.wakasinglebase.data.model.ThreadModel
+import com.innov.wakasinglebase.data.model.ProductModel
 import com.innov.wakasinglebase.data.model.UserModel
-import com.wakabase.MyThreadsQuery
-import com.wakabase.ThreadQuery
-import com.wakabase.ThreadsQuery
+import com.wakabase.MyProductsQuery
+import com.wakabase.ProductQuery
 
 
-fun ThreadsQuery.Thread.toThreadModel():ThreadModel{
-    return ThreadModel(
+fun MyProductsQuery.MyProduct .toThreadModel():ProductModel{
+    return ProductModel(
         id=id,
         title=title,
         theme=theme,
@@ -16,7 +15,6 @@ fun ThreadsQuery.Thread.toThreadModel():ThreadModel{
         price=price,
         createdAt = createdAt.toLong(),
         isArchived = isArchived,
-        isForSell = isForSell,
         author = UserModel(
             uid=author.id,
             name=author.name,
@@ -26,8 +24,10 @@ fun ThreadsQuery.Thread.toThreadModel():ThreadModel{
     )
 }
 
-fun MyThreadsQuery.MyThread.toThreadModel():ThreadModel{
-    return ThreadModel(
+
+
+fun ProductQuery.Product.toThreadModel():ProductModel{
+    return ProductModel(
         id=id,
         title=title,
         theme=theme,
@@ -35,26 +35,6 @@ fun MyThreadsQuery.MyThread.toThreadModel():ThreadModel{
         price=price,
         createdAt = createdAt.toLong(),
         isArchived = isArchived,
-        isForSell = isForSell,
-        author = UserModel(
-            uid=author.id,
-            name=author.name,
-            profilePic = author.profilePic
-
-        )
-    )
-}
-
-fun ThreadQuery.Thread.toThreadModel():ThreadModel{
-    return ThreadModel(
-        id=id,
-        title=title,
-        theme=theme,
-        coverImage=coverImage,
-        price=price,
-        createdAt = createdAt.toLong(),
-        isArchived = isArchived,
-        isForSell = isForSell,
         author = UserModel(
             uid=author.id,
             name=author.name,

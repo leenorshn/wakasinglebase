@@ -4,15 +4,18 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.network.okHttpClient
+import com.innov.wakasinglebase.data.repository.CommunityRepository
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import com.innov.wakasinglebase.data.repository.authentification.TokenRepository
-import com.innov.wakasinglebase.data.repository.events.EventRepository
+import com.innov.wakasinglebase.data.repository.chats.ChatRepository
+import com.innov.wakasinglebase.data.source.ChatDataSource
+import com.innov.wakasinglebase.data.source.CommunityDataSource
 import com.innov.wakasinglebase.data.source.ThreadDataSource
-import com.innov.wakasinglebase.data.source.TicketDataSource
 import com.innov.wakasinglebase.data.source.UserDataSource
 import com.innov.wakasinglebase.data.source.VideoDataSource
+import com.innov.wakasinglebase.domain.ChatRepositoryImpl
+import com.innov.wakasinglebase.domain.CommunityRepositoryImpl
 import com.innov.wakasinglebase.domain.auth.AuthRepositoryImpl
-import com.innov.wakasinglebase.domain.ticket.EventRepositoryImpl
 import com.innov.wakasinglebase.signin.utils.AuthorizationInterceptor
 import dagger.Module
 import dagger.Provides
@@ -62,6 +65,12 @@ object AppModule  {
 
     @Provides
     @Singleton
+    fun provideChatDataSource(apolloClient: ApolloClient): ChatDataSource {
+        return ChatDataSource(apolloClient)
+    }
+
+    @Provides
+    @Singleton
     fun provideThreadDataSource(apolloClient: ApolloClient): ThreadDataSource {
         return ThreadDataSource(apolloClient)
     }
@@ -74,8 +83,16 @@ object AppModule  {
 
     @Provides
     @Singleton
-    fun provideTicketDataSource(apolloClient: ApolloClient): TicketDataSource {
-        return TicketDataSource(apolloClient)
+    fun provideCommunityDataSource(apolloClient: ApolloClient): CommunityDataSource {
+        return CommunityDataSource(apolloClient)
+    }
+
+
+
+    @Provides
+    @Singleton
+    fun provideChatRepository(dataSource: ChatDataSource): ChatRepository {
+        return ChatRepositoryImpl(dataSource)
     }
 
 
@@ -88,8 +105,8 @@ object AppModule  {
 
     @Singleton
     @Provides
-    fun providesTicketRepository(dataSource: TicketDataSource): EventRepository {
-        return EventRepositoryImpl(dataSource)
+    fun providesCommunityRepository(dataSource: CommunityDataSource):CommunityRepository{
+        return CommunityRepositoryImpl(dataSource)
     }
 
 

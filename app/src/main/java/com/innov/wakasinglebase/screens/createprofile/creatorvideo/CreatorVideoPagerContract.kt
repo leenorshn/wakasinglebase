@@ -12,5 +12,6 @@ data class ViewState(
 )
 
 sealed class CreatorVideoEvent {
+    data class OnLikeVideoEvent(val videoId:String):CreatorVideoEvent()
 }
 

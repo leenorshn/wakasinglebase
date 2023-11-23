@@ -52,8 +52,8 @@ fun WakawakaVerticalVideoPager(
     initialPage: Int? = 0,
     showUploadDate: Boolean = false,
     onclickComment: (videoId: String) -> Unit,
-    onClickLike: (videoId: String, likeStatus: Boolean) -> Unit,
     onclickFavourite: (videoId: String) -> Unit,
+    onClickLike: (videoId: String,isLiked:Boolean) -> Unit,
     onClickVote:(videoId:String)->Unit,
     onClickAudio: (VideoModel) -> Unit,
     onClickUser: (userId: String) -> Unit,
@@ -141,7 +141,10 @@ fun WakawakaVerticalVideoPager(
                         onClickUser = onClickUser,
                         onClickFavourite = onClickFavourite,
                         onClickShare = onClickShare,
-                        onClickVote = onClickVote
+                        onClickVote = onClickVote,
+                        onClickLike = {s:String,b:Boolean->
+                            onClickLike.invoke(s,b)
+                        }
                     )
                 }
                 12.dp.Space()
@@ -207,10 +210,18 @@ fun SideItems(
     onClickUser: (userId: String) -> Unit,
     onClickVote: (videoId: String) -> Unit,
     onClickShare: (() -> Unit)? = null,
+    onClickLike: (videoId: String,isLiked:Boolean) -> Unit,
     onClickFavourite: (isFav: Boolean) -> Unit
 ) {
 
+    var likes by remember {
+        mutableIntStateOf(item.like)
+    }
+
     val context = LocalContext.current
+    LaunchedEffect(key1 = Unit, ){
+        likes=item.like
+    }
     Column(modifier = modifier, horizontalAlignment = Alignment.End) {
         12.dp.Space()
 
@@ -237,10 +248,13 @@ fun SideItems(
         }else {
             LikeIconButton(
                 isLiked = isLiked,
-                likeCount = item.view.formattedCount(),
+                likeCount = likes.formattedCount(),
                 onLikedClicked = {
+                    onClickLike.invoke(item.videoId,it)
                     isLiked = it
                     item.currentViewerInteraction.isLikedByYou = it
+                    likes += 1
+
                 })
         }
         20.dp.Space()
@@ -409,6 +423,27 @@ fun FooterUi(
     onClickUser: (userId: String) -> Unit,
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.Bottom) {
+       if (item.product!=null){
+           Text("for all the content", fontSize = 12.sp)
+           OutlinedButton(
+
+               onClick = { /*TODO navigate to product with this ID*/ },
+               border= BorderStroke(0.7.dp, PrimaryColor,),
+               shape= RoundedCornerShape(32),
+               colors=ButtonDefaults.outlinedButtonColors(
+                   backgroundColor = PrimaryColor,
+                   contentColor = Color.White,
+
+                   )
+           ) {
+               Icon(painter = painterResource(id = R.drawable.usd_money_24), contentDescription = "",modifier=Modifier.size(16.dp))
+               12.dp.Space()
+               Text(text = "  Purchase ", fontSize = 12.sp)
+
+           }
+       }
+
+        4.dp.Space()
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
             item.authorDetails?.let { it.uid?.let { it1 -> onClickUser(it1) } }
         }) {

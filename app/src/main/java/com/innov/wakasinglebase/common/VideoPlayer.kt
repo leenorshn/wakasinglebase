@@ -28,6 +28,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.innov.wakasinglebase.core.utils.FileUtils
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.innov.wakasinglebase.ui.theme.*
@@ -69,11 +70,16 @@ fun VideoPlayer(
     if (pagerState.settledPage == pageIndex) {
         //val videoOptions = VideoOptions("${video.videoId}", VideoType.VOD /* For VOD, or VideoType.LIVE for Live */, "Mriz6mr0R8OOGidYspbYVVmE38YjG9EUer3TfrEGJea")
         val exoPlayer = remember(context) {
-            ExoPlayer.Builder(context).build().apply {
+            ExoPlayer.Builder(context)
+                //.setLoadControl(loadControl)
+                .build().apply {->
                 videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT
                 repeatMode = Player.REPEAT_MODE_ONE
+
                 //setMediaSource(MediaItem.fromUri(Uri.parse(video.videoId)))
+
                 setMediaItem(MediaItem.fromUri(Uri.parse(video.videoLink)))
+
                 playWhenReady = true
                 prepare()
                 addListener(object : Player.Listener {
@@ -85,6 +91,9 @@ fun VideoPlayer(
                 })
             }
         }
+
+
+
 
         val lifecycleOwner by rememberUpdatedState(LocalLifecycleOwner.current)
         DisposableEffect(key1 = lifecycleOwner) {
@@ -134,8 +143,9 @@ fun VideoPlayer(
     }
 
     if (thumbnail.second) {
+       val context= LocalContext.current
         AsyncImage(
-            model = thumbnail.first,
+            model = ImageRequest.Builder(context = context).data(thumbnail.first).crossfade(200).build(),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -143,6 +153,11 @@ fun VideoPlayer(
     }
 
 }
+
+private const val MIN_BUFFER_MS = 3000 // Minimum video buffer duration in milliseconds
+private const val MAX_BUFFER_MS = 10000 // Maximum video buffer duration in milliseconds
+private const val MIN_PLAYBACK_START_BUFFER_MS = 2500 // Minimum buffer before starting playback in milliseconds
+private const val MIN_PLAYBACK_RESUME_BUFFER_MS = 5000
 
 
 

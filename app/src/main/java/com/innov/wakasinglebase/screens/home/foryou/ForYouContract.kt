@@ -14,6 +14,7 @@ data class ViewState(
 
 sealed class ForYouEvent {
     object OnLoadVideo:ForYouEvent()
+    data class OnLikeVideo(val videoId:String):ForYouEvent()
 }
 
 sealed class Result<T>(val data : T? = null, val e : Throwable? = null){

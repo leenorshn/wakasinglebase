@@ -6,6 +6,10 @@ mutation deleteVideo($id:ID!){
     deleteVideo(id: $id)
 }
 
+mutation likeVideo($videoId:ID!){
+    likeVideo(id: $videoId)
+}
+
 query videos($limit:Int){
     videos(limit:$limit){
         id
@@ -24,6 +28,7 @@ query videos($limit:Int){
         title
         link
         category
+        product
         description
         hasTag
         like
@@ -55,6 +60,7 @@ query myVideo($UID:ID!){
         category
         description
         hasTag
+        product
         like
         isLikedBy
         view
@@ -85,6 +91,7 @@ query video($id:ID!){
         hasTag
         like
         isLikedBy
+        product
         view
         comment
         createdAt

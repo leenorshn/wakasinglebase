@@ -1,12 +1,14 @@
 package com.innov.wakasinglebase.screens.createprofile.creatorprofile
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.DestinationRoute.PassedKey.USER_ID
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
 import com.innov.wakasinglebase.data.model.VideoModel
+import com.innov.wakasinglebase.domain.creatorprofile.GetCreatorProfileFollowUseCase
 import com.innov.wakasinglebase.domain.creatorprofile.GetCreatorProfileUseCase
 import com.innov.wakasinglebase.domain.creatorprofile.GetCreatorPublicVideoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +25,8 @@ class CreatorProfileViewModel
 @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val getCreatorProfileUseCase: GetCreatorProfileUseCase,
-    private val getCreatorPublicVideoUseCase: GetCreatorPublicVideoUseCase
+    private val getCreatorPublicVideoUseCase: GetCreatorPublicVideoUseCase,
+    private val getCreatorProfileFollowUseCase: GetCreatorProfileFollowUseCase
 ) : BaseViewModel<ViewState, CreatorProfileEvent>() {
     val userId: String? = savedStateHandle[USER_ID]
 
@@ -33,7 +36,14 @@ class CreatorProfileViewModel
     private val _likedVideosList = MutableStateFlow(LikedVideoState())
     val likedVideosList = _likedVideosList.asStateFlow()
 
+    val followState= mutableStateOf(FollowState())
+
     override fun onTriggerEvent(event: CreatorProfileEvent) {
+        when(event){
+            is CreatorProfileEvent.OnFollowUser -> {
+                followUser(event.id)
+            }
+        }
     }
 
     init {
@@ -72,6 +82,40 @@ class CreatorProfileViewModel
 
                     is BaseResponse.Success -> {
                         updateState(ViewState(creatorProfile = it.data))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun followUser(id: String) {
+        viewModelScope.launch {
+            getCreatorProfileFollowUseCase(id).collect {
+                when (it) {
+                    is BaseResponse.Error -> {
+
+                       followState.value=followState.value.copy(
+                           isLoading = false,
+                           error = "Error of updating user",
+                           success = false
+                       )
+
+                    }
+
+                    BaseResponse.Loading -> {
+                        followState.value=followState.value.copy(
+                            isLoading = true,
+                            error = null,
+                            success = false,
+                        )
+                    }
+
+                    is BaseResponse.Success -> {
+                        followState.value=followState.value.copy(
+                            isLoading = false,
+                            error = null,
+                            success = true,
+                        )
                     }
                 }
             }

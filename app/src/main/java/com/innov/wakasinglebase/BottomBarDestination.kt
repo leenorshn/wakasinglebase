@@ -32,7 +32,7 @@ enum class BottomBarDestination(
 
     EXPLORE(
         route = THREADS_ROUTE,
-        title = R.string.threads,
+        title = R.string.community,
         unFilledIcon = R.drawable.comment_24,
         filledIcon = R.drawable.comment_alt_24
     ),

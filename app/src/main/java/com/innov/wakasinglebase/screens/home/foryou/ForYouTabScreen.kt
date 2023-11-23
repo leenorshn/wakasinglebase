@@ -1,16 +1,19 @@
 package com.innov.wakasinglebase.screens.home.foryou
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.innov.wakasinglebase.common.WakawakaVerticalVideoPager
@@ -29,7 +32,13 @@ fun ForYouTabScreen(
     viewModel: ForYouViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.viewState.collectAsState()
-
+    val likeState by viewModel.likeState
+    val context= LocalContext.current
+    LaunchedEffect(key1 = likeState.isLiked ){
+        if (likeState.isLiked){
+            Toast.makeText(context,"video liked",Toast.LENGTH_LONG).show()
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +67,9 @@ fun ForYouTabScreen(
            WakawakaVerticalVideoPager(
                 videos = it,
                 onclickComment = { navController.navigate(COMMENT_BOTTOM_SHEET_ROUTE) },
-                onClickLike = { s: String, b: Boolean -> },
+                onClickLike = {s:String ,b:Boolean->
+                    viewModel.onTriggerEvent(ForYouEvent.OnLikeVideo(s))
+                },
                 onclickFavourite = {},
                 onClickAudio = {},
                onClickVote = {},

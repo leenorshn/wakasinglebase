@@ -2,8 +2,8 @@
     <string name="app_name">Waka-waka</string>
 
     <string name="home">Home</string>
-    <string name="threads">Threads</string>
-    <string name="event">Events</string>
+    <string name="community">Community</string>
+    <string name="event">Chats</string>
     <string name="profile">Account</string>
 
     <string name="following">Following</string>
@@ -18,7 +18,8 @@
     <string name="trending_creators">Trending creators</string>
     <string name="follow_and_account_to_see">Explorer les comptes de vos Stars preferées.</string>
     <string name="follow">Voir plus</string>
-    <string name="follow_one">Suivre</string>
+    <string name="follow_one">Follow me</string>
+    <string name="unfollow_one">Un follow me</string>
     <string name="add_comment">Add comment…</string>
 
     <string name="followers">Followers</string>

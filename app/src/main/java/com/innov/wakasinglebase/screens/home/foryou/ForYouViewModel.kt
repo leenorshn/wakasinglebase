@@ -1,5 +1,6 @@
 package com.innov.wakasinglebase.screens.home.foryou
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
@@ -17,6 +18,8 @@ import javax.inject.Inject
 class ForYouViewModel @Inject constructor(
     private val videoRepository: VideoRepositoryImpl
 ) : BaseViewModel<ViewState, ForYouEvent>() {
+
+    val likeState = mutableStateOf(LikeState())
     init {
         viewModelScope.launch {
             getForYouPageFeeds()
@@ -28,6 +31,40 @@ class ForYouViewModel @Inject constructor(
             ForYouEvent.OnLoadVideo -> {
                 viewModelScope.launch {
                     getForYouPageFeeds()
+                }
+            }
+
+            is ForYouEvent.OnLikeVideo -> {
+                likeVideo(event.videoId)
+            }
+        }
+    }
+
+    private  fun likeVideo(id:String){
+        viewModelScope.launch {
+            videoRepository.likeVideo(id).collect{
+                when(it){
+                    is BaseResponse.Error -> {
+                        likeState.value=likeState.value.copy(
+                            error=it.error,
+                            isLiked = false,
+                            isLoading = false,
+                        )
+                    }
+                    BaseResponse.Loading -> {
+                        likeState.value=likeState.value.copy(
+                            error=null,
+                            isLiked = false,
+                            isLoading = true,
+                        )
+                    }
+                    is BaseResponse.Success -> {
+                        likeState.value=likeState.value.copy(
+                            error=null,
+                            isLiked = true,
+                            isLoading = false,
+                        )
+                    }
                 }
             }
         }
@@ -60,3 +97,9 @@ class ForYouViewModel @Inject constructor(
 
 
 }
+
+data class LikeState(
+    val isLiked:Boolean=false,
+   val  error: String?=null,
+    val isLoading:Boolean=false
+)

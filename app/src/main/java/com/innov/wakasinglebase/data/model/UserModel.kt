@@ -18,6 +18,8 @@ data class UserModel(
     val profilePic: String?=null,
     val isVerified: Boolean=false,
     val hasContract: Boolean = false,
+    val following:List<String> = emptyList(),
+    val followers:List<String> = emptyList()
 )
 
 data class AuthModel(

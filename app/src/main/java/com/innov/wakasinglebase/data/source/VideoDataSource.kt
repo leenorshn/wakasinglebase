@@ -9,6 +9,7 @@ import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.data.mapper.toVideoModel
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.wakabase.CreateVideoMutation
+import com.wakabase.LikeVideoMutation
 import com.wakabase.VideosQuery
 import com.wakabase.type.NewVideoInput
 import kotlinx.coroutines.flow.Flow
@@ -22,12 +23,11 @@ import javax.inject.Inject
 class VideoDataSource @Inject constructor(
   private val apolloClient: ApolloClient
 ){
-
     suspend fun createVideo(
         videoId: String,
         category: String,
         title: String,
-       // author: UserModel,
+        // author: UserModel,
         description: String
     ): Flow<BaseResponse<Boolean>> {
 
@@ -35,18 +35,39 @@ class VideoDataSource @Inject constructor(
         return flow {
             emit(BaseResponse.Loading)
 
-          val res = apolloClient.mutation(
-              CreateVideoMutation(data= NewVideoInput(
-                description=description,
-                title=title,
-                category=category,
-               // author="${author.uid}",
-                link=videoId,
-                hasTag = emptyList()
-            ))).execute()
+            val res = apolloClient.mutation(
+                CreateVideoMutation(data= NewVideoInput(
+                    description=description,
+                    title=title,
+                    category=category,
+                    // author="${author.uid}",
+                    link=videoId,
+                    hasTag = emptyList()
+                ))).execute()
 
             if (res.hasErrors()){
                 emit(BaseResponse.Error("Error when creating video"))
+            }else{
+                emit(BaseResponse.Success(true))
+            }
+
+
+        }.catch {
+            emit(BaseResponse.Error("Error when creating video"))
+        }
+    }
+    suspend fun likeVideo(
+        videoId: String,
+    ): Flow<BaseResponse<Boolean>> {
+
+
+        return flow {
+            emit(BaseResponse.Loading)
+
+          val res = apolloClient.mutation(LikeVideoMutation(videoId)).execute()
+
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("Error when liking a video"))
             }else{
                 emit(BaseResponse.Success(true))
             }
@@ -78,7 +99,9 @@ class VideoDataSource @Inject constructor(
             emit(BaseResponse.Error("Error hard to load videos"))
         }
         if (resp.data?.videos!=null){
-            var videos=resp.data?.videos?.map { it.toVideoModel() }?: emptyList()
+            var videos=resp.data?.videos?.map {
+                it.toVideoModel() }?: emptyList()
+
             emit(BaseResponse.Success(videos.shuffled()))
 
         }
@@ -114,4 +137,6 @@ class VideoDataSource @Inject constructor(
             emit(BaseResponse.Success(userVideoList))
         }
     }
+
+
 }

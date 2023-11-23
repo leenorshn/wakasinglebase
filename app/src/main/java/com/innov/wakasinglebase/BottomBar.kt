@@ -1,9 +1,24 @@
 package com.innov.wakasinglebase
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -12,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
+import com.innov.wakasinglebase.core.DestinationRoute
 
 
 /**
@@ -36,6 +52,7 @@ fun BottomBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RowScope.BottomItem(
     screen: BottomBarDestination,
@@ -73,16 +90,44 @@ fun RowScope.BottomItem(
                 )
             }
         },
+
         icon = {
-            Icon(
-                painter = painterResource(id = icon),
-                contentDescription = null,
-                Modifier
-                    .padding(bottom = 9.dp)
-                    .size(iconSize)
-                    .offset(y = offsetY),
-                tint = Color.Unspecified,
-            )
+            if (screen.route == DestinationRoute.LOTTO_ROUTE) {
+                Box(modifier = Modifier) {
+                    Icon(
+                        painter = painterResource(id = icon),
+                        contentDescription = null,
+                        Modifier
+                            .padding(bottom = 9.dp)
+                            .size(iconSize)
+                            .offset(y = offsetY),
+                        tint = Color.Unspecified,
+                    )
+                    Badge(
+                        containerColor = Color.Red,
+                        modifier = Modifier
+                            .size(6.dp)
+                            .clip(RoundedCornerShape(50))
+
+                            .align(
+                                alignment = Alignment.TopEnd
+                            )
+                    )
+                }
+
+            } else {
+                Icon(
+                    painter = painterResource(id = icon),
+                    contentDescription = null,
+                    Modifier
+                        .padding(bottom = 9.dp)
+                        .size(iconSize)
+                        .offset(y = offsetY),
+                    tint = Color.Unspecified,
+                )
+            }
+
+
         },
         colors = NavigationBarItemDefaults.colors(
             indicatorColor = MaterialTheme.colorScheme.surface,
@@ -94,8 +139,8 @@ fun RowScope.BottomItem(
             screen.route.let {
                 // todo check for authentication
 
-                navController.navigate(it){
-                    launchSingleTop=true
+                navController.navigate(it) {
+                    launchSingleTop = true
                 }
             }
         }

@@ -8,13 +8,13 @@ import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.data.mapper.toAuthModel
 import com.innov.wakasinglebase.data.mapper.toUserModel
 import com.innov.wakasinglebase.data.model.AuthModel
-import com.innov.wakasinglebase.data.model.FriendModel
 import com.innov.wakasinglebase.data.model.UserModel
-import com.innov.wakasinglebase.data.model.toFriendModel
 import com.wakabase.FollowMeMutation
-import com.wakabase.FollowersQuery
+import com.wakabase.FriendsQuery
 import com.wakabase.LoginOrCreateAccountMutation
 import com.wakabase.MeQuery
+import com.wakabase.MyFriendsQuery
+import com.wakabase.UnFollowMeMutation
 import com.wakabase.UpdateUserMutation
 import com.wakabase.UpdateUserOnlineMutation
 import com.wakabase.UserQuery
@@ -88,15 +88,15 @@ class UserDataSource @Inject constructor(
         }
     }
     suspend fun me(): Flow<BaseResponse<UserModel?>> {
-
-
         return flow {
             emit(BaseResponse.Loading)
 
-          val res= apolloClient.query(MeQuery()).execute()
+          val res= apolloClient.query(MeQuery())
+              .fetchPolicy(FetchPolicy.NetworkFirst)
+              .execute()
 
             if (res.hasErrors()){
-                emit(BaseResponse.Error("error user login"))
+                emit(BaseResponse.Error("error hard to load current user"))
             }
             if(res.data!=null){
                 val user=res.data?.me?.toUserModel()
@@ -122,22 +122,7 @@ class UserDataSource @Inject constructor(
         }
     }
 
-   suspend fun getFriends(): Flow<BaseResponse<List<FriendModel>>> {
-        return flow {
-            emit(BaseResponse.Loading)
-            val res=apolloClient.query(FollowersQuery()).fetchPolicy(FetchPolicy.NetworkFirst).execute()
-            if (res.hasErrors()){
-                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
-            }
-            val friends=   res.data?.friends?.map {friend->
-               friend.follower.toFriendModel()
-            }?:emptyList()
-            emit(BaseResponse.Success(friends))
-        }.catch {
 
-            emit(BaseResponse.Error("Error when updating profile ${it.message}"))
-        }
-    }
 
     suspend fun getUsers(): Flow<BaseResponse<List<UserModel>>> {
         return flow {
@@ -167,6 +152,18 @@ class UserDataSource @Inject constructor(
             emit(BaseResponse.Error("error"))
         }
     }
+    suspend fun unFollowMe(id:String):Flow<BaseResponse<Boolean>>{
+        return flow {
+            emit(BaseResponse.Loading)
+            val res=apolloClient.mutation(UnFollowMeMutation(id)).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("error"))
+            }
+            emit(BaseResponse.Success(true))
+        }.catch {
+            emit(BaseResponse.Error("error"))
+        }
+    }
 
      fun fetchSpecificUser(id: String): Flow<BaseResponse<UserModel>> {
         return flow {
@@ -178,6 +175,36 @@ class UserDataSource @Inject constructor(
             }
             val user=   res.data?.user?.toUserModel()
             emit(BaseResponse.Success(user!!))
+        }.catch {
+            emit(BaseResponse.Error("error ${it.message}"))
+        }
+    }
+
+    fun fetchFriendUser(id: String): Flow<BaseResponse<List<UserModel>>> {
+        return flow {
+            emit(BaseResponse.Loading)
+
+            val res=apolloClient.query(FriendsQuery(id)).fetchPolicy(FetchPolicy.NetworkFirst).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+            }
+            val users=   res.data?.friends?.map { it.toUserModel() }?: emptyList()
+            emit(BaseResponse.Success(users))
+        }.catch {
+            emit(BaseResponse.Error("error ${it.message}"))
+        }
+    }
+
+    fun fetchMyFriend(): Flow<BaseResponse<List<UserModel>>> {
+        return flow {
+            emit(BaseResponse.Loading)
+
+            val res=apolloClient.query(MyFriendsQuery()).fetchPolicy(FetchPolicy.NetworkFirst).execute()
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+            }
+            val users=   res.data?.myFriends?.map { it.toUserModel() }?: emptyList()
+            emit(BaseResponse.Success(users))
         }.catch {
             emit(BaseResponse.Error("error ${it.message}"))
         }

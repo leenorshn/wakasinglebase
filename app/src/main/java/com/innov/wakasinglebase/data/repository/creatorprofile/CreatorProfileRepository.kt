@@ -22,4 +22,11 @@ class CreatorProfileRepository @Inject constructor(
     suspend fun getCreatorPublicVideo(id: String): Flow<BaseResponse<List<VideoModel>>> {
         return videoDataSource.fetchVideosOfParticularUser(id)
     }
+    suspend fun likeVideo(id:String):Flow<BaseResponse<Boolean>>{
+       return  videoDataSource.likeVideo(id)
+    }
+
+    suspend fun followUser(id:String):Flow<BaseResponse<Boolean>>{
+        return  dataSource.followMe(id)
+    }
 }

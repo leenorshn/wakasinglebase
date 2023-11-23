@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,11 +26,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.innov.wakasinglebase.R
-import com.innov.wakasinglebase.common.TopBar
 import com.innov.wakasinglebase.core.DestinationRoute
+import com.innov.wakasinglebase.core.DestinationRoute.AUTH_ROUTE
 import com.innov.wakasinglebase.core.extension.MediumSpace
-import com.innov.wakasinglebase.core.extension.SmallSpace
 import com.innov.wakasinglebase.core.extension.Space
+import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.ui.theme.*
 
 
@@ -51,7 +52,18 @@ fun MyProfileScreen(
 
 
     Scaffold(
-        topBar = { TopBar(title = stringResource(id = R.string.settings_and_privacy)) { navController.navigateUp() } }
+        topBar = {
+            TopAppBar(title = {
+                Text("My Account", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            }, actions = {
+                TextButton(onClick = {
+                    settingViewModel.onTriggerEvent(SettingEvent.OnLogout)
+                    navController.navigate(AUTH_ROUTE)
+                }) {
+                    Text("Logout")
+                }
+            })
+        }
     ) {
         Column(
             modifier = Modifier
@@ -61,7 +73,7 @@ fun MyProfileScreen(
                 .verticalScroll(scrollState)
         ) {
 
-            SmallSpace()
+
             if (uiState.currentUser != null) {
                 ListItem(
                     headlineContent = {
@@ -111,32 +123,33 @@ fun MyProfileScreen(
 //
                 MediumSpace()
 
-                GroupedUiCardSection(item = "Account"){
-                    if(uiState.currentUser?.isMonetizated==true) {
+                GroupedUiCardSection(item = "Account") {
+                    if (uiState.currentUser?.isMonetizated == true) {
                         SettingItem(
                             onClickItem = { /*TODO*/ },
                             icon = R.drawable.dollar_24,
-                            title = R.string.balance
+                            title = R.string.balance,
+                            user = uiState.currentUser
                         )
-                        Row {
+                        Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
 
                             AccountButton(
                                 icon = R.drawable.withdraw_money,
-                                iconColor = Color.Red,
+                                // iconColor = Color.Red,
                                 name = "Withdraw "
                             ) {
 
                             }
                             AccountButton(
                                 icon = R.drawable.send_money,
-                                iconColor = Color.Blue,
+                                //  iconColor = Color.Blue,
                                 name = "Send "
                             ) {
 
                             }
                             AccountButton(
                                 icon = R.drawable.recharge_money,
-                                iconColor = Color.Black,
+                                // iconColor = Color.Black,
                                 name = "Recharge"
                             ) {
 
@@ -144,13 +157,44 @@ fun MyProfileScreen(
 
                         }
                         Divider(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp)
                         )
-                    }else{
+                    } else {
+                        Row(horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Top,
+                            modifier = Modifier.fillMaxWidth()) {
+                            AccountButton(
+                                icon = R.drawable.recharge_money,
+                                // iconColor = Color.Black,
+                                name = "Recharge"
+                            ) {
+
+                            }
+                            Column {
+                                Text(text = "Balance", fontSize = 12.sp,color=Color.Gray,)
+                                10.dp.Space()
+                                Text(
+                                    text = "${uiState.currentUser?.balance} $",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = White,
+                                    fontSize=16.sp,
+                                    modifier = Modifier
+                                        .background(
+                                            color = MaterialTheme.colorScheme.primary,
+                                            RoundedCornerShape(20)
+                                        )
+                                        .padding(horizontal = 22.dp, vertical = 4.dp)
+                                )
+                            }
+                        }
+                        12.dp.Space()
                         SettingItem(
                             onClickItem = { /*TODO*/ },
                             icon = R.drawable.dollar_24,
-                            title = R.string.monetisated
+                            title = R.string.monetisated,
+                            user = null
                         )
                     }
 
@@ -158,40 +202,52 @@ fun MyProfileScreen(
                     SettingItem(
                         onClickItem = {
 
-                            navController.navigate(DestinationRoute.MY_VIDEO_ROUTE.replace("{videoId}",uiState.currentUser?.uid!!))
+                            navController.navigate(
+                                DestinationRoute.MY_VIDEO_ROUTE.replace(
+                                    "{videoId}",
+                                    uiState.currentUser?.uid!!
+                                )
+                            )
                         },
                         icon = R.drawable.ic_graph,
-                        title = R.string.myvideo
+                        title = R.string.myvideo,
+                        user = uiState.currentUser
                     )
-                    if(uiState.currentUser?.isMonetizated==true){
+                    if (uiState.currentUser?.isMonetizated == true) {
                         SettingItem(
                             onClickItem = {
                                 navController.navigate(DestinationRoute.MY_BUSINESS_ROUTE)
                             },
                             icon = R.drawable.ic_dollar,
                             title = R.string.mybusiness,
+                            user = uiState.currentUser
                         )
                     }
 
                 }
-                GroupedUiCardSection(item = "Support & About"){
+                GroupedUiCardSection(item = "Support & About") {
 
                     SettingItem(
                         onClickItem = { /*TODO*/ },
                         icon = R.drawable.logo_tiktok_compose,
-                        title = R.string.about
+                        title = R.string.about,
+                        user = null
                     )
 
                     SettingItem(
                         onClickItem = { /*TODO*/ },
                         icon = R.drawable.ic_cle,
-                        title = R.string.privacy_policy
+                        title = R.string.privacy_policy,
+                        user = null
                     )
 
                 }
 
             } else {
-                CircularProgressIndicator(color = PrimaryColor)
+                LinearProgressIndicator(
+                    color = PrimaryColor,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
 
@@ -211,7 +267,7 @@ fun MyProfileScreen(
 }
 
 @Composable
-fun GroupedUiCardSection(item: String, items:@Composable ()->Unit) {
+fun GroupedUiCardSection(item: String, items: @Composable () -> Unit) {
     Text(
         text = item,
         modifier = Modifier.padding(horizontal = 20.dp),
@@ -242,9 +298,10 @@ private val expandedTitleHeight = 132.dp
 fun SettingItem(
     onClickItem: () -> Unit,
     icon: Int,
+    user: UserModel?,
     title: Int
 ) {
-    val c = if (title==R.string.monetisated) Color.Blue.copy(alpha = 0.9f) else Color.Black
+    val c = if (title == R.string.monetisated) Color.Blue.copy(alpha = 0.9f) else Color.Black
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -263,18 +320,19 @@ fun SettingItem(
         Text(
             text = stringResource(id = title),
             modifier = Modifier.weight(1f),
-            color=c,
+            color = c,
             style = MaterialTheme.typography.bodyMedium
         )
         if (title == R.string.balance) {
             Text(
-                text = "0.00 Fc",
+                text = "${user?.balance} $",
                 style = MaterialTheme.typography.labelMedium,
                 color = White,
+                fontSize=16.sp,
                 modifier = Modifier
                     .background(
                         color = MaterialTheme.colorScheme.primary,
-                        RoundedCornerShape(2.dp)
+                        RoundedCornerShape(20)
                     )
                     .padding(horizontal = 22.dp, vertical = 4.dp)
             )
@@ -291,14 +349,25 @@ fun SettingItem(
 
 @Composable
 fun AccountButton(
-    icon:Int,
-    iconColor:Color,
-    name:String,
-    onClick:()->Unit,
+    icon: Int,
+    // iconColor: Color,
+    name: String,
+    onClick: () -> Unit,
 ) {
-    TextButton(onClick = { onClick.invoke() }) {
-       Icon(painter = painterResource(id = icon), contentDescription ="" , tint = iconColor)
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = name, style = TextStyle(color=Color.Black))
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable {
+            onClick.invoke()
+        }) {
+        OutlinedButton(
+            onClick = { onClick.invoke() },
+            contentPadding = PaddingValues(0.dp),
+            shape = RoundedCornerShape(32),
+            modifier = Modifier.size(56.dp),
+        ) {
+            Icon(painter = painterResource(id = icon), contentDescription = "", tint = Color.Black)
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = name, style = TextStyle(color = Color.Black))
     }
 }
