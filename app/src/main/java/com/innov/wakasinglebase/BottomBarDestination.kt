@@ -3,9 +3,9 @@ package com.innov.wakasinglebase
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.DestinationRoute.CAMERA_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.HOME_SCREEN_ROUTE
-import com.innov.wakasinglebase.core.DestinationRoute.LOTTO_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.MY_PROFILE_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.THREADS_ROUTE
 
@@ -30,11 +30,11 @@ enum class BottomBarDestination(
         filledIcon = R.drawable.ic_home_fill
     ),
 
-    EXPLORE(
-        route = THREADS_ROUTE,
-        title = R.string.community,
-        unFilledIcon = R.drawable.comment_24,
-        filledIcon = R.drawable.comment_alt_24
+    GIFT(
+        route = DestinationRoute.LOTTO_ROUTE,
+        title = R.string.competition,
+        unFilledIcon = R.drawable.etoile_24,
+        filledIcon = R.drawable.star_24
     ),
 
     ADD(
@@ -43,12 +43,13 @@ enum class BottomBarDestination(
         darkModeIcon = R.drawable.logo_tiktok_compose
     ),
 
-    GIFT(
-        route = LOTTO_ROUTE,
-        title = R.string.event,
-        unFilledIcon = R.drawable.coeur_24,
-        filledIcon = R.drawable.coeur_alt_24
+    EXPLORE(
+        route = THREADS_ROUTE,
+        title = R.string.community,
+        unFilledIcon = R.drawable.comment_24,
+        filledIcon = R.drawable.comment_alt_24
     ),
+
 
     Profile(
         route = MY_PROFILE_ROUTE,

@@ -20,8 +20,7 @@ import com.innov.wakasinglebase.screens.comment.commentListingNavGraph
 import com.innov.wakasinglebase.screens.community.communityNavGraph
 import com.innov.wakasinglebase.screens.community.newCommunity.newCommunityNavGraph
 import com.innov.wakasinglebase.screens.community.roomCommunity.roomCommunityNavGraph
-import com.innov.wakasinglebase.screens.conversation.marketNavGraph
-import com.innov.wakasinglebase.screens.conversation.newchat.newChatNavGraph
+import com.innov.wakasinglebase.screens.competition.marketNavGraph
 import com.innov.wakasinglebase.screens.createprofile.creatorprofile.creatorProfileNavGraph
 import com.innov.wakasinglebase.screens.home.homeNavGraph
 import com.innov.wakasinglebase.screens.home.video_detail.videoDetailNavGraph
@@ -81,7 +80,7 @@ fun AppNavHost(
            videoDetailNavGraph(navController)
            myVideosNavGraph(navController)
            myBusinessNavGraph(navController)
-           newChatNavGraph(navController)
+           //newChatNavGraph(navController)
        }
         navigation(DestinationRoute.AUTHENTICATION_ROUTE,DestinationRoute.AUTH_ROUTE){
             //welcome,phone,code,Profile

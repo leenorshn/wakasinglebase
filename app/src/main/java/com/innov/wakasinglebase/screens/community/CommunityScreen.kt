@@ -261,7 +261,7 @@ fun CommunityItem(community:CommunityModel,onClick:(id:String)->Unit) {
                     Text(
                         text = "${community.members.size} members",
                         fontSize = 14.sp,
-                        color = Color.Red,
+                        color = Color.Black,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }

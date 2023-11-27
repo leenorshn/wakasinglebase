@@ -1,9 +1,9 @@
 package com.innov.wakasinglebase.ui.theme
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.colorspace.WhitePoint
 
 
+//val PrimaryColor= Color(0xFF21CE99)
 val PrimaryColor= Color(0xFFFE2C55)
 val GrayMainColor=Color(0XFFF1F1F3)
 val Gray = Color(0XFF8A8B8F) //sub text

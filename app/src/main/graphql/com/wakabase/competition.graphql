@@ -1,0 +1,76 @@
+mutation createCompetition($data:NewCompetition!){
+    createCompetition(data: $data)
+}
+
+mutation joinCompetition($id:ID!){
+    joinCompetition(competitionId: $id)
+}
+
+
+query competitions{
+    allCompetitions {
+        id
+        name
+        price
+        details
+        endAt
+        startAt
+        isArchived
+        createdAt
+        banner
+        participants {
+            id
+            name
+            profilePic
+            phone
+        }
+        owner {
+            id
+            name
+            profilePic
+        }
+        videos {
+            id
+            like
+            product
+            link
+            title
+            category
+
+        }
+    }
+}
+
+query competition($id:ID!){
+    competition(id: $id) {
+        id
+        name
+        price
+        details
+        endAt
+        startAt
+        isArchived
+        createdAt
+        banner
+        participants {
+            id
+            name
+            profilePic
+            phone
+        }
+        owner {
+            id
+            name
+            profilePic
+        }
+        videos {
+            id
+            like
+            product
+            link
+            title
+            category
+
+        }
+    }
+}

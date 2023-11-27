@@ -163,6 +163,27 @@ type TokenSMS {
     token: String!
 }
 
+type Competition {
+    id: ID!
+    name: String!
+    owner: User!
+    details: String!
+    videos: [Video!]! # find all videos where product=competition.ID and categorie is challenge
+    price: Float!
+    banner: String!
+    startAt: String!
+    endAt: String!
+    participants: [User!]! #populate all users by IDs
+    isArchived: Boolean!
+    createdAt: Float!
+}
+
+type Vote {
+    id: ID!
+    video: Video!
+    user: User!
+}
+
 type Query {
     #videos
     videos(limit: Int): [Video!]!
@@ -177,7 +198,7 @@ type Query {
 
     #community
     communities: [Community!]!
-    communitiesByTheme(theme: String!): [Community!]!
+    myCommunities: [Community!]!
     community(id: ID!): Community
 
     #users
@@ -204,7 +225,12 @@ type Query {
     demanderMonetisations: [DemandMonetization!]!
     #demanderMonetisation(id: ID!): DemandMonetization
 
-    #token
+    #commpetions
+    allCompetitions: [Competition!]! @auth
+    competition(id: ID!): Competition! @auth
+
+    #votes
+    votes(id: ID!): [Vote!]!
 }
 
 type Mutation {
@@ -228,7 +254,7 @@ type Mutation {
     likeVideo(id: ID!): Boolean! @auth
     createComment(newComment: NewComment!): Boolean! @auth
     viewVideo(id: ID!): Boolean! @auth
-    voteVideo(id: ID!): Boolean! @auth
+
     linkWithProduct(videoId: ID!, productId: ID!): Boolean! @auth
     deleteVideo(id: ID!): Boolean! @auth
 
@@ -261,6 +287,11 @@ type Mutation {
     deleteCommunity(id: ID!): Boolean! @auth
     publishMessage(data: NewMessage!): Boolean! @auth
     unPublishMessage(id: ID!): Boolean! @auth
+
+    createCompetition(data: NewCompetition!): Boolean! @auth
+    joinCompetition(competitionId: ID!): Boolean! @auth
+    voteVideo(id: ID!): Boolean! @auth
+    archiveCompetition(id: ID!): Boolean!
 }
 
 input NewChapter {
@@ -347,4 +378,14 @@ input NewMessage {
     audio: String
     text: String
     community: String!
+}
+
+input NewCompetition {
+    name: String!
+    banner: String!
+    details: String!
+    price: Float!
+    startAt: String!
+    endAt: String!
+    isArchived: Boolean!
 }

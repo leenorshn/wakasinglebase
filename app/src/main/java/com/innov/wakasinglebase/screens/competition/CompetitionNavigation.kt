@@ -1,4 +1,4 @@
-package com.innov.wakasinglebase.screens.conversation
+package com.innov.wakasinglebase.screens.competition
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -10,6 +10,6 @@ import com.innov.wakasinglebase.core.DestinationRoute.LOTTO_ROUTE
  */
 fun NavGraphBuilder.marketNavGraph(navController: NavController) {
     composable(route = LOTTO_ROUTE) {
-        MarketScreen(navController)
+        CompetitionScreen(navController)
     }
 }

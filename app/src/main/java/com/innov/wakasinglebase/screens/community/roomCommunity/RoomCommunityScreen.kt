@@ -254,7 +254,7 @@ fun RoomCommunityScreen(
                                     )
                                     Text(
                                         text = "@${item.name}",
-                                        color = PrimaryColor,
+                                        color = Color.Black,
                                         fontSize = 13.sp,
                                         overflow = TextOverflow.Ellipsis,
                                         maxLines = 1,

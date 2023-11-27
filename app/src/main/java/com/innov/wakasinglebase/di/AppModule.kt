@@ -7,14 +7,14 @@ import com.apollographql.apollo3.network.okHttpClient
 import com.innov.wakasinglebase.data.repository.CommunityRepository
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import com.innov.wakasinglebase.data.repository.authentification.TokenRepository
-import com.innov.wakasinglebase.data.repository.chats.ChatRepository
-import com.innov.wakasinglebase.data.source.ChatDataSource
+import com.innov.wakasinglebase.data.repository.competition.CompetitionRepository
 import com.innov.wakasinglebase.data.source.CommunityDataSource
+import com.innov.wakasinglebase.data.source.CompetitionDataSource
 import com.innov.wakasinglebase.data.source.ThreadDataSource
 import com.innov.wakasinglebase.data.source.UserDataSource
 import com.innov.wakasinglebase.data.source.VideoDataSource
-import com.innov.wakasinglebase.domain.ChatRepositoryImpl
 import com.innov.wakasinglebase.domain.CommunityRepositoryImpl
+import com.innov.wakasinglebase.domain.CompetitionRepositoryImpl
 import com.innov.wakasinglebase.domain.auth.AuthRepositoryImpl
 import com.innov.wakasinglebase.signin.utils.AuthorizationInterceptor
 import dagger.Module
@@ -65,8 +65,8 @@ object AppModule  {
 
     @Provides
     @Singleton
-    fun provideChatDataSource(apolloClient: ApolloClient): ChatDataSource {
-        return ChatDataSource(apolloClient)
+    fun provideChatDataSource(apolloClient: ApolloClient): CompetitionDataSource {
+        return CompetitionDataSource(apolloClient)
     }
 
     @Provides
@@ -91,8 +91,8 @@ object AppModule  {
 
     @Provides
     @Singleton
-    fun provideChatRepository(dataSource: ChatDataSource): ChatRepository {
-        return ChatRepositoryImpl(dataSource)
+    fun provideCompetitionRepository(dataSource: CompetitionDataSource): CompetitionRepository {
+        return CompetitionRepositoryImpl(dataSource)
     }
 
 
