@@ -1,6 +1,7 @@
 package com.innov.wakasinglebase.screens.competition
 
 import CompetitionModel
+import com.innov.wakasinglebase.data.model.UserModel
 
 data class ViewState(
     val competitions: List<CompetitionModel>? = null,
@@ -11,6 +12,11 @@ data class ViewState(
 
 data class CompetitionState(
     val success:Boolean=false,
+    val error:String?=null,
+    val isLoading:Boolean=false
+)
+data class UserState(
+    val user:UserModel?=null,
     val error:String?=null,
     val isLoading:Boolean=false
 )

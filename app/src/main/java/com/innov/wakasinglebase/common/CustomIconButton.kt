@@ -6,7 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +31,7 @@ import com.innov.wakasinglebase.ui.theme.SeparatorColor
 fun CustomIconButton(
     modifier: Modifier = Modifier,
     buttonText: String,
+    isEnable:Boolean=true,
     @DrawableRes icon: Int,
     iconSize: Dp = 22.dp,
     iconTint: Color = Color.Unspecified,
@@ -40,6 +45,7 @@ fun CustomIconButton(
     onClickButton: () -> Unit
 ) {
     Button(
+        enabled = isEnable,
         onClick = { onClickButton.invoke() },
         modifier = modifier.height(height),
         shape = shape,

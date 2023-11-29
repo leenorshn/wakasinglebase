@@ -15,8 +15,8 @@ data class CompetitionModel(
     val detail:String,
     val isArchived:Boolean,
     val createdAt:Long,
-    val participants:List<UserModel>,
-    val videos:List<VideoModel>,
+    val participants:List<UserModel> =emptyList(),
+    val videos:List<VideoModel> = emptyList(),
 )
 
 fun CompetitionsQuery.AllCompetition.toCompetitionModel():CompetitionModel{
@@ -37,7 +37,6 @@ fun CompetitionsQuery.AllCompetition.toCompetitionModel():CompetitionModel{
             UserModel(
                 uid = it.id,
                 name=it.name,
-                phone = it.phone,
                 profilePic = it.profilePic
             )
         },
@@ -67,7 +66,6 @@ fun CompetitionQuery.Competition.toCompetitionModel():CompetitionModel{
             UserModel(
                 uid = it.id,
                 name=it.name,
-                phone = it.phone,
                 profilePic = it.profilePic
             )
         },

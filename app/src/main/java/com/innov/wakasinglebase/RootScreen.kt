@@ -35,6 +35,7 @@ import com.innov.wakasinglebase.core.DestinationRoute.HOME_SCREEN_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.LOTTO_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.MY_PROFILE_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.THREADS_ROUTE
+import com.innov.wakasinglebase.core.DestinationRoute.WATCH_COMPETITION_ROUTE
 import com.innov.wakasinglebase.ui.theme.WakabaseTheme
 
 
@@ -61,7 +62,8 @@ fun RootScreen() {
         else -> false
     }
     val darkMode = when (currentDestination?.route) {
-        HOME_SCREEN_ROUTE, FORMATTED_COMPLETE_CREATOR_VIDEO_ROUTE, CAMERA_ROUTE, null -> true
+        HOME_SCREEN_ROUTE, FORMATTED_COMPLETE_CREATOR_VIDEO_ROUTE, CAMERA_ROUTE,
+            WATCH_COMPETITION_ROUTE, null -> true
         else -> false
     }
 

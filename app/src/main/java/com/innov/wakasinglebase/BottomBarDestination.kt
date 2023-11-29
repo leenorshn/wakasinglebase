@@ -45,9 +45,9 @@ enum class BottomBarDestination(
 
     EXPLORE(
         route = THREADS_ROUTE,
-        title = R.string.community,
-        unFilledIcon = R.drawable.comment_24,
-        filledIcon = R.drawable.comment_alt_24
+        title = R.string.notification,
+        unFilledIcon = R.drawable.cloche_24_alt,
+        filledIcon = R.drawable.cloche_24
     ),
 
 

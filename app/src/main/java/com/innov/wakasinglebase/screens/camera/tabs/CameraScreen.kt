@@ -118,7 +118,7 @@ fun CameraScreen(
 
                 )// User is a data class.
                 val videoInf=FileUtils.getVideoInfo(context = context,uriG!!)
-                if (videoInf?.duration!!<=180_000) {
+                if (videoInf?.duration!!<=200_000) {
                 navController.navigate(UPLOAD_ROUTE.replace("{uri}",uriEncoded))
                 }else{
                     error="Error video is to large!!! chose an other video"

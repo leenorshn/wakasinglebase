@@ -2,7 +2,6 @@ package com.innov.wakasinglebase.screens.community.newCommunity
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -23,7 +21,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -34,7 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -47,17 +43,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.common.CustomButton
 import com.innov.wakasinglebase.common.CustomIconButton
+import com.innov.wakasinglebase.common.CustomToggleButton
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
 
@@ -301,53 +296,8 @@ fun NewCommunityScreen(
 }
 
 
-@Preview
-@Composable
-private fun PreviewNewCommunityScreen() {
-    NewCommunityScreen(rememberNavController())
-}
 
 
-@Composable
-fun CustomToggleButton(
-    values: List<String>,
-    initialValue: String,
-    onValueChanged: (String) -> Unit
-) {
-    var currentIndex by remember { mutableIntStateOf(values.indexOf(initialValue)) }
-
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color.LightGray.copy(alpha = 0.4f))
-            .padding(8.dp)
-    ) {
-        values.forEachIndexed { index, value ->
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(
-                        if (currentIndex == index) MaterialTheme.colorScheme.primary
-                        else Color.Gray
-                    )
-                    .clickable {
-                        currentIndex = index
-                        onValueChanged.invoke(value)
-                    }
-                    .padding(12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "$value $",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            Spacer(modifier = Modifier.width(5.dp))
-        }
-    }
 
 
-}
 

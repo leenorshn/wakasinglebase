@@ -6,6 +6,10 @@ mutation joinCompetition($id:ID!){
     joinCompetition(competitionId: $id)
 }
 
+mutation voteVideo($videoID:ID!){
+    voteVideo(id:$videoID)
+}
+
 
 query competitions{
     allCompetitions {
@@ -22,7 +26,6 @@ query competitions{
             id
             name
             profilePic
-            phone
         }
         owner {
             id
@@ -56,7 +59,6 @@ query competition($id:ID!){
             id
             name
             profilePic
-            phone
         }
         owner {
             id
@@ -70,7 +72,11 @@ query competition($id:ID!){
             link
             title
             category
-
+            author {
+                id
+                name
+                profilePic
+            }
         }
     }
 }

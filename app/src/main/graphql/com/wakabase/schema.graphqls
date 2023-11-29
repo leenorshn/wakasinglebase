@@ -9,17 +9,7 @@ directive @isClient on FIELD | FIELD_DEFINITION
 
 directive @isAdmin on FIELD | FIELD_DEFINITION
 
-type Event {
-    id: ID!
-    name: String!
-    price: Float!
-    image: String!
-    owner: User!
-    detail: String!
-    status: String! # active|| inactive
-    date: String!
-    createdAt: Float!
-}
+
 
 type Video {
     id: ID!
@@ -57,19 +47,7 @@ type User {
     hasContract: Boolean!
 }
 
-type Conversation {
-    id: ID!
-    receiver: User!
-    sender: User!
-    chats: [Chat!]!
-}
 
-type Chat {
-    id: ID!
-    message: String!
-    sender: String!
-    createdAt: Float!
-}
 
 type Product {
     id: ID!
@@ -138,26 +116,7 @@ type DemandMonetization {
     createdAt: Float!
 }
 
-type Community {
-    id: ID!
-    name: String!
-    philosophy: String!
-    logo: String
-    messages: [Message!]!
-    members: [User!]!
-    admins: [User!]!
-    subscription: Float!
-    createdAt: Float!
-}
 
-type Message {
-    id: ID!
-    audio: String
-    text: String
-    sender: User!
-    community: String!
-    createdAt: Float!
-}
 
 type TokenSMS {
     token: String!
@@ -180,8 +139,19 @@ type Competition {
 
 type Vote {
     id: ID!
-    video: Video!
-    user: User!
+    video: String!
+    user: String!
+    count: Int!
+}
+
+type Notification {
+    id: ID!
+    owner: User!
+    title: String!
+    message: String!
+    status: String! #CRITIQUE ||INFO|| OPERATION
+    file: String
+    createdAt: Float!
 }
 
 type Query {
@@ -193,13 +163,10 @@ type Query {
     #comments
     comments(videoId: String!): [Comment!]!
 
-    #chats
-    conversations: [Conversation!]! @auth
 
-    #community
-    communities: [Community!]!
-    myCommunities: [Community!]!
-    community(id: ID!): Community
+
+    #nofications
+    nofications: [Notification!]! @auth
 
     #users
     users: [User!]! @auth
@@ -222,7 +189,7 @@ type Query {
     trans(id: ID!): Trans
 
     # monetizations
-    demanderMonetisations: [DemandMonetization!]!
+    demanderMonetisations: [DemandMonetization!]! # notify user!
     #demanderMonetisation(id: ID!): DemandMonetization
 
     #commpetions
@@ -238,17 +205,15 @@ type Mutation {
 
     # user
     createUser(newUser: NewUserInput!): Boolean!
-    loginOrCreateAccount(phone: String!, verifiedCode: String!): Auth!
+    loginOrCreateAccount(phone: String!, verifiedCode: String!): Auth! # notify user
     updateProfile(updateUser: UpdateUserInput!): Boolean! @auth
     updateUserOnlineState(state: Boolean!): Boolean! @auth
-    followUser(id: ID!): Boolean! @auth
+    followUser(id: ID!): Boolean! @auth # notify user
     unFollowUser(id: ID!): Boolean! @auth
-    demanderMonetisation: Boolean! @auth
-
+    demanderMonetisation: Boolean! @auth #nofity user
     #admin auth
     login(username: String!, passoword: String!): Auth!
-    monetizate(phone: String!): Boolean! @isAdmin
-
+    monetizate(phone: String!): Boolean! @isAdmin # notify user
     # video
     createVideo(newVideo: NewVideoInput!): Boolean! @auth
     likeVideo(id: ID!): Boolean! @auth
@@ -267,26 +232,15 @@ type Mutation {
     addChapter(data: NewChapter!): Boolean! @auth
 
     # trans
-    sendTrans(data: NewTrans!): Boolean! @auth
-    buyTrans(data: NewSelle!): Boolean! @auth
-    withdrawTrans(data: NewTrans!): Boolean! @auth
-    recharge(data: NewTrans!): Boolean! @auth
-
+    sendTrans(data: NewTrans!): Boolean! @auth #notify user
+    buyTrans(data: NewSelle!): Boolean! @auth #nofity user
+    withdrawTrans(data: NewTrans!): Boolean! @auth #notify user
+    recharge(data: NewTrans!): Boolean! @auth #notify user
     #operation
     rechargeOper(data: NewOperation!): Boolean! @auth
     withdrawOper(data: NewOperation!): Boolean! @auth
 
-    #conversations
-    createConversation(receiver: ID!): Boolean! @auth
-    sendMessage(conversationId: ID!, message: String!): Boolean! @auth
 
-    #community
-    createCommunity(data: NewCommunity!): Boolean! @auth
-    JoinCommunity(communityId: ID!, uid: ID!): Boolean! @auth
-
-    deleteCommunity(id: ID!): Boolean! @auth
-    publishMessage(data: NewMessage!): Boolean! @auth
-    unPublishMessage(id: ID!): Boolean! @auth
 
     createCompetition(data: NewCompetition!): Boolean! @auth
     joinCompetition(competitionId: ID!): Boolean! @auth
@@ -366,19 +320,7 @@ input UpdateUserInput {
     profilePic: String
 }
 
-input NewCommunity {
-    name: String!
-    philosophy: String!
-    logo: String
-    members: [String!]!
-    subscription: Float!
-}
 
-input NewMessage {
-    audio: String
-    text: String
-    community: String!
-}
 
 input NewCompetition {
     name: String!
@@ -388,4 +330,11 @@ input NewCompetition {
     startAt: String!
     endAt: String!
     isArchived: Boolean!
+}
+
+input NewNotification {
+    title: String!
+    message: String!
+    status: String! #CRITIQUE ||INFO|| OPERATION
+    file: String
 }

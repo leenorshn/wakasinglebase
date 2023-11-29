@@ -17,6 +17,10 @@ class CompetitionRepositoryImpl @Inject constructor(
         return dataSource.getCompetitions()
     }
 
+    override suspend fun getCompetition(id: String): Flow<BaseResponse<CompetitionModel?>> {
+        return dataSource.getCompetition(id)
+    }
+
     override suspend fun createCompetition(data: NewCompetition): Flow<BaseResponse<Boolean>> {
         return  dataSource.createCompetition(data)
     }
@@ -24,4 +28,9 @@ class CompetitionRepositoryImpl @Inject constructor(
     override suspend fun joinCompetition(uid: String): Flow<BaseResponse<Boolean>> {
         return dataSource.joinCompetition(uid)
     }
+
+    override suspend fun voteVideo(id: String): Flow<BaseResponse<Boolean>> {
+        return dataSource.voteVideo(videoId = id)
+    }
+
 }

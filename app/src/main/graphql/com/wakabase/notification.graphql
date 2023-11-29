@@ -1,0 +1,11 @@
+
+query findNotifications{
+    nofications {
+        id
+        title
+        createdAt
+        message
+        status
+        file
+    }
+}

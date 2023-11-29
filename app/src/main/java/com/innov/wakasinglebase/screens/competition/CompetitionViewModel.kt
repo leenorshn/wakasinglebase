@@ -5,18 +5,21 @@ import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
 import com.innov.wakasinglebase.domain.CompetitionRepositoryImpl
+import com.innov.wakasinglebase.domain.auth.AuthRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CompetitionViewModel @Inject constructor(
     private val competitionRepository: CompetitionRepositoryImpl,
+    private val repositoryImpl: AuthRepositoryImpl,
 ) : BaseViewModel<ViewState, ConversationEvent>() {
 
-
+val uiState = MutableStateFlow(UserState())
     init {
-
+        getSignedInUser()
         getCompetitions()
     }
 
@@ -70,6 +73,38 @@ class CompetitionViewModel @Inject constructor(
 
                     }
                 }
+            }
+        }
+    }
+
+    private fun getSignedInUser() {
+        viewModelScope.launch {
+            repositoryImpl.me().collect {result->
+                when(result){
+                    is BaseResponse.Loading->{
+                        uiState.value = uiState.value.copy(
+                            isLoading = true,
+                            user = null,
+                            error = null
+                        )
+                    }
+                    is BaseResponse.Success->{
+                        uiState.value = uiState.value.copy(
+                            isLoading = false,
+                            user = result.data,
+                            error = null,
+                        )
+                    }
+                    is BaseResponse.Error->{
+                        uiState.value = uiState.value.copy(
+                            isLoading = false,
+                            user = null,
+                            error = result.error
+                        )
+                    }
+                }
+
+
             }
         }
     }

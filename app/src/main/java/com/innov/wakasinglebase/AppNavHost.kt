@@ -17,10 +17,11 @@ import com.innov.wakasinglebase.screens.camera.cameraMediaNavGraph
 import com.innov.wakasinglebase.screens.camera.publication.publicationNavGraph
 import com.innov.wakasinglebase.screens.camera.upload.uploadNavGraph
 import com.innov.wakasinglebase.screens.comment.commentListingNavGraph
-import com.innov.wakasinglebase.screens.community.communityNavGraph
 import com.innov.wakasinglebase.screens.community.newCommunity.newCommunityNavGraph
 import com.innov.wakasinglebase.screens.community.roomCommunity.roomCommunityNavGraph
+import com.innov.wakasinglebase.screens.competition.joinCompetition.joinCompetitionNavGraph
 import com.innov.wakasinglebase.screens.competition.marketNavGraph
+import com.innov.wakasinglebase.screens.competition.watch.watchCompetitionNavGraph
 import com.innov.wakasinglebase.screens.createprofile.creatorprofile.creatorProfileNavGraph
 import com.innov.wakasinglebase.screens.home.homeNavGraph
 import com.innov.wakasinglebase.screens.home.video_detail.videoDetailNavGraph
@@ -68,13 +69,15 @@ fun AppNavHost(
            homeNavGraph(navController)
            cameraMediaNavGraph(navController)
            creatorProfileNavGraph(navController)
+           watchCompetitionNavGraph(navController)
            marketNavGraph(navController)
+           joinCompetitionNavGraph(navController)
            uploadNavGraph(navController)
            publicationNavGraph(navController)
            myProfileNavGraph(navController)
            firstProfileNavGraph(navController)
            commentListingNavGraph(navController)
-           communityNavGraph(navController)
+          // communityNavGraph(navController)
            roomCommunityNavGraph(navController)
            newCommunityNavGraph(navController)
            videoDetailNavGraph(navController)

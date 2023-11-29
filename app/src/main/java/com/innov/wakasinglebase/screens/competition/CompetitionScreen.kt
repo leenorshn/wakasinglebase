@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.innov.wakasinglebase.R
+import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.extension.LargeSpace
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.screens.community.StackedImage
@@ -50,6 +51,9 @@ fun CompetitionScreen(
     viewModel: CompetitionViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.viewState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+
+    val currentUser=uiState.user
 
     Scaffold(
         modifier = Modifier
@@ -64,13 +68,12 @@ fun CompetitionScreen(
         },
 
 
-    ) {
+        ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(horizontal = 16.dp)
-                ,
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             item {
@@ -87,7 +90,7 @@ fun CompetitionScreen(
                 viewState?.competitions?.let {
                     items(it) { competition ->
                         Card(
-                             modifier=Modifier.padding(bottom = 16.dp),
+                            modifier = Modifier.padding(bottom = 16.dp),
                             elevation = CardDefaults.elevatedCardElevation(
                                 defaultElevation = 3.dp,
                             ),
@@ -118,7 +121,7 @@ fun CompetitionScreen(
 
                                 ListItem(
                                     overlineContent = {
-                                                      Text(text = "Waka-Challenge")
+                                        Text(text = "Waka-Challenge")
                                     },
 
                                     headlineContent = {
@@ -143,11 +146,13 @@ fun CompetitionScreen(
 
                                     )
                                 4.dp.Space()
-                                for (t in competition.participants.take(4)) {
-                                    StackedImage(
-                                        image = t.profilePic
-                                    )
-                                }
+                               Box(modifier = Modifier.padding(horizontal = 16.dp)){
+                                   for (t in competition.participants.take(4)) {
+                                       StackedImage(
+                                           image = t.profilePic
+                                       )
+                                   }
+                               }
                                 4.dp.Space()
                                 Row(
                                     modifier = Modifier
@@ -155,19 +160,37 @@ fun CompetitionScreen(
                                         .padding(horizontal = 10.dp),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    ExtendedFloatingActionButton(
-                                        elevation = FloatingActionButtonDefaults.elevation(
-                                            defaultElevation = 0.dp,
-                                            pressedElevation = 1.dp,
-                                            focusedElevation = 2.dp,
-                                            hoveredElevation = 1.dp,
-                                            ),
-                                        onClick = { /*TODO*/ }) {
-                                        Text(text = "Join competition")
-                                    }
+                                   if (competition.participants.find { el->el.uid==currentUser?.uid }!=null){
+                                       Spacer(modifier = Modifier.width(32.dp))
+                                   }else{
+                                       ExtendedFloatingActionButton(
+                                           elevation = FloatingActionButtonDefaults.elevation(
+                                               defaultElevation = 0.dp,
+                                               pressedElevation = 1.dp,
+                                               focusedElevation = 2.dp,
+                                               hoveredElevation = 1.dp,
+                                           ),
+                                           onClick = {
+                                               navController.navigate(
+                                                   DestinationRoute.JOIN_COMPETITION_ROUTE.replace(
+                                                       "{id}",
+                                                       competition.id
+                                                   )
+                                               )
+                                           }) {
+                                           Text(text = "Join competition")
+                                       }
+                                   }
                                     ExtendedFloatingActionButton(
                                         containerColor = PrimaryColor,
-                                        onClick = { /*TODO*/ }) {
+                                        onClick = {
+                                            navController.navigate(
+                                                DestinationRoute.WATCH_COMPETITION_ROUTE.replace(
+                                                    "{id}",
+                                                    competition.id
+                                                )
+                                            )
+                                        }) {
                                         Text(text = "Watch")
                                         Spacer(modifier = Modifier.width(24.dp))
                                         Icon(

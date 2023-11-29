@@ -70,6 +70,11 @@ fun CompetitionQuery.Video.toVideoModel():VideoModel{
         comment = 0,
         view = 0,
         category = category,
+        authorDetails = UserModel(
+            uid=author.id,
+            name= author.name,
+            profilePic = author.profilePic
+        ),
         videoTitle = title,
         description = "",
         createdAt = randomUploadDate(),
