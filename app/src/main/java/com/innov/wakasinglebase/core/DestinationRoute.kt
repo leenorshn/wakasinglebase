@@ -7,11 +7,12 @@ import com.innov.wakasinglebase.core.DestinationRoute.PassedKey.VIDEO_INDEX
  * Created by Victor on 3/19/2023.
  */
 object DestinationRoute {
+    const val MONETISATION_ROUTE="MONETISATION_ROUTE"
+    const val RECHARGE_ROUTE="RECHARGE_ROUTE"
+    const val NOTIFICATION_ROUTE="NOTIFICATION_ROUTE"
     const val WATCH_COMPETITION_ROUTE="WATCH_COMPETITION_ROUTE/id={id}"
     const val JOIN_COMPETITION_ROUTE="JOIN_COMPETITION_ROUTE/id={id}"
-    const val NEW_COMMUNITY_ROUTE="NEW_COMMUNITY_ROUTE"
-    const val ROOM_COMMUNITY_ROUTE="ROOM_COMMUNITY_ROUTE/community={community}"
-    const val NEW_CHAT="NEW_CHAT"
+
     const val MY_VIDEO_ROUTE= "MY_VIDEO_ROUTE/id={videoId}"
     const val MY_BUSINESS_ROUTE= "MY_BUSINESS_ROUTE/"
     const val EDIT_PROFILE="EDIT_PROFILE_ROUTE"

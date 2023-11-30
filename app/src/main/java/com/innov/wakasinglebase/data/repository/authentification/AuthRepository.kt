@@ -22,6 +22,8 @@ interface AuthRepository {
 
     suspend fun unFollow(id:String):Flow<BaseResponse<Boolean>>
 
+    suspend fun askMonetisation():Flow<BaseResponse<Boolean>>
+
     suspend fun  updateUserOnlineState(state:Boolean):Flow<BaseResponse<Boolean>>
 
 }

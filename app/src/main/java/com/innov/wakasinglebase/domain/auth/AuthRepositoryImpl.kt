@@ -48,6 +48,10 @@ class AuthRepositoryImpl @Inject constructor(
         return userDataSource.unFollowMe(id)
     }
 
+    override suspend fun askMonetisation(): Flow<BaseResponse<Boolean>> {
+        return userDataSource.demandeMonetisation()
+    }
+
     override suspend fun updateUserOnlineState(state: Boolean): Flow<BaseResponse<Boolean>> {
         return userDataSource.updateUserOnline(state)
     }

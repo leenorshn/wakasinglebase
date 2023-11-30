@@ -238,11 +238,10 @@ fun SideItems(
         if (item.category == "CHALLENGE") {
             VoteIconButton(
                 item = item,
-                likeCount = item.like.formattedCount(),
+                likeCount = likes.formattedCount(),
                 onClickVote ={
-                    onClickVote.invoke(
-                        it
-                    )
+                    onClickLike.invoke(item.videoId,true)
+                    likes += 1
                 }
             )
         }else {

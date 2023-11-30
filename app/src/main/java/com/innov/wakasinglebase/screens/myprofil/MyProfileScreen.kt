@@ -28,6 +28,7 @@ import coil.compose.AsyncImage
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.DestinationRoute.AUTH_ROUTE
+import com.innov.wakasinglebase.core.DestinationRoute.RECHARGE_ROUTE
 import com.innov.wakasinglebase.core.extension.MediumSpace
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.data.model.UserModel
@@ -152,7 +153,7 @@ fun MyProfileScreen(
                                 // iconColor = Color.Black,
                                 name = "Recharge"
                             ) {
-
+                                navController.navigate(RECHARGE_ROUTE)
                             }
 
                         }
@@ -162,24 +163,26 @@ fun MyProfileScreen(
                                 .padding(vertical = 32.dp)
                         )
                     } else {
-                        Row(horizontalArrangement = Arrangement.SpaceBetween,
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.Top,
-                            modifier = Modifier.fillMaxWidth()) {
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                             AccountButton(
                                 icon = R.drawable.recharge_money,
                                 // iconColor = Color.Black,
                                 name = "Recharge"
                             ) {
-
+                                navController.navigate(RECHARGE_ROUTE)
                             }
                             Column {
-                                Text(text = "Balance", fontSize = 12.sp,color=Color.Gray,)
+                                Text(text = "Balance", fontSize = 12.sp, color = Color.Gray)
                                 10.dp.Space()
                                 Text(
                                     text = "${uiState.currentUser?.balance} $",
                                     style = MaterialTheme.typography.labelMedium,
                                     color = White,
-                                    fontSize=16.sp,
+                                    fontSize = 16.sp,
                                     modifier = Modifier
                                         .background(
                                             color = MaterialTheme.colorScheme.primary,
@@ -191,7 +194,9 @@ fun MyProfileScreen(
                         }
                         12.dp.Space()
                         SettingItem(
-                            onClickItem = { /*TODO*/ },
+                            onClickItem = {
+                                 navController.navigate(DestinationRoute.MONETISATION_ROUTE)
+                            },
                             icon = R.drawable.dollar_24,
                             title = R.string.monetisated,
                             user = null
@@ -328,7 +333,7 @@ fun SettingItem(
                 text = "${user?.balance} $",
                 style = MaterialTheme.typography.labelMedium,
                 color = White,
-                fontSize=16.sp,
+                fontSize = 16.sp,
                 modifier = Modifier
                     .background(
                         color = MaterialTheme.colorScheme.primary,

@@ -37,10 +37,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.innov.wakasinglebase.R
+import com.innov.wakasinglebase.common.StackedImage
 import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.extension.LargeSpace
 import com.innov.wakasinglebase.core.extension.Space
-import com.innov.wakasinglebase.screens.community.StackedImage
+
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
 
 
@@ -181,22 +182,26 @@ fun CompetitionScreen(
                                            Text(text = "Join competition")
                                        }
                                    }
-                                    ExtendedFloatingActionButton(
-                                        containerColor = PrimaryColor,
-                                        onClick = {
-                                            navController.navigate(
-                                                DestinationRoute.WATCH_COMPETITION_ROUTE.replace(
-                                                    "{id}",
-                                                    competition.id
+                                    if(competition.videos.isNotEmpty()){
+                                        ExtendedFloatingActionButton(
+                                            containerColor = PrimaryColor,
+                                            onClick = {
+                                                navController.navigate(
+                                                    DestinationRoute.WATCH_COMPETITION_ROUTE.replace(
+                                                        "{id}",
+                                                        competition.id
+                                                    )
                                                 )
+                                            }) {
+                                            Text(text = "Watch")
+                                            Spacer(modifier = Modifier.width(24.dp))
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.ic_play_outline),
+                                                contentDescription = ""
                                             )
-                                        }) {
-                                        Text(text = "Watch")
+                                        }
+                                    }else{
                                         Spacer(modifier = Modifier.width(24.dp))
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_play_outline),
-                                            contentDescription = ""
-                                        )
                                     }
                                 }
                             }

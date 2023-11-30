@@ -7,7 +7,7 @@ import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.DestinationRoute.CAMERA_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.HOME_SCREEN_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.MY_PROFILE_ROUTE
-import com.innov.wakasinglebase.core.DestinationRoute.THREADS_ROUTE
+import com.innov.wakasinglebase.core.DestinationRoute.NOTIFICATION_ROUTE
 
 /**
  * Created by innov Victor on 3/14/2023.
@@ -44,7 +44,7 @@ enum class BottomBarDestination(
     ),
 
     EXPLORE(
-        route = THREADS_ROUTE,
+        route = NOTIFICATION_ROUTE,
         title = R.string.notification,
         unFilledIcon = R.drawable.cloche_24_alt,
         filledIcon = R.drawable.cloche_24

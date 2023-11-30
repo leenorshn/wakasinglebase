@@ -16,6 +16,10 @@ mutation updateUserOnline($state:Boolean!){
     updateUserOnlineState(state: $state)
 }
 
+mutation monetisateMyAccount{
+    demanderMonetisation
+}
+
 query me{
     me{
         id

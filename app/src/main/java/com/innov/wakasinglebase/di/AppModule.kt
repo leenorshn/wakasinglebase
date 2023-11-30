@@ -4,17 +4,17 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.cache.normalized.api.MemoryCacheFactory
 import com.apollographql.apollo3.cache.normalized.normalizedCache
 import com.apollographql.apollo3.network.okHttpClient
-import com.innov.wakasinglebase.data.repository.CommunityRepository
+import com.innov.wakasinglebase.data.repository.NotificationRepository
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import com.innov.wakasinglebase.data.repository.authentification.TokenRepository
 import com.innov.wakasinglebase.data.repository.competition.CompetitionRepository
-import com.innov.wakasinglebase.data.source.CommunityDataSource
 import com.innov.wakasinglebase.data.source.CompetitionDataSource
+import com.innov.wakasinglebase.data.source.NotificationDataSource
 import com.innov.wakasinglebase.data.source.ThreadDataSource
 import com.innov.wakasinglebase.data.source.UserDataSource
 import com.innov.wakasinglebase.data.source.VideoDataSource
-import com.innov.wakasinglebase.domain.CommunityRepositoryImpl
 import com.innov.wakasinglebase.domain.CompetitionRepositoryImpl
+import com.innov.wakasinglebase.domain.NotificationRepositoryImpl
 import com.innov.wakasinglebase.domain.auth.AuthRepositoryImpl
 import com.innov.wakasinglebase.signin.utils.AuthorizationInterceptor
 import dagger.Module
@@ -83,8 +83,8 @@ object AppModule  {
 
     @Provides
     @Singleton
-    fun provideCommunityDataSource(apolloClient: ApolloClient): CommunityDataSource {
-        return CommunityDataSource(apolloClient)
+    fun provideNotificationDataSource(apolloClient: ApolloClient): NotificationDataSource {
+        return NotificationDataSource(apolloClient)
     }
 
 
@@ -105,8 +105,8 @@ object AppModule  {
 
     @Singleton
     @Provides
-    fun providesCommunityRepository(dataSource: CommunityDataSource):CommunityRepository{
-        return CommunityRepositoryImpl(dataSource)
+    fun providesCommunityRepository(dataSource: NotificationDataSource):NotificationRepository{
+        return NotificationRepositoryImpl(dataSource)
     }
 
 

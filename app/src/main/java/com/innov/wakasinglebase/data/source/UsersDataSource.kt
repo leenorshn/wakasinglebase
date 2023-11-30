@@ -13,6 +13,7 @@ import com.wakabase.FollowMeMutation
 import com.wakabase.FriendsQuery
 import com.wakabase.LoginOrCreateAccountMutation
 import com.wakabase.MeQuery
+import com.wakabase.MonetisateMyAccountMutation
 import com.wakabase.MyFriendsQuery
 import com.wakabase.UnFollowMeMutation
 import com.wakabase.UpdateUserMutation
@@ -32,16 +33,21 @@ class UserDataSource @Inject constructor(
    private val apolloClient: ApolloClient
 ) {
 
-//    suspend fun fetchSpecificUser(userId: String): Flow<UserModel?> {
-//
-//
-//        return flow {
-//            val user = UserModel(
-//                uid = userId,
-//            )
-//            emit(user)
-//        }
-//    }
+    suspend fun demandeMonetisation(): Flow<BaseResponse<Boolean>> {
+
+
+        return flow {
+            emit(BaseResponse.Loading)
+            var resp=apolloClient.mutation(
+                MonetisateMyAccountMutation()
+            ).execute()
+
+            if (resp.hasErrors()){
+                emit(BaseResponse.Error("Error check your network"))
+            }
+            emit(BaseResponse.Success(true))
+        }
+    }
 
     suspend fun updateUserOnline(state:Boolean):Flow<BaseResponse<Boolean>>{
         return flow {
