@@ -1,11 +1,13 @@
 package com.innov.wakasinglebase.signin.phoneScreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -26,12 +28,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.common.CustomButton
 import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.extension.Space
@@ -82,11 +88,14 @@ fun PhoneScreen(
                 .padding(horizontal = 24.dp)
                 .fillMaxSize()
         ) {
-            72.dp.Space()
-            Text(text = "Waka-Waka", fontWeight = FontWeight.Medium, fontSize = 32.sp)
+            64.dp.Space()
+            Text(text = "Tam-Tam", fontWeight = FontWeight.Medium, fontSize = 32.sp)
+            Image(painter = painterResource(id = R.drawable.logo_tiktok_compose), contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(56.dp))
             12.dp.Space()
             Text(text = "Phone verification", fontSize = 24.sp)
-            72.dp.Space()
+            56.dp.Space()
 
 
 
@@ -151,10 +160,10 @@ fun PhoneScreen(
                 text = "You'll receiver un SMS code on the number you'll Enter.",
                 color = Color.Gray
             )
-            148.dp.Space()
+            110.dp.Space()
 
             CustomButton(
-                buttonText = "Continuer",
+                buttonText = "Continue",
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
                     .padding(vertical = 18.dp),
@@ -180,7 +189,7 @@ fun PhoneScreen(
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = "Voulez-vous utiliser ce numero")
+                        Text(text = stringResource(R.string.do_you_want_to_use_this_phone_number))
                         Text(text = "${"$phoneCode${phoneNumber.value}"} ?")
                         32.dp.Space()
                         if (verificationState.isLoading) {
@@ -200,7 +209,7 @@ fun PhoneScreen(
                             }
 
                             CustomButton(
-                                buttonText = "Continuer",
+                                buttonText = "Continue",
                                 modifier = Modifier
                                     .padding(vertical = 18.dp),
                                 shape = RoundedCornerShape(20),

@@ -41,7 +41,7 @@ class UploadViewModel @Inject constructor(
 
                 //updateState((viewState.value ?: ViewState()).copy(currentUser = it.data))
                 when(result){
-                    is BaseResponse.Loading->{
+                     BaseResponse.Loading->{
                         uiState.value = uiState.value.copy(
                             isLoading = true
                         )
@@ -58,6 +58,8 @@ class UploadViewModel @Inject constructor(
                             signinError = result.error
                         )
                     }
+
+                    else -> {}
                 }
             }
         }

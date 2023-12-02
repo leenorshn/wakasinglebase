@@ -46,19 +46,24 @@ class OptViewModel @Inject constructor(
                             is BaseResponse.Error -> {
                                 uiState.value=uiState.value.copy(
                                     isLoading = false,
-                                    error = it.error
+                                    error = it.error,
+                                    success = false,
                                 )
                             }
                             BaseResponse.Loading -> {
                                 uiState.value=uiState.value.copy(
-                                    isLoading = true
+                                    isLoading = true,
+                                    error = null,
+                                    success = false,
                                 )
                             }
                             is BaseResponse.Success -> {
                                 tokenRepository.setToken("${it.data?.token}")
+                               // Log.d("TOKEN",it.data?.token.toString())
                                 uiState.value=uiState.value.copy(
                                     isLoading = false,
-                                    success = true
+                                    success = true,
+                                    error = null
                                 )
                             }
                         }

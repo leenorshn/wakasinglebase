@@ -33,6 +33,7 @@ import com.innov.wakasinglebase.screens.notification.notificationNavGraph
 import com.innov.wakasinglebase.signin.authNavGraph
 import com.innov.wakasinglebase.signin.opt_screen.optNavGraph
 import com.innov.wakasinglebase.signin.phoneScreen.phoneNavGraph
+import com.innov.wakasinglebase.signin.profile_setting.profileSettingNavGraph
 
 
 /**
@@ -91,7 +92,7 @@ fun AppNavHost(
             authNavGraph(navController)
             phoneNavGraph(navController)
             optNavGraph(navController)
-
+            profileSettingNavGraph(navController)
         }
 
         navigation(startDestination = DestinationRoute.LOADING_SCREEN, "loading") {

@@ -101,7 +101,7 @@ fun SignInScreen(
                 CustomButton(
                     modifier = Modifier.width(340.dp),
                     shape = RoundedCornerShape(16),
-                    buttonText = "Commencer",
+                    buttonText = "Start now",
                     containerColor = PrimaryColor,
                     onClickButton = onSignInClick
                 )

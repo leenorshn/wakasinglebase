@@ -21,8 +21,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.screens.myprofil.edit_profile.UploadImageState
+import com.innov.wakasinglebase.signin.profile_setting.UploadImageState2
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
 
 @Composable
@@ -32,7 +32,49 @@ fun Avatar(
     onClick: () -> Unit,
     size: Dp = 50.dp
 ) {
-    val url= if(image.isNullOrEmpty()) R.drawable.profile else image
+    val url= if(image.isNullOrEmpty())"https://d2y4y6koqmb0v7.cloudfront.net/profil.png" else image
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(modifier = Modifier) {
+            AsyncImage(
+                model = url,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(size = size)
+                    .border(
+                        BorderStroke(width = 1.dp, color = Color.Gray),
+                        shape = RoundedCornerShape(size / 2)
+                    )
+                    .clip(shape = RoundedCornerShape(size / 2))
+                    .clickable { onClick.invoke() },
+                contentScale = ContentScale.Crop
+            )
+
+        }
+        TextButton(onClick = { onClick.invoke() }) {
+            Text(text = "Change image")
+        }
+        if (state.isLoading){
+            LinearProgressIndicator(color = PrimaryColor)
+        }
+        if (state.error!=null){
+            Text("Error of uploading a image")
+        }
+    }
+
+}
+
+@Composable
+fun AvatarProfile(
+    image: String?,
+    state:UploadImageState2,
+    onClick: () -> Unit,
+    size: Dp = 50.dp
+) {
+    val url= if(image.isNullOrEmpty())"https://d2y4y6koqmb0v7.cloudfront.net/profil.png" else image
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,

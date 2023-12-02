@@ -38,7 +38,7 @@ fun OptScreen(
     var optState by optViewModel.uiState
     LaunchedEffect(key1 = optState.success){
         if (optState.success){
-            navController.navigate(DestinationRoute.MAIN_NAV_ROUTE)
+            navController.navigate(DestinationRoute.PROFILE_SETTING)
         }
     }
     Scaffold {
@@ -48,14 +48,15 @@ fun OptScreen(
         Column(
             modifier = Modifier
                 .padding(it)
+                .padding(horizontal = 20.dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             100.dp.Space()
-            Text(text = "Waka-Waka", fontSize = 32.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Tam-Tam", fontSize = 32.sp, fontWeight = FontWeight.Bold)
             32.dp.Space()
             Text(
-                text = "You will receive an SMS code at $phone to verify that you are human!",
+                text = "You will receive an SMS code at\n $phone \nto verify that you are a human!",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal,
                 textAlign = TextAlign.Center,
@@ -74,7 +75,7 @@ fun OptScreen(
             if (optState.isLoading){
                 CircularProgressIndicator(color = PrimaryColor)
             }else{
-                CustomButton(buttonText = "Continuer",
+                CustomButton(buttonText = "Continue",
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
                         .padding(vertical = 18.dp),
@@ -89,7 +90,23 @@ fun OptScreen(
 
             if (optState.error!=null){
                 Text(text = "${optState.error} !!!", color = Color.Red)
+                12.dp.Space()
+                CustomButton(buttonText = "back",
+                    containerColor = Color.Black,
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .padding(vertical = 18.dp),
+                    shape = RoundedCornerShape(20),
+                ) {
+                    optState=optState.copy(
+                        success = false,
+                        isLoading = false
+                    )
+                    navController.navigateUp()
+                }
             }
+
+
         }
     }
 }

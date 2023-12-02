@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Waka-waka</string>
+    <string name="app_name">Tam-Tam</string>
 
     <string name="home">Home</string>
     <string name="notification">Notification</string>
@@ -41,14 +41,14 @@
 
     <!-- authenticaion -->
     <string name="login_or_sign_up">Welcome!</string>
-    <string name="login_in_to_your_existing_account">Create or log in to your Waka-Waka account.</string>
+    <string name="login_in_to_your_existing_account">Create or log in to your Tam-Tam account.</string>
     <string name="use_phone">Use phone </string>
     <string name="continue_with_facebook">Continue with Facebook</string>
     <string name="continue_with_google">Continuer avec Google</string>
     <string name="continue_with_twitter">Continue with Twitter</string>
     <string name="terms_of_service">Terms of service</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="phone_number_info">Your phone number will be used to improve your Waka-waka experience, including connecting you with people you may know, personalizing your ads experience, and more. If you sign up with SMS, SMS fee may apply.</string>
+    <string name="phone_number_info">Your phone number will be used to improve your Tam-Tam experience, including connecting you with people you may know, personalizing your ads experience, and more. If you sign up with SMS, SMS fee may apply.</string>
     <string name="learn_more">Learn more</string>
     <string name="send_code">Send code</string>
     <string name="phone">Phone</string>
@@ -59,7 +59,7 @@
     <string name="by_continuing_you_agree">By continuing, you agree to our </string>
     <string name="and_acknowledge_that_you_have">and acknowledge that you have read our</string>
     <string name="to_learn_how_we_collect">to learn how we collect, use, and share your data.</string>
-    <string name="and_confirm_that_you_have_read">and confirm that you have read Waka-waka\'s</string>
+    <string name="and_confirm_that_you_have_read">and confirm that you have read Tam-Tam\'s</string>
 
     <!-- my profile -->
     <string name="sign_up_for_an_account">Sign up for and account</string>
@@ -79,7 +79,7 @@
     <string name="terms_and_policies">Terms and policies</string>
 
     <!-- camera media -->
-    <string name="allow_tiktok_to_access_your">Allow Waka-waka to access  your camera and microphone</string>
+    <string name="allow_tiktok_to_access_your">Allow Tam-Tam to access  your camera and microphone</string>
     <string name="take_photos_record_videos_or_preview">Take photos, record videos or preview effect on camera.</string>
     <string name="you_can_change_preference_in_setting">You can change preferences at any time in your device settings.</string>
     <string name="access_camera">Access camera</string>
@@ -103,8 +103,9 @@
     <string name="timer">Timer</string>
     <string name="flash">Flash</string>
     <string name="upload_photos">Upload photos</string>
-    <string name="waka_waka">Waka-waka</string>
+    <string name="waka_waka">Tam-Tam</string>
     <string name="logout">logout</string>
     <string name="join_monetization">Unlock the potential of your Tam-Tam account by joining our Monetization Program! Gain the exclusive right to generate revenue through advertisements, sponsored content, and more. Enjoy a 75% revenue share with Tam-Tam, and be part of a thriving community. Stay informed, comply with our policies, and start monetizing your creativity today! Let\'s turn your content into earnings together.</string>
+    <string name="do_you_want_to_use_this_phone_number">Do you want to use this phone number?</string>
 
 </resources>

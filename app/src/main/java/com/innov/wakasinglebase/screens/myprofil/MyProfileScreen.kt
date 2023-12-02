@@ -76,6 +76,7 @@ fun MyProfileScreen(
 
 
             if (uiState.currentUser != null) {
+
                 ListItem(
                     headlineContent = {
                         Text(
@@ -87,8 +88,11 @@ fun MyProfileScreen(
                         )
                     },
                     leadingContent = {
+                        val image= if(uiState.currentUser?.profilePic.isNullOrEmpty())
+                            "https://d2y4y6koqmb0v7.cloudfront.net/profil.png"
+                        else uiState.currentUser?.profilePic
                         AsyncImage(
-                            model = uiState.currentUser?.profilePic,
+                            model = image,
                             contentDescription = "image thumbnail",
                             modifier = Modifier
                                 .size(64.dp)

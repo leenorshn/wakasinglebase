@@ -83,14 +83,14 @@ class UserDataSource @Inject constructor(
             //emit(true)
             val res=apolloClient.mutation(LoginOrCreateAccountMutation(phone,code)).execute()
             if (res.hasErrors()){
-                emit(BaseResponse.Error("code error in verification"))
+                emit(BaseResponse.Error("Error code ${res.errors?.get(0)?.message}"))
             }
             if (res.data?.loginOrCreateAccount!=null){
                 val data=res.data?.loginOrCreateAccount?.toAuthModel()
                 emit(BaseResponse.Success(data))
             }
         }.catch {
-            emit(BaseResponse.Error("code error in verification"))
+            emit(BaseResponse.Error("Error code ${it.message}"))
         }
     }
     suspend fun me(): Flow<BaseResponse<UserModel?>> {
