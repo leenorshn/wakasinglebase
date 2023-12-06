@@ -1,17 +1,17 @@
 package com.innov.wakasinglebase.common
 
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.view.ViewGroup
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
@@ -29,11 +29,7 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.innov.wakasinglebase.core.utils.FileUtils
 import com.innov.wakasinglebase.data.model.VideoModel
-import com.innov.wakasinglebase.ui.theme.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 
 /**
@@ -52,21 +48,9 @@ fun VideoPlayer(
     onVideoGoBackground: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    var thumbnail by remember {
-        mutableStateOf<Pair<Bitmap?, Boolean>>(Pair(null, true))  //bitmap, isShow
-    }
-    var isFirstFrameLoad = remember { false }
 
-    LaunchedEffect(key1 = true) {
-        withContext(Dispatchers.IO) {
-            val bm = FileUtils.extractThumbnailFromUrl(
-                 video.videoLink
-            )
-            withContext(Dispatchers.Main) {
-                thumbnail = thumbnail.copy(first = bm, second = thumbnail.second)
-            }
-        }
-    }
+
+
     if (pagerState.settledPage == pageIndex) {
         //val videoOptions = VideoOptions("${video.videoId}", VideoType.VOD /* For VOD, or VideoType.LIVE for Live */, "Mriz6mr0R8OOGidYspbYVVmE38YjG9EUer3TfrEGJea")
         val exoPlayer = remember(context) {
@@ -85,8 +69,7 @@ fun VideoPlayer(
                 addListener(object : Player.Listener {
                     override fun onRenderedFirstFrame() {
                         super.onRenderedFirstFrame()
-                        isFirstFrameLoad = true
-                        thumbnail = thumbnail.copy(second = false)
+
                     }
                 })
             }
@@ -135,17 +118,17 @@ fun VideoPlayer(
             })
         }), effect = {
             onDispose {
-                thumbnail = thumbnail.copy(second = true)
+
                 exoPlayer.release()
                 onVideoDispose()
             }
         })
     }
 
-    if (thumbnail.second) {
-       val context= LocalContext.current
+    if (video.thumbnail!=null) {
+       val context = LocalContext.current
         AsyncImage(
-            model = ImageRequest.Builder(context = context).data(thumbnail.first).crossfade(200).build(),
+            model = ImageRequest.Builder(context = context).data(video.thumbnail).crossfade(200).build(),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop

@@ -13,3 +13,9 @@ data class ViewState(
     val error:String?=null,
     val isLoading:Boolean=false
 )
+
+data class DeleteState(
+    val success:Boolean=false,
+    val error:String?=null,
+    val isLoading:Boolean=false
+)

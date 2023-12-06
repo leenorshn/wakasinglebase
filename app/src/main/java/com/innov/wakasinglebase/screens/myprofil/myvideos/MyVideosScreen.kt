@@ -1,6 +1,7 @@
 package com.innov.wakasinglebase.screens.myprofil.myvideos
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -33,11 +35,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.utils.FileUtils
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
@@ -52,12 +56,29 @@ fun MyVideoScreen(
     videoId: String?,
     viewModel: MyVideosViewModel = hiltViewModel()
 ) {
+    var videos by remember {
+        mutableStateOf<List<VideoModel>>(emptyList())
+    }
 
-    LaunchedEffect(key1 = Unit) {
+
+
+    LaunchedEffect(key1 = true) {
         viewModel.onTriggerEvent(MyVideoEvent.OnVideosLoadedEvent("$videoId"))
     }
 
     val uiState by viewModel.viewState.collectAsState()
+    val deleteState by viewModel.deleteState.collectAsState()
+    LaunchedEffect(key1 = uiState, ){
+        if (uiState?.videos?.isEmpty()==false){
+            videos= uiState?.videos!!
+        }
+    }
+
+    LaunchedEffect(key1 = deleteState.success) {
+        if (deleteState.success) {
+            viewModel.onTriggerEvent(MyVideoEvent.OnVideosLoadedEvent("$videoId"))
+        }
+    }
     Scaffold(
         topBar = {
             Row(
@@ -69,7 +90,7 @@ fun MyVideoScreen(
                     Icon(Icons.Outlined.ArrowBack, "back")
                 }
                 Text(text = "My Videos", fontWeight = FontWeight.Medium, fontSize = 18.sp)
-                Text(text = uiState?.videos?.size.toString() + " Videos  " ?: "0 Videos  ")
+                Text(text = (uiState?.videos?.size.toString() + " Videos  ") ?: "0 Videos  ")
             }
         }
     ) {
@@ -102,13 +123,33 @@ fun MyVideoScreen(
                         color = Color.Black,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp)
                     )
                 }
             }
 //
             if (uiState?.videos != null) {
-                items(uiState?.videos!!) {
-                    MyVideoItem(video = it, onVideoDeleted = {})
+                itemsIndexed(videos){ i,v->
+                    MyVideoItem(
+                        key = i,
+                        video = v,
+                        onVideoClicked = {
+                            navController.navigate(
+                                DestinationRoute.VIDEO_DETAIL_ROUTE.replace(
+                                    "{video}",
+                                    v.videoId
+                                )
+                            )
+                        },
+                        onVideoDeleted = {
+                            viewModel.onTriggerEvent(MyVideoEvent.OnVideoDeletedEvent(v.videoId))
+                           videos= videos.filter { v->v.videoId!=v.videoId }
+                        },
+                        state = deleteState
+                    )
                 }
             }
 
@@ -120,7 +161,11 @@ fun MyVideoScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MyVideoItem(video: VideoModel, onVideoDeleted: () -> Unit) {
+fun MyVideoItem(
+    key:Int,
+    video: VideoModel, onVideoClicked: () -> Unit, onVideoDeleted: () -> Unit,
+    state: DeleteState
+) {
     var thumbnail by remember {
         mutableStateOf<Pair<Bitmap?, Boolean>>(Pair(null, true))  //bitmap, isShow
     }
@@ -137,6 +182,9 @@ fun MyVideoItem(video: VideoModel, onVideoDeleted: () -> Unit) {
         }
     }
     ListItem(
+        modifier = Modifier.clickable {
+            onVideoClicked.invoke()
+        },
         leadingContent = {
             if (thumbnail.second) {
                 AsyncImage(
@@ -160,8 +208,12 @@ fun MyVideoItem(video: VideoModel, onVideoDeleted: () -> Unit) {
             Text(text = "${video.videoTitle}", fontSize = 18.sp, fontWeight = FontWeight.Medium)
         },
         trailingContent = {
-            IconButton(onClick = { onVideoDeleted.invoke() }) {
-                Icon(Icons.Outlined.Delete, "delete")
+            if (state.isLoading) {
+                CircularProgressIndicator(color = PrimaryColor)
+            } else {
+                IconButton(onClick = { onVideoDeleted.invoke() }) {
+                    Icon(Icons.Outlined.Delete, "delete")
+                }
             }
         }
     )

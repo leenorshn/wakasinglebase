@@ -1,5 +1,6 @@
 package com.innov.wakasinglebase.screens.camera.publication
 
+import android.graphics.Bitmap
 import android.net.Uri
 
 sealed class PublicationEvent {
@@ -7,9 +8,11 @@ sealed class PublicationEvent {
        val fileName: String,
        val category: String,
        val title: String,
+       val thumbnail: String,
        val description: String
     ) : PublicationEvent()
     data class OnVideoUpload(val uri: Uri,val fileName: String):PublicationEvent()
+    data class OnThumbnailUpload(val bitmap: Bitmap?,val filename:String):PublicationEvent()
 }
 
 data class ViewState(

@@ -9,7 +9,17 @@ directive @isClient on FIELD | FIELD_DEFINITION
 
 directive @isAdmin on FIELD | FIELD_DEFINITION
 
-
+# type Event {
+#   id: ID!
+#   name: String!
+#   price: Float!
+#   image: String!
+#   owner: User!
+#   detail: String!
+#   status: String! # active|| inactive
+#   date: String!
+#   createdAt: Float!
+# }
 
 type Video {
     id: ID!
@@ -20,6 +30,7 @@ type Video {
     like: Int!
     comment: Int!
     view: Int!
+    thumbnail: String!
     product: String
     isLikedBy: [String!]!
     description: String!
@@ -46,8 +57,6 @@ type User {
     isOnline: Boolean!
     hasContract: Boolean!
 }
-
-
 
 type Product {
     id: ID!
@@ -116,7 +125,26 @@ type DemandMonetization {
     createdAt: Float!
 }
 
+# type Community {
+#   id: ID!
+#   name: String!
+#   philosophy: String!
+#   logo: String
+#   messages: [Message!]!
+#   members: [User!]!
+#   admins: [User!]!
+#   subscription: Float!
+#   createdAt: Float!
+# }
 
+# type Message {
+#   id: ID!
+#   audio: String
+#   text: String
+#   sender: User!
+#   community: String!
+#   createdAt: Float!
+# }
 
 type TokenSMS {
     token: String!
@@ -146,7 +174,7 @@ type Vote {
 
 type Notification {
     id: ID!
-    owner: User!
+    owner: String!
     title: String!
     message: String!
     status: String! #CRITIQUE ||INFO|| OPERATION
@@ -163,7 +191,13 @@ type Query {
     #comments
     comments(videoId: String!): [Comment!]!
 
+    #chats
+    # conversations: [Conversation!]! @auth
 
+    #community
+    #communities: [Community!]!
+    #myCommunities: [Community!]!
+    #community(id: ID!): Community
 
     #nofications
     nofications: [Notification!]! @auth
@@ -240,7 +274,17 @@ type Mutation {
     rechargeOper(data: NewOperation!): Boolean! @auth
     withdrawOper(data: NewOperation!): Boolean! @auth
 
+    #conversations
+    # createConversation(receiver: ID!): Boolean! @auth
+    # sendMessage(conversationId: ID!, message: String!): Boolean! @auth
 
+    #community
+    # createCommunity(data: NewCommunity!): Boolean! @auth
+    # JoinCommunity(communityId: ID!, uid: ID!): Boolean! @auth
+
+    # deleteCommunity(id: ID!): Boolean! @auth
+    # publishMessage(data: NewMessage!): Boolean! @auth
+    # unPublishMessage(id: ID!): Boolean! @auth
 
     createCompetition(data: NewCompetition!): Boolean! @auth
     joinCompetition(competitionId: ID!): Boolean! @auth
@@ -289,6 +333,7 @@ input NewVideoInput {
     title: String!
     link: String!
     category: String!
+    thumbnail: String!
     description: String!
     hasTag: [String!]!
 }
@@ -320,7 +365,19 @@ input UpdateUserInput {
     profilePic: String
 }
 
+# input NewCommunity {
+#   name: String!
+#   philosophy: String!
+#   logo: String
+#   members: [String!]!
+#   subscription: Float!
+# }
 
+# input NewMessage {
+#   audio: String
+#   text: String
+#   community: String!
+# }
 
 input NewCompetition {
     name: String!

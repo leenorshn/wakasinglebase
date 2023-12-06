@@ -9,6 +9,7 @@ import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.data.mapper.toVideoModel
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.wakabase.CreateVideoMutation
+import com.wakabase.DeleteVideoMutation
 import com.wakabase.LikeVideoMutation
 import com.wakabase.VideosQuery
 import com.wakabase.type.NewVideoInput
@@ -28,6 +29,7 @@ class VideoDataSource @Inject constructor(
         category: String,
         title: String,
         // author: UserModel,
+        thumbnail:String,
         description: String
     ): Flow<BaseResponse<Boolean>> {
 
@@ -40,6 +42,7 @@ class VideoDataSource @Inject constructor(
                     description=description,
                     title=title,
                     category=category,
+                    thumbnail=thumbnail,
                     // author="${author.uid}",
                     link=videoId,
                     hasTag = emptyList()
@@ -65,6 +68,28 @@ class VideoDataSource @Inject constructor(
             emit(BaseResponse.Loading)
 
           val res = apolloClient.mutation(LikeVideoMutation(videoId)).execute()
+
+            if (res.hasErrors()){
+                emit(BaseResponse.Error("Error when liking a video"))
+            }else{
+                emit(BaseResponse.Success(true))
+            }
+
+
+        }.catch {
+            emit(BaseResponse.Error("Error when creating video"))
+        }
+    }
+
+    suspend fun deleteVideo(
+        videoId: String,
+    ): Flow<BaseResponse<Boolean>> {
+
+
+        return flow {
+            emit(BaseResponse.Loading)
+
+            val res = apolloClient.mutation(DeleteVideoMutation(videoId)).execute()
 
             if (res.hasErrors()){
                 emit(BaseResponse.Error("Error when liking a video"))

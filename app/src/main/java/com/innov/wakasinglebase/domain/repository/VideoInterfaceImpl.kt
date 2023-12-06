@@ -23,18 +23,24 @@ class VideoRepositoryImpl @Inject constructor(
         videoId: String,
         category: String,
         title: String,
-        description: String
+        description: String,
+        thumbnail:String,
     ): Flow<BaseResponse<Boolean>> {
         return videoDataSource.createVideo(
             videoId = videoId,
             category = category,
             title = title,
-            description = description
+            description = description,
+            thumbnail = thumbnail
         )
     }
 
     override suspend fun likeVideo(videoId: String): Flow<BaseResponse<Boolean>> {
         return  videoDataSource.likeVideo(videoId)
+    }
+
+    override suspend fun deleteVideo(videoId: String): Flow<BaseResponse<Boolean>> {
+        return videoDataSource.deleteVideo(videoId)
     }
 
     override suspend fun getAllVideos(): Flow<BaseResponse<List<VideoModel>>> {

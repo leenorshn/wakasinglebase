@@ -75,6 +75,7 @@ fun AppNavHost(
            marketNavGraph(navController)
            joinCompetitionNavGraph(navController)
            uploadNavGraph(navController)
+           //videoDetailNavGraph()
            publicationNavGraph(navController)
            myProfileNavGraph(navController)
            firstProfileNavGraph(navController)

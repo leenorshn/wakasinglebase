@@ -13,6 +13,7 @@ import androidx.documentfile.provider.DocumentFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Random
 
@@ -21,6 +22,23 @@ import java.util.Random
  * Created by innov Victor on 3/16/2023.
  */
 object FileUtils {
+
+    fun saveBitmapToTempFile(context: Context, bitmap: Bitmap, filename: String): File? {
+        val cacheDir = context.cacheDir
+        val file = File(cacheDir, filename)
+
+        try {
+            val outputStream = FileOutputStream(file)
+            // Use the compress method to save the Bitmap to the OutputStream
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream.close()
+            return file
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+
+        return null
+    }
 
     fun Context.getFilePath(uri: Uri): String? {
         var cursor: Cursor? = null

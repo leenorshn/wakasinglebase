@@ -3,7 +3,7 @@ package com.innov.wakasinglebase.screens.home.video_detail
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation.navDeepLink
+import com.innov.wakasinglebase.core.DestinationRoute
 
 /**
  *
@@ -21,12 +21,10 @@ import androidx.navigation.navDeepLink
 
 fun NavGraphBuilder.videoDetailNavGraph(navController: NavController) {
     composable(
-         "details?video={video}",
-         deepLinks = listOf(navDeepLink {
-                 uriPattern = "https://d2y4y6koqmb0v7.cloudfront.net/{video}"
-             }),
+         DestinationRoute.VIDEO_DETAIL_ROUTE,
+
          ) { backStackEntry ->
              val video = backStackEntry.arguments?.getString("video")
-             VideoDetailScreen(navController)
+             VideoDetailScreen(navController,video)
          }
 }

@@ -87,6 +87,7 @@ fun PublicationScreen(
             )
             withContext(Dispatchers.Main) {
                 thumbnail = thumbnail.copy(first = bm, second = thumbnail.second)
+                viewModel.onTriggerEvent(PublicationEvent.OnThumbnailUpload(thumbnail.first,"thumbnail_${fileName?.replace(".mp4",".jpg")}"))
             }
 
         }
@@ -254,6 +255,7 @@ fun PublicationScreen(
                                    fileName = fileName!!,
                                    category = selectedOption,
                                    title = title,
+                                   thumbnail = "thumbnail_${fileName.replace(".mp4",".jpg")}",
                                    description = description
                                )
                            )

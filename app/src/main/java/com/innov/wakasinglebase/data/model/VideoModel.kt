@@ -17,6 +17,7 @@ data class VideoModel(
     val like: Int,
     val view:Int,
     val comment: Int,
+    val thumbnail:String?=null,
     val category: String?=null,
     val product:String?=null,
     val currentViewerInteraction: ViewerInteraction = ViewerInteraction(),
@@ -27,19 +28,13 @@ data class VideoModel(
 
         var formattedLikeCount: String = ""
         var formattedCommentCount: String = ""
-        var formattedShareCount: String = ""
-
         var formattedViewsCount: String = ""
 
         init {
             formattedLikeCount = like.formattedCount()
             formattedCommentCount = comment.formattedCount()
-
-
             formattedViewsCount = view.formattedCount()
         }
-
-
 
     data class ViewerInteraction(
         var isLikedByYou: Boolean = false,
@@ -55,6 +50,7 @@ fun CompetitionsQuery.Video.toVideoModel():VideoModel{
         comment = 0,
         view = 0,
         category = category,
+        thumbnail = thumbnail,
         videoTitle = title,
         description = "",
         createdAt = randomUploadDate(),
@@ -69,6 +65,7 @@ fun CompetitionQuery.Video.toVideoModel():VideoModel{
         like = like,
         comment = 0,
         view = 0,
+        thumbnail = thumbnail,
         category = category,
         authorDetails = UserModel(
             uid=author.id,

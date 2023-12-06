@@ -28,6 +28,7 @@ fun VideosQuery.Video.toVideoModel():VideoModel{
         videoTitle = title,
         description = description,
         hasTag = hasTag,
+        thumbnail = thumbnail,
         createdAt = "$createdAt",
         category=category,
         authorDetails = author.toAuthor(),

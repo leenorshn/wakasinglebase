@@ -1,12 +1,12 @@
 package com.innov.wakasinglebase.screens.home.video_detail
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.innov.wakasinglebase.domain.repository.VideoRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
@@ -14,7 +14,7 @@ class VideoDetailViewModel @Inject constructor(
     private val repository: VideoRepositoryImpl
 ) : ViewModel() {
 
-    val state = mutableStateOf(VideoDetailState())
+    val state = MutableStateFlow(VideoDetailState())
 
     fun onEvent(event: VideoDetailEvent) {
         when (event) {

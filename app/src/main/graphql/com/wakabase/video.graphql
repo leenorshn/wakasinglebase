@@ -29,6 +29,7 @@ query videos($limit:Int){
         link
         category
         product
+        thumbnail
         description
         hasTag
         like
@@ -61,6 +62,7 @@ query myVideo($UID:ID!){
         description
         hasTag
         product
+        thumbnail
         like
         isLikedBy
         view
@@ -91,6 +93,7 @@ query video($id:ID!){
         hasTag
         like
         isLikedBy
+        thumbnail
         product
         view
         comment

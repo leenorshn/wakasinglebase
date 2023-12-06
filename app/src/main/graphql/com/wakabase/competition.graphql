@@ -21,6 +21,7 @@ query competitions{
         startAt
         isArchived
         createdAt
+
         banner
         participants {
             id
@@ -39,6 +40,7 @@ query competitions{
             link
             title
             category
+            thumbnail
 
         }
     }
@@ -71,6 +73,7 @@ query competition($id:ID!){
             product
             link
             title
+            thumbnail
             category
             author {
                 id

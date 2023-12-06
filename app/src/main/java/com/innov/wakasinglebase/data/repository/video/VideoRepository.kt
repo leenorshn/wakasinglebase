@@ -13,10 +13,12 @@ interface VideoRepository {
         category: String,
         title: String,
        // author: UserModel,
+        thumbnail:String,
         description: String,
     ): Flow<BaseResponse<Boolean>>
 
     suspend fun likeVideo(videoId: String): Flow<BaseResponse<Boolean>>
+    suspend fun deleteVideo(videoId: String): Flow<BaseResponse<Boolean>>
 
     suspend fun getAllVideos(): Flow<BaseResponse<List<VideoModel>>>
    suspend fun getAuthorVideos(authorId: String): Flow<BaseResponse<List<VideoModel>>>
