@@ -16,7 +16,10 @@ import androidx.compose.material.SwipeableDefaults
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -34,7 +37,7 @@ import com.innov.wakasinglebase.core.DestinationRoute.HOME_SCREEN_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.LOTTO_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.MY_PROFILE_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.NOTIFICATION_ROUTE
-import com.innov.wakasinglebase.core.DestinationRoute.WATCH_COMPETITION_ROUTE
+import com.innov.wakasinglebase.core.DestinationRoute.VIDEO_DETAIL_ROUTE
 import com.innov.wakasinglebase.ui.theme.WakabaseTheme
 
 
@@ -62,7 +65,7 @@ fun RootScreen() {
     }
     val darkMode = when (currentDestination?.route) {
         HOME_SCREEN_ROUTE, FORMATTED_COMPLETE_CREATOR_VIDEO_ROUTE, CAMERA_ROUTE,
-            WATCH_COMPETITION_ROUTE, null -> true
+             VIDEO_DETAIL_ROUTE, null -> true
         else -> false
     }
 

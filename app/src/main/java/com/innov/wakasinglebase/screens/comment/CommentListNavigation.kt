@@ -9,6 +9,10 @@ import com.innov.wakasinglebase.core.DestinationRoute.COMMENT_BOTTOM_SHEET_ROUTE
 @OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.commentListingNavGraph(navController: NavController) {
     bottomSheet(route = COMMENT_BOTTOM_SHEET_ROUTE) {
-        CommentListScreen(onClickCancel = { navController.navigateUp() })
+            backStackEntry->
+        val video =  backStackEntry.arguments?.getString("video")
+        CommentListScreen(
+            video=video,
+            onClickCancel = { navController.navigateUp() })
     }
 }

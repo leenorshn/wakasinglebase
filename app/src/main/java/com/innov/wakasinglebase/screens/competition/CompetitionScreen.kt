@@ -2,7 +2,15 @@ package com.innov.wakasinglebase.screens.competition
 
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,7 +20,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -41,7 +48,6 @@ import com.innov.wakasinglebase.common.StackedImage
 import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.extension.LargeSpace
 import com.innov.wakasinglebase.core.extension.Space
-
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
 
 
@@ -147,7 +153,7 @@ fun CompetitionScreen(
 
                                     )
                                 4.dp.Space()
-                               Box(modifier = Modifier.padding(horizontal = 16.dp)){
+                               Box(modifier = Modifier.padding(horizontal = -16.dp)){
                                    for (t in competition.participants.take(4)) {
                                        StackedImage(
                                            image = t.profilePic
@@ -159,29 +165,9 @@ fun CompetitionScreen(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .padding(horizontal = 10.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.End
                                 ) {
-                                   if (competition.participants.find { el->el.uid==currentUser?.uid }!=null){
-                                       Spacer(modifier = Modifier.width(32.dp))
-                                   }else{
-                                       ExtendedFloatingActionButton(
-                                           elevation = FloatingActionButtonDefaults.elevation(
-                                               defaultElevation = 0.dp,
-                                               pressedElevation = 1.dp,
-                                               focusedElevation = 2.dp,
-                                               hoveredElevation = 1.dp,
-                                           ),
-                                           onClick = {
-                                               navController.navigate(
-                                                   DestinationRoute.JOIN_COMPETITION_ROUTE.replace(
-                                                       "{id}",
-                                                       competition.id
-                                                   )
-                                               )
-                                           }) {
-                                           Text(text = "Join competition")
-                                       }
-                                   }
+
                                     if(competition.videos.isNotEmpty()){
                                         ExtendedFloatingActionButton(
                                             containerColor = PrimaryColor,

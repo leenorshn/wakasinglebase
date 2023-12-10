@@ -1,23 +1,21 @@
 package com.innov.wakasinglebase.screens.comment
 
-import com.innov.wakasinglebase.data.model.CommentList
-import com.innov.wakasinglebase.data.model.VideoModel
+import com.innov.wakasinglebase.data.model.CommentModel
 
 data class ViewState(
     val isLoading: Boolean? = null,
     val error: String? = null,
-    val comments: CommentList? = null
+    val comments: List<CommentModel>? = null
 )
 
 sealed class CommentEvent {
     data class OnPublishEvent(
-        val userId:String,
         val videoId:String,
         val comment:String,
     ):CommentEvent()
 
     data class OnLoadCommentsEvent(
-        val video: VideoModel
+        val video: String?
     ):CommentEvent()
 }
 

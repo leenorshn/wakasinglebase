@@ -1,5 +1,6 @@
 package com.innov.wakasinglebase.screens.comment
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,11 +21,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -46,17 +49,36 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.core.extension.Space
-import com.innov.wakasinglebase.data.model.CommentList
+import com.innov.wakasinglebase.data.model.CommentModel
 import com.innov.wakasinglebase.ui.theme.DarkBlue
 import com.innov.wakasinglebase.ui.theme.GrayMainColor
-import com.innov.wakasinglebase.ui.theme.SubTextColor
 
 @Composable
 fun CommentListScreen(
     viewModel: CommentListViewModel = hiltViewModel(),
+    video:String?,
     onClickCancel: () -> Unit
 ) {
     val viewState by viewModel.viewState.collectAsState()
+    val user = viewModel.user
+
+    var comments = remember {
+        mutableStateListOf<CommentModel>()
+    }
+
+
+    LaunchedEffect(key1 = true){
+        viewModel.onTriggerEvent(
+            CommentEvent.OnLoadCommentsEvent(video)
+        )
+    }
+
+    LaunchedEffect(key1 = viewState){
+        Log.d("COMMENT_STATE",viewState.toString())
+        viewState?.comments?.let {list->
+            comments.addAll(list)
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -69,7 +91,7 @@ fun CommentListScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Text(
-                text = "${viewState?.comments?.totalComment ?: ""} ${stringResource(id = R.string.comments)}",
+                text = "${comments.size ?: ""} ${stringResource(id = R.string.comments)}",
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.align(Alignment.Center)
             )
@@ -87,23 +109,35 @@ fun CommentListScreen(
 
         6.dp.Space()
         LazyColumn(contentPadding = PaddingValues(top = 4.dp), modifier = Modifier.weight(1f)) {
-            viewState?.comments?.comments?.let {list->
-                items(list) {
+
+                items(comments) {
                     CommentItem(it)
                 }
-            }
+
         }
 
 
 
 
-        CommentUserField()
+        CommentUserField(
+            image = user.profilePic,
+            onSendComment = {
+
+                comments.add(CommentModel(author = user,comment=it, createdAt = ""))
+                viewModel.onTriggerEvent(CommentEvent.OnPublishEvent(
+                    videoId = "$video",
+                    comment=it,
+                ))
+
+                Log.d("COMMENT_STATE",comments.joinToString ())
+            }
+        )
     }
 }
 
 
 @Composable
-fun CommentItem(item: CommentList.Comment) {
+fun CommentItem(item: CommentModel) {
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,7 +146,7 @@ fun CommentItem(item: CommentList.Comment) {
         val (profileImg, name, comment, createdOn, reply, like, dislike) = createRefs()
 
         AsyncImage(model = ImageRequest.Builder(LocalContext.current)
-            .data(item.commentBy.profilePic)
+            .data(item.author.profilePic)
             .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
@@ -126,7 +160,7 @@ fun CommentItem(item: CommentList.Comment) {
                 })
 
 
-        Text(text = "${item.commentBy.name}",
+        Text(text = "${item.author.name}",
             style = MaterialTheme.typography.labelMedium,
             modifier = Modifier.constrainAs(name) {
                 start.linkTo(profileImg.end, margin = 12.dp)
@@ -134,7 +168,7 @@ fun CommentItem(item: CommentList.Comment) {
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
             })
-        Text(text = item.comment ?: "",
+        Text(text = item.comment ?: "auu",
             style = MaterialTheme.typography.bodySmall,
             color = DarkBlue,
             modifier = Modifier.constrainAs(comment) {
@@ -143,61 +177,65 @@ fun CommentItem(item: CommentList.Comment) {
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
             })
-        Text(text = item.createdAt, modifier = Modifier.constrainAs(createdOn) {
-            start.linkTo(name.start)
-            top.linkTo(comment.bottom, margin = 5.dp)
-        })
+//        Text(text = "${item.createdAt} ", modifier = Modifier.constrainAs(createdOn) {
+//            start.linkTo(name.start)
+//            top.linkTo(comment.bottom, margin = 5.dp)
+//        })
 
-        Text(text = stringResource(id = R.string.reply),
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.constrainAs(reply) {
-                start.linkTo(createdOn.end, margin = 16.dp)
-                top.linkTo(createdOn.top)
-                end.linkTo(like.end, margin = 4.dp)
-                width = Dimension.fillToConstraints
-            })
+//        Text(text = stringResource(id = R.string.reply),
+//            style = MaterialTheme.typography.labelMedium,
+//            modifier = Modifier.constrainAs(reply) {
+//                start.linkTo(createdOn.end, margin = 16.dp)
+//                top.linkTo(createdOn.top)
+//                end.linkTo(like.end, margin = 4.dp)
+//                width = Dimension.fillToConstraints
+//            })
 
-        Row(
-            modifier = Modifier.constrainAs(like) {
-                bottom.linkTo(reply.bottom)
-                end.linkTo(dislike.start, margin = 24.dp)
-            },
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(3.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_like_outline),
-                contentDescription = null,
-                modifier = Modifier.size(18.dp)
-            )
-            item.totalLike.takeIf { it != 0L }?.let {
-                Text(text = it.toString(), fontSize = 13.sp, color = SubTextColor)
-            }
+//        Row(
+//            modifier = Modifier.constrainAs(like) {
+//                bottom.linkTo(reply.bottom)
+//                end.linkTo(dislike.start, margin = 24.dp)
+//            },
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.spacedBy(3.dp)
+//        ) {
+//            Icon(
+//                painter = painterResource(id = R.drawable.ic_like_outline),
+//                contentDescription = null,
+//                modifier = Modifier.size(18.dp)
+//            )
+//            item.totalLike.takeIf { it != 0L }?.let {
+//                Text(text = it.toString(), fontSize = 13.sp, color = SubTextColor)
+//            }
+//
+//        }
 
-        }
-
-        Row(
-            modifier = Modifier.constrainAs(dislike) {
-                bottom.linkTo(reply.bottom)
-                end.linkTo(parent.end)
-            },
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(3.dp)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_dislike_outline),
-                contentDescription = null,
-                modifier = Modifier.size(18.dp)
-            )
-            // Text(text = "") //dislike not display
-        }
+//        Row(
+//            modifier = Modifier.constrainAs(dislike) {
+//                bottom.linkTo(reply.bottom)
+//                end.linkTo(parent.end)
+//            },
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.spacedBy(3.dp)
+//        ) {
+//            Icon(
+//                painter = painterResource(id = R.drawable.ic_dislike_outline),
+//                contentDescription = null,
+//                modifier = Modifier.size(18.dp)
+//            )
+//            // Text(text = "") //dislike not display
+//        }
     }
     24.dp.Space()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommentUserField() {
+fun CommentUserField(
+    image:String?,
+    onSendComment:(comment:String)->Unit,
+
+) {
     var comment by remember {
         mutableStateOf("")
     }
@@ -227,11 +265,17 @@ fun CommentUserField() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = "", contentDescription = null, modifier = Modifier
+                model = image, contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
                     .size(38.dp)
                     .background(
                         shape =
                         CircleShape, color = GrayMainColor
+                    )
+                    .clip(
+                        shape =
+                        CircleShape,
                     )
             )
 
@@ -243,8 +287,9 @@ fun CommentUserField() {
                 placeholder = {
                     Text(text = stringResource(R.string.add_comment))
                 },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = GrayMainColor,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedContainerColor = GrayMainColor,
+                    focusedContainerColor = GrayMainColor,
                     unfocusedBorderColor = Color.Transparent
                 ),
                 modifier = Modifier
@@ -258,7 +303,8 @@ fun CommentUserField() {
                     ) {
 
                        Text(text = "send", modifier = Modifier.clickable {
-
+                            onSendComment.invoke(comment)
+                           comment=""
                        })
                     }
 

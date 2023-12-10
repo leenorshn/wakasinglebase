@@ -66,7 +66,8 @@ fun ForYouTabScreen(
 
            WakawakaVerticalVideoPager(
                 videos = it,
-                onclickComment = { navController.navigate(COMMENT_BOTTOM_SHEET_ROUTE) },
+                onclickComment = {
+                    navController.navigate(COMMENT_BOTTOM_SHEET_ROUTE.replace("{video}",it)) },
                 onClickLike = {s:String ,b:Boolean->
                     viewModel.onTriggerEvent(ForYouEvent.OnLikeVideo(s))
                 },

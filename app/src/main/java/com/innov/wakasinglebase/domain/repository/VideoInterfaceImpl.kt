@@ -52,7 +52,7 @@ class VideoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getVideo(videoId: String): Flow<BaseResponse<VideoModel>> {
-        TODO("Not yet implemented")
+        return  videoDataSource.fetchVideo(videoId)
     }
 
 }

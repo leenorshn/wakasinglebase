@@ -67,14 +67,14 @@ class UserDataSource @Inject constructor(
             //emit(true)
             var res=apolloClient.mutation(VerifyPhoneMutation(phone)).execute()
             if (res.hasErrors()){
-                emit(BaseResponse.Error("error ${res.errors?.joinToString ()}"))
+                emit(BaseResponse.Error("error of network or bad request"))
             }
             if (res.data?.sendCode==true){
                 emit(BaseResponse.Success(true))
             }
         }.catch {
 
-            emit(BaseResponse.Error("error ${it.message}"))
+            emit(BaseResponse.Error("error of network"))
         }
     }
     suspend fun verifyCode(phone:String,code:String): Flow<BaseResponse<AuthModel?>> {
@@ -83,14 +83,14 @@ class UserDataSource @Inject constructor(
             //emit(true)
             val res=apolloClient.mutation(LoginOrCreateAccountMutation(phone,code)).execute()
             if (res.hasErrors()){
-                emit(BaseResponse.Error("Error code ${res.errors?.get(0)?.message}"))
+                emit(BaseResponse.Error("Error when verifying code"))
             }
             if (res.data?.loginOrCreateAccount!=null){
                 val data=res.data?.loginOrCreateAccount?.toAuthModel()
                 emit(BaseResponse.Success(data))
             }
         }.catch {
-            emit(BaseResponse.Error("Error code ${it.message}"))
+            emit(BaseResponse.Error("Error when verifying code"))
         }
     }
     suspend fun me(): Flow<BaseResponse<UserModel?>> {
@@ -118,7 +118,7 @@ class UserDataSource @Inject constructor(
             emit(BaseResponse.Loading)
             val res=apolloClient.mutation(UpdateUserMutation(name,avatar,bio)).execute()
             if (res.hasErrors()){
-                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+                emit(BaseResponse.Error("Error when updating profile "))
             }
             if (res.data!=null){
                 emit(BaseResponse.Success(true))
@@ -135,14 +135,14 @@ class UserDataSource @Inject constructor(
             emit(BaseResponse.Loading)
             val res=apolloClient.query(UsersQuery()).fetchPolicy(FetchPolicy.NetworkFirst).execute()
             if (res.hasErrors()){
-                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+                emit(BaseResponse.Error("Error when fetching users"))
             }
             val users=   res.data?.users?.map {
                 it.toUserModel()
             }?:emptyList()
             emit(BaseResponse.Success(users))
         }.catch {
-            emit(BaseResponse.Error("Error when updating profile"))
+            emit(BaseResponse.Error("Error when fetching users"))
         }
     }
 
@@ -151,11 +151,11 @@ class UserDataSource @Inject constructor(
             emit(BaseResponse.Loading)
             val res=apolloClient.mutation(FollowMeMutation(id)).execute()
             if (res.hasErrors()){
-                emit(BaseResponse.Error("error"))
+                emit(BaseResponse.Error("error of network"))
             }
             emit(BaseResponse.Success(true))
         }.catch {
-            emit(BaseResponse.Error("error"))
+            emit(BaseResponse.Error("error of network"))
         }
     }
     suspend fun unFollowMe(id:String):Flow<BaseResponse<Boolean>>{
@@ -163,11 +163,11 @@ class UserDataSource @Inject constructor(
             emit(BaseResponse.Loading)
             val res=apolloClient.mutation(UnFollowMeMutation(id)).execute()
             if (res.hasErrors()){
-                emit(BaseResponse.Error("error"))
+                emit(BaseResponse.Error("error of network"))
             }
             emit(BaseResponse.Success(true))
         }.catch {
-            emit(BaseResponse.Error("error"))
+            emit(BaseResponse.Error("error of network"))
         }
     }
 
@@ -177,12 +177,12 @@ class UserDataSource @Inject constructor(
 
             val res=apolloClient.query(UserQuery(id)).fetchPolicy(FetchPolicy.NetworkFirst).execute()
             if (res.hasErrors()){
-                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+                emit(BaseResponse.Error("Error user not found"))
             }
             val user=   res.data?.user?.toUserModel()
             emit(BaseResponse.Success(user!!))
         }.catch {
-            emit(BaseResponse.Error("error ${it.message}"))
+            emit(BaseResponse.Error("error some thing wrong happen"))
         }
     }
 
@@ -192,12 +192,12 @@ class UserDataSource @Inject constructor(
 
             val res=apolloClient.query(FriendsQuery(id)).fetchPolicy(FetchPolicy.NetworkFirst).execute()
             if (res.hasErrors()){
-                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+                emit(BaseResponse.Error("Error users not found"))
             }
             val users=   res.data?.friends?.map { it.toUserModel() }?: emptyList()
             emit(BaseResponse.Success(users))
         }.catch {
-            emit(BaseResponse.Error("error ${it.message}"))
+            emit(BaseResponse.Error("Error some thing wrong happen "))
         }
     }
 
@@ -207,12 +207,12 @@ class UserDataSource @Inject constructor(
 
             val res=apolloClient.query(MyFriendsQuery()).fetchPolicy(FetchPolicy.NetworkFirst).execute()
             if (res.hasErrors()){
-                emit(BaseResponse.Error("Error when updating profile ${res.errors?.joinToString() }"))
+                emit(BaseResponse.Error("Error users not found }"))
             }
             val users=   res.data?.myFriends?.map { it.toUserModel() }?: emptyList()
             emit(BaseResponse.Success(users))
         }.catch {
-            emit(BaseResponse.Error("error ${it.message}"))
+            emit(BaseResponse.Error("Error unknown error"))
         }
     }
 

@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
@@ -30,6 +33,8 @@ import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.innov.wakasinglebase.data.model.VideoModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 /**
@@ -48,9 +53,22 @@ fun VideoPlayer(
     onVideoGoBackground: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    var thumbnail by remember {
+        mutableStateOf<Pair<String?, Boolean>>(Pair(null, true))  //bitmap, isShow
+    }
+    var isFirstFrameLoad = remember { false }
 
-
-
+    LaunchedEffect(key1 = true) {
+        withContext(Dispatchers.IO) {
+//            val bm = FileUtils.extractThumbnailFromUrl(
+//                 video.videoLink
+//            )
+            val bm = video.thumbnail
+            withContext(Dispatchers.Main) {
+                thumbnail = thumbnail.copy(first = bm, second = thumbnail.second)
+            }
+        }
+    }
     if (pagerState.settledPage == pageIndex) {
         //val videoOptions = VideoOptions("${video.videoId}", VideoType.VOD /* For VOD, or VideoType.LIVE for Live */, "Mriz6mr0R8OOGidYspbYVVmE38YjG9EUer3TfrEGJea")
         val exoPlayer = remember(context) {
@@ -69,7 +87,8 @@ fun VideoPlayer(
                 addListener(object : Player.Listener {
                     override fun onRenderedFirstFrame() {
                         super.onRenderedFirstFrame()
-
+                        isFirstFrameLoad = true
+                        thumbnail = thumbnail.copy(second = false)
                     }
                 })
             }
@@ -125,10 +144,10 @@ fun VideoPlayer(
         })
     }
 
-    if (video.thumbnail!=null) {
-       val context = LocalContext.current
+    if (thumbnail.second) {
+       val context= LocalContext.current
         AsyncImage(
-            model = ImageRequest.Builder(context = context).data(video.thumbnail).crossfade(200).build(),
+            model = ImageRequest.Builder(context = context).data(thumbnail.first).crossfade(200).build(),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -137,10 +156,7 @@ fun VideoPlayer(
 
 }
 
-private const val MIN_BUFFER_MS = 3000 // Minimum video buffer duration in milliseconds
-private const val MAX_BUFFER_MS = 10000 // Maximum video buffer duration in milliseconds
-private const val MIN_PLAYBACK_START_BUFFER_MS = 2500 // Minimum buffer before starting playback in milliseconds
-private const val MIN_PLAYBACK_RESUME_BUFFER_MS = 5000
+
 
 
 

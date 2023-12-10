@@ -1,0 +1,17 @@
+
+
+mutation createComment($data:NewComment!){
+    createComment(newComment: $data)
+}
+
+query getComments($id:String!){
+    comments(videoId: $id){
+        author {
+            id
+            name
+            profilePic
+        }
+        comment
+        createdAt
+    }
+}

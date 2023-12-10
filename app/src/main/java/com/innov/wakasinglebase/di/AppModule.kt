@@ -8,6 +8,7 @@ import com.innov.wakasinglebase.data.repository.NotificationRepository
 import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import com.innov.wakasinglebase.data.repository.authentification.TokenRepository
 import com.innov.wakasinglebase.data.repository.competition.CompetitionRepository
+import com.innov.wakasinglebase.data.source.CommentDataSource
 import com.innov.wakasinglebase.data.source.CompetitionDataSource
 import com.innov.wakasinglebase.data.source.NotificationDataSource
 import com.innov.wakasinglebase.data.source.ThreadDataSource
@@ -68,6 +69,13 @@ object AppModule  {
     fun provideChatDataSource(apolloClient: ApolloClient): CompetitionDataSource {
         return CompetitionDataSource(apolloClient)
     }
+
+    @Provides
+    @Singleton
+    fun provideCommentDataSource(apolloClient: ApolloClient): CommentDataSource {
+        return CommentDataSource(apolloClient)
+    }
+
 
     @Provides
     @Singleton

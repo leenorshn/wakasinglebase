@@ -26,7 +26,7 @@ object DestinationRoute {
 
     const val PUBLICATION_SCREEN_ROUTE="publication_screen_route/uri={uri}"
     const val HOME_SCREEN_ROUTE = "home_screen_route"
-    const val COMMENT_BOTTOM_SHEET_ROUTE = "comment_bottom_sheet_route"
+    const val COMMENT_BOTTOM_SHEET_ROUTE = "comment_bottom_sheet_route/video={video}"
     const val CREATOR_PROFILE_ROUTE = "creator_profile_route"
 
     const val CREATOR_VIDEO_ROUTE = "creator_video_route"

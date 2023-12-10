@@ -1,25 +1,31 @@
 package com.innov.wakasinglebase.data.model
 
+import com.wakabase.GetCommentsQuery
+import java.time.LocalDate
+
 /**
  * Created by innov  on 3/21/2023.
  */
-data class CommentList(
-    val videoId: String?,
-    val totalComment: Int,
-    val comments: List<Comment>,
-    val isCommentPrivate: Boolean
-) {
-    data class Comment(
-        val commentBy: UserModel,
+
+    data class CommentModel(
+        val author: UserModel,
         val comment: String?,
         val createdAt: String,
-        val totalLike: Long,
-        val totalDisLike: Long,
-        val threadCount: Int,
-        val thread: List<Comment>
+    )
+fun GetCommentsQuery.Author.toAuthor():UserModel{
+    return UserModel(
+        uid = id,
+        name=name,
+        profilePic = profilePic
     )
 }
 
-data class CommentText(
-    val comment: String
-)
+fun GetCommentsQuery.Comment.toCommentModel():CommentModel{
+    return CommentModel(
+        author=author.toAuthor(),
+        comment=comment,
+        createdAt=LocalDate.ofEpochDay(createdAt.toLong()).toString()
+    )
+}
+
+
