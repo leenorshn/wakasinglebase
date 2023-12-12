@@ -2,6 +2,7 @@ package com.innov.wakasinglebase.screens.camera.publication
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,30 +18,30 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.RadioButton
-import androidx.compose.material.RadioButtonDefaults
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -87,7 +88,12 @@ fun PublicationScreen(
             )
             withContext(Dispatchers.Main) {
                 thumbnail = thumbnail.copy(first = bm, second = thumbnail.second)
-                viewModel.onTriggerEvent(PublicationEvent.OnThumbnailUpload(thumbnail.first,"thumbnail_${fileName?.replace(".mp4",".jpg")}"))
+                viewModel.onTriggerEvent(
+                    PublicationEvent.OnThumbnailUpload(
+                        thumbnail.first,
+                        "thumbnail_${fileName?.replace(".mp4", ".jpg")}"
+                    )
+                )
             }
 
         }
@@ -95,18 +101,25 @@ fun PublicationScreen(
             ?.let { viewModel.onTriggerEvent(it) }
     }
 
-    LaunchedEffect(key1 = uiState.success){
-        if (uiState.success){
+    LaunchedEffect(key1 = uiState.success) {
+        if (uiState.success) {
             // todo show toast
+            Toast.makeText(context,"Success publish",Toast.LENGTH_LONG).show()
             navController.navigate(DestinationRoute.HOME_SCREEN_ROUTE)
         }
     }
+    LaunchedEffect(key1 = uiState.error) {
+        if (uiState.error!=null) {
+            Toast.makeText(context,"Error of uploading video, try again!",Toast.LENGTH_LONG).show()
+            navController.navigateUp()
+        }
+    }
 
-    var description by rememberSaveable { mutableStateOf("") }
-    var title by rememberSaveable { mutableStateOf("") }
+    var description by remember { mutableStateOf(TextFieldValue(text = "")) }
+    var title by remember { mutableStateOf(TextFieldValue(text = "")) }
 
 
-    val radioOptions = listOf("PUB", "NORMAL", "CHALLENGE", "Other")
+    val radioOptions = listOf("PUB", "NORMAL")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[1]) }
     Scaffold(
         topBar = {
@@ -138,7 +151,7 @@ fun PublicationScreen(
                                 RoundedCornerShape(16.dp)
                             )
                             .background(
-                                if (uploadVideoState.isLoading) Color.Yellow else if(uploadVideoState.error!=null) Color.Red else Color(
+                                if (uploadVideoState.isLoading) Color.Yellow else if (uploadVideoState.error != null) Color.Red else Color(
                                     0xFF21CE99
                                 )
                             )
@@ -168,20 +181,29 @@ fun PublicationScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(
                     value = title,
-                    onValueChange = {
-                        title = it
+                    onValueChange = { value ->
+                        title = value
                     },
                     placeholder = {
                         Text("video title here")
                     },
+                    supportingText = {
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "${description.text.length}/128")
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth(),
-                    isError = title.isEmpty(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    isError = title.text.isEmpty() && title.text.length < 32,
+                    colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color.Black,
 
-                        )
+                        ),
 
-                )
+
+                    )
                 Spacer(modifier = Modifier.height(24.dp))
                 OutlinedTextField(
                     value = description,
@@ -190,13 +212,21 @@ fun PublicationScreen(
                     },
                     label = { Text(text = "Description") },
                     minLines = 1,
-                    maxLines = 4,
+                    maxLines = 5,
                     placeholder = {
                         Text("Tape video summary here")
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    isError = title.isEmpty(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                    supportingText = {
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "${description.text.length}/128")
+                        }
+                    },
+                    isError = description.text.isEmpty(),
+                    colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = Color.Black,
 
                         )
@@ -236,32 +266,32 @@ fun PublicationScreen(
                     }
                 }
                 LargeSpace()
-                if(uploadVideoState.error!=null){
+                if (uploadVideoState.error != null) {
                     Text(text = "${uploadVideoState.error}", color = Color.Red)
                     MediumSpace()
                 }
-               if (uploadVideoState.error==null ){
-                   if (!uploadVideoState.isLoading) {
-                       CustomButton(
-                           buttonText = if (uiState.isLoading) "wait ..." else "Publish",
-                           containerColor = PrimaryColor,
-                           shape = RoundedCornerShape(24.dp),
-                           modifier = Modifier.fillMaxWidth(),
-                           isEnabled = !uiState.isLoading
-                       ) {
+                if (uploadVideoState.error == null) {
+                    if (!uploadVideoState.isLoading) {
+                        CustomButton(
+                            buttonText = if (uiState.isLoading) "wait ..." else "Publish",
+                            containerColor = PrimaryColor,
+                            shape = RoundedCornerShape(24.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                            isEnabled = !uiState.isLoading
+                        ) {
 
-                           viewModel.onTriggerEvent(
-                               PublicationEvent.OnCreateVideoEvent(
-                                   fileName = fileName!!,
-                                   category = selectedOption,
-                                   title = title,
-                                   thumbnail = "thumbnail_${fileName.replace(".mp4",".jpg")}",
-                                   description = description
-                               )
-                           )
-                       }
-                   }
-               }
+                            viewModel.onTriggerEvent(
+                                PublicationEvent.OnCreateVideoEvent(
+                                    fileName = fileName!!,
+                                    category = selectedOption,
+                                    title = title.text.trim(),
+                                    thumbnail = "thumbnail_${fileName.replace(".mp4", ".jpg")}",
+                                    description = description.text.trim()
+                                )
+                            )
+                        }
+                    }
+                }
             }
         }
     }

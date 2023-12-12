@@ -1,6 +1,7 @@
 package com.innov.wakasinglebase.common
 
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.view.ViewGroup
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -31,7 +32,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import com.innov.wakasinglebase.core.utils.FileUtils
 import com.innov.wakasinglebase.data.model.VideoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -54,16 +55,16 @@ fun VideoPlayer(
 ) {
     val context = LocalContext.current
     var thumbnail by remember {
-        mutableStateOf<Pair<String?, Boolean>>(Pair(null, true))  //bitmap, isShow
+        mutableStateOf<Pair<Bitmap?, Boolean>>(Pair(null, true))  //bitmap, isShow
     }
     var isFirstFrameLoad = remember { false }
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(key1 = Unit) {
         withContext(Dispatchers.IO) {
-//            val bm = FileUtils.extractThumbnailFromUrl(
-//                 video.videoLink
-//            )
-            val bm = video.thumbnail
+            val bm = FileUtils.extractThumbnailFromUrl(
+                 video.videoLink
+            )
+            //val bm = video.thumbnail
             withContext(Dispatchers.Main) {
                 thumbnail = thumbnail.copy(first = bm, second = thumbnail.second)
             }
@@ -136,6 +137,8 @@ fun VideoPlayer(
                 onDoubleTap(exoPlayer, offset)
             })
         }), effect = {
+
+
             onDispose {
 
                 exoPlayer.release()
@@ -145,9 +148,9 @@ fun VideoPlayer(
     }
 
     if (thumbnail.second) {
-       val context= LocalContext.current
+
         AsyncImage(
-            model = ImageRequest.Builder(context = context).data(thumbnail.first).crossfade(200).build(),
+            model = thumbnail.first,
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop

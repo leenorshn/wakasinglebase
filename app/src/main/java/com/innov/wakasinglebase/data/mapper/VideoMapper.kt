@@ -1,5 +1,6 @@
 package com.innov.wakasinglebase.data.mapper
 
+import com.innov.wakasinglebase.core.utils.FileUtils
 import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.wakabase.VideoQuery
@@ -43,7 +44,7 @@ fun VideosQuery.Video.toVideoModel():VideoModel{
         description = description,
         hasTag = hasTag,
         thumbnail = thumbnail,
-        createdAt = "$createdAt",
+        createdAt = FileUtils.convertUnixTimestampToReadableDate(createdAt.toLong()),
         category=category,
         authorDetails = author.toAuthor(),
         like = like,
@@ -60,11 +61,12 @@ fun VideoQuery.Video.toVideoModel():VideoModel{
         description = description,
         hasTag = hasTag,
         thumbnail = thumbnail,
-        createdAt = "$createdAt",
+        createdAt = FileUtils.convertUnixTimestampToReadableDate(createdAt.toLong()),
         category=category,
         authorDetails = author.toAuthor(),
         like = like,
         view = view,
-        comment = comment
+        comment = comment,
+
     )
 }

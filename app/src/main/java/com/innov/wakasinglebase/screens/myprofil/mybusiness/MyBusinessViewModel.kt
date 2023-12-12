@@ -1,6 +1,5 @@
 package com.innov.wakasinglebase.screens.myprofil.mybusiness
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
@@ -30,7 +29,7 @@ class MyBusinessViewModel @Inject constructor(
             repository.getMyThreads().collect{
                 when(it){
                     is BaseResponse.Error -> {
-                        Log.e("WAKA",it.error)
+                       // Log.e("WAKA",it.error)
                         updateState(
                            ViewState(
                                 isLoading = false,
@@ -40,7 +39,7 @@ class MyBusinessViewModel @Inject constructor(
                         )
                     }
                     BaseResponse.Loading -> {
-                        Log.e("WAKA","Loading ...")
+                       // Log.e("WAKA","Loading ...")
                         updateState(
                             ViewState(
                                 isLoading = true,
@@ -50,7 +49,7 @@ class MyBusinessViewModel @Inject constructor(
                         )
                     }
                     is BaseResponse.Success -> {
-                        Log.e("WAKA","Success ")
+                       // Log.e("WAKA","Success ")
                         updateState(
                             ViewState(
                                 isLoading = false,

@@ -1,5 +1,6 @@
 package com.innov.wakasinglebase.data.mapper
 
+import com.innov.wakasinglebase.core.utils.FileUtils
 import com.innov.wakasinglebase.data.model.ProductModel
 import com.innov.wakasinglebase.data.model.UserModel
 import com.wakabase.MyProductsQuery
@@ -13,7 +14,7 @@ fun MyProductsQuery.MyProduct .toThreadModel():ProductModel{
         theme=theme,
         coverImage=coverImage,
         price=price,
-        createdAt = createdAt.toLong(),
+        createdAt = FileUtils.convertUnixTimestampToReadableDate(createdAt.toLong()),
         isArchived = isArchived,
         author = UserModel(
             uid=author.id,
@@ -33,7 +34,7 @@ fun ProductQuery.Product.toThreadModel():ProductModel{
         theme=theme,
         coverImage=coverImage,
         price=price,
-        createdAt = createdAt.toLong(),
+        createdAt = FileUtils.convertUnixTimestampToReadableDate(createdAt.toLong()),
         isArchived = isArchived,
         author = UserModel(
             uid=author.id,

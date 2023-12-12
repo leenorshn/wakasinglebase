@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -60,7 +61,7 @@ fun NotificationScreen(
                     }
                 })
         }
-    ) {p->
+    ) { p ->
         if (viewState?.isLoading == true) {
             LinearProgressIndicator(
                 modifier = Modifier
@@ -76,7 +77,7 @@ fun NotificationScreen(
                     .padding(p), contentAlignment = Alignment.Center
             ) {
                 Column(
-                    modifier=Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Image(painter = painterResource(id = R.drawable.empty), contentDescription = "")
@@ -90,43 +91,48 @@ fun NotificationScreen(
                     }
                 }
             }
-        }else{
-        viewState?.notifications?.let {
-            LazyColumn(
-                modifier = Modifier
-                    .padding(p)
-                    .fillMaxSize()
-            ) {
-                items(it) { notif ->
-                    Card {
-                        val color = if (notif.status == "CRITIQUE") Color.Red else Color.Blue
-                        ListItem(
-                            leadingContent = {
-                                        OutlinedIconButton(onClick = { /*TODO*/ }) {
-                                            Icon(Icons.Outlined.Notifications,null)
-                                        }
-                            },
-                            overlineContent = {
-                                Text(text = notif.status, fontSize = 12.sp, color = color)
-                            },
-                            headlineContent = {
-                                Text(
-                                    text = notif.title,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.SemiBold
+        } else {
+            viewState?.notifications?.let {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(p)
+                        .fillMaxSize()
+                ) {
+                    items(it) { notif ->
+                        Card {
+                            val color = if (notif.status == "CRITIQUE") Color.Red else Color.Blue
+                            ListItem(
+                                leadingContent = {
+                                    OutlinedIconButton(onClick = { /*TODO*/ }) {
+                                        Icon(Icons.Outlined.Notifications, null)
+                                    }
+                                },
+                                overlineContent = {
+                                    Text(text = notif.status, fontSize = 12.sp, color = color)
+                                },
+                                headlineContent = {
+                                    Text(
+                                        text = notif.title,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                },
+                                supportingContent = {
+                                    Text(
+                                        text = notif.message + "\n" + notif.createdAt,
+                                        textAlign = TextAlign.Start,
+                                        color = Color.Gray,
+                                        fontSize = 14.sp
+                                    )
+                                },
+
+
                                 )
-                            },
-                            supportingContent = {
-                                Text(text = notif.message, color = Color.Gray, fontSize = 14.sp)
-                            },
-
-
-                            )
-                        Divider()
+                            Divider()
+                        }
                     }
                 }
             }
-        }
         }
 
     }

@@ -3,59 +3,34 @@ package com.innov.wakasinglebase.screens.competition.watch
 import androidx.lifecycle.viewModelScope
 import com.innov.wakasinglebase.core.base.BaseResponse
 import com.innov.wakasinglebase.core.base.BaseViewModel
+import com.innov.wakasinglebase.data.repository.authentification.AuthRepository
 import com.innov.wakasinglebase.domain.CompetitionRepositoryImpl
-import com.innov.wakasinglebase.screens.competition.joinCompetition.JoinState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 @HiltViewModel
 class WatchCompetitionViewModel @Inject constructor(
+    private val repositoryAuth: AuthRepository,
     private val repository: CompetitionRepositoryImpl
 ):BaseViewModel<ViewState,WatchCompetitionEvent>(){
 
-    var joinState= MutableStateFlow(JoinState())
-        private set
+    val userState = MutableStateFlow(UserState())
+
+    init {
+        getCurrentUser()
+    }
     override fun onTriggerEvent(event: WatchCompetitionEvent) {
         when(event){
             is WatchCompetitionEvent.OnLoadCompetitionEvent -> {
                 loadCompetition(event.id)
             }
-            is WatchCompetitionEvent.OnSubmitVoteVideoEvent -> {
-                vote(id = event.id)
-            }
+
+            else -> {}
         }
     }
 
-    private fun vote(id:String){
-        viewModelScope.launch {
-            repository.voteVideo(id = id).collect{
-                when(it){
-                    is BaseResponse.Error -> {
-                        joinState.value=joinState.value.copy(
-                            success = false,
-                            isLoading = false,
-                            error = it.error
-                        )
-                    }
-                    BaseResponse.Loading -> {
-                        joinState.value=joinState.value.copy(
-                            success = false,
-                            isLoading = true,
-                            error = null
-                        )
-                    }
-                    is BaseResponse.Success -> {
-                        joinState.value=joinState.value.copy(
-                            success = true,
-                            isLoading = false,
-                            error = null
-                        )
-                    }
-                }
-            }
-        }
-    }
+
 
     private fun loadCompetition(id:String){
         viewModelScope.launch {
@@ -85,7 +60,37 @@ class WatchCompetitionViewModel @Inject constructor(
                         )
                         )
                     }
+
+                    else -> {}
                 }
+            }
+        }
+    }
+
+    private fun getCurrentUser() {
+        viewModelScope.launch {
+            repositoryAuth.me().collect {result->
+                when(result){
+                    is BaseResponse.Loading->{
+                        userState.value = userState.value.copy(
+                            isLoading = true
+                        )
+                    }
+                    is BaseResponse.Success->{
+                        userState.value = userState.value.copy(
+                            isLoading = false, user = result.data
+                        )
+                    }
+                    is BaseResponse.Error->{
+                        userState.value = userState.value.copy(
+                            isLoading = false,
+                            user = null,
+                            error = result.error
+                        )
+                    }
+                }
+
+
             }
         }
     }

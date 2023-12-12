@@ -1,7 +1,7 @@
 package com.innov.wakasinglebase.data.model
 
+import com.innov.wakasinglebase.core.utils.FileUtils
 import com.wakabase.GetCommentsQuery
-import java.time.LocalDate
 
 /**
  * Created by innov  on 3/21/2023.
@@ -24,7 +24,7 @@ fun GetCommentsQuery.Comment.toCommentModel():CommentModel{
     return CommentModel(
         author=author.toAuthor(),
         comment=comment,
-        createdAt=LocalDate.ofEpochDay(createdAt.toLong()).toString()
+        createdAt= FileUtils.convertUnixTimestampToReadableDate(createdAt.toLong()),
     )
 }
 

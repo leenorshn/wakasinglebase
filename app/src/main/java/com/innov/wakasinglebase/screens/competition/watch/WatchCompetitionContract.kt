@@ -1,6 +1,7 @@
 package com.innov.wakasinglebase.screens.competition.watch
 
 import CompetitionModel
+import com.innov.wakasinglebase.data.model.UserModel
 
 
 data class ViewState(
@@ -9,13 +10,13 @@ data class ViewState(
     val isLoading:Boolean=false,
 )
 
-data class VoteState(
-    val success:Boolean=false,
+data class UserState(
+    val user:UserModel?=null,
     val error:String?=null,
     val isLoading:Boolean=false,
 )
 
 sealed class WatchCompetitionEvent{
     data class OnLoadCompetitionEvent(val id:String):WatchCompetitionEvent()
-    data class OnSubmitVoteVideoEvent(val id:String):WatchCompetitionEvent()
+    object OnUserLoadedEvent:WatchCompetitionEvent()
 }

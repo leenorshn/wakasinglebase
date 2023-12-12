@@ -2,6 +2,7 @@ package com.innov.wakasinglebase.data.model
 
 import com.innov.wakasinglebase.core.extension.formattedCount
 import com.innov.wakasinglebase.core.extension.randomUploadDate
+import com.innov.wakasinglebase.core.utils.FileUtils.convertUnixTimestampToReadableDate
 import com.wakabase.CompetitionQuery
 import com.wakabase.CompetitionsQuery
 
@@ -21,7 +22,7 @@ data class VideoModel(
     val category: String?=null,
     val product:String?=null,
     val currentViewerInteraction: ViewerInteraction = ViewerInteraction(),
-    val createdAt: String = randomUploadDate(),
+    val createdAt: String?=null,
     val audioModel: AudioModel? = null,
     val hasTag: List<String>? = listOf(),
 ) {
@@ -74,7 +75,7 @@ fun CompetitionQuery.Video.toVideoModel():VideoModel{
         ),
         videoTitle = title,
         description = "",
-        createdAt = randomUploadDate(),
+        createdAt = convertUnixTimestampToReadableDate(like.toLong()),
         hasTag = null,
     )
 }

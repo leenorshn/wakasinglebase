@@ -1,5 +1,6 @@
 package com.innov.wakasinglebase.data.model
 
+import com.innov.wakasinglebase.core.utils.FileUtils
 import com.wakabase.FindNotificationsQuery
 
 data class NotificationModel(
@@ -7,7 +8,9 @@ data class NotificationModel(
     val title:String,
     val message:String,
     val status:String,
-    val file:String?
+    val file:String?,
+    val createdAt:String?
+
 )
 
 fun FindNotificationsQuery.Nofication.toNotificationModel():NotificationModel{
@@ -16,6 +19,7 @@ fun FindNotificationsQuery.Nofication.toNotificationModel():NotificationModel{
         title=title,
         status = status,
         message = message,
-        file = file
+        file = file,
+        createdAt = FileUtils.convertUnixTimestampToReadableDate(createdAt.toLong()),
     )
 }

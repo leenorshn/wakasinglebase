@@ -67,7 +67,7 @@ fun CompetitionScreen(
             .fillMaxSize()
             .background(color = Color.Gray.copy(alpha = 0.2f)),
         topBar = {
-            TopAppBar(title = { Text(text = "Challenges") }, actions = {
+            TopAppBar(title = { Text(text = "Competitions") }, actions = {
                 IconButton(onClick = { /*TODO*/ }) {
                     Icon(imageVector = Icons.Outlined.Search, contentDescription = "")
                 }
@@ -128,7 +128,7 @@ fun CompetitionScreen(
 
                                 ListItem(
                                     overlineContent = {
-                                        Text(text = "Waka-Challenge")
+                                        Text(text = "TamTam-Competition")
                                     },
 
                                     headlineContent = {
@@ -153,11 +153,17 @@ fun CompetitionScreen(
 
                                     )
                                 4.dp.Space()
-                               Box(modifier = Modifier.padding(horizontal = -16.dp)){
-                                   for (t in competition.participants.take(4)) {
-                                       StackedImage(
-                                           image = t.profilePic
-                                       )
+                               Box(modifier = Modifier.padding(horizontal = 16.dp)){
+                                  // for (t in competition.participants.take(4)) {
+                                       Row(
+                                           horizontalArrangement = Arrangement.spacedBy((-14).dp)
+                                       ) {
+                                           for (t in competition.participants.take(4)) {
+                                               StackedImage(
+                                                   image = t.profilePic
+                                               )
+                                           }
+                                      // }
                                    }
                                }
                                 4.dp.Space()

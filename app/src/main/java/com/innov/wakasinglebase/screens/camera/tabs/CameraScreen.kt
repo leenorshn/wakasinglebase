@@ -25,13 +25,34 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -50,19 +71,15 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.google.accompanist.permissions.shouldShowRationale
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.common.CaptureButton
 import com.innov.wakasinglebase.core.DestinationRoute.UPLOAD_ROUTE
 import com.innov.wakasinglebase.core.extension.MediumSpace
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.core.utils.FileUtils
-import com.innov.wakasinglebase.core.utils.openAppSetting
 import com.innov.wakasinglebase.screens.camera.CameraCaptureOptions
 import com.innov.wakasinglebase.screens.camera.CameraController
-import com.innov.wakasinglebase.screens.camera.CameraMediaViewModel
 import com.innov.wakasinglebase.screens.camera.PermissionType
 import com.innov.wakasinglebase.screens.camera.Tabs
 import com.innov.wakasinglebase.ui.theme.LightGreenColor
@@ -87,7 +104,7 @@ import java.nio.charset.StandardCharsets
 @Composable
 fun CameraScreen(
     navController: NavController,
-    viewModel: CameraMediaViewModel,
+    //viewModel: CameraMediaViewModel,
     cameraOpenType: Tabs = Tabs.CAMERA
 ) {
     val context = LocalContext.current
@@ -140,7 +157,7 @@ fun CameraScreen(
 //
 //           // UploadScreen(uri =uriG !!, fileName = fileName)
 //        }else{
-            if (multiplePermissionState.permissions[0].status.isGranted) {
+          //  if (multiplePermissionState.permissions[0].status.isGranted) {
 
                 //fileLauncher.launch("video/*")
 //                CameraPreview(cameraOpenType,
@@ -162,26 +179,26 @@ fun CameraScreen(
                     },
                     error = error
                 )
-            } else {
-                CameraMicrophoneAccessPage(multiplePermissionState.permissions[1].status.isGranted,
-                    cameraOpenType,
-                    onClickCancel = { navController.navigateUp() },
-                    onClickOpenFile = { fileLauncher.launch("video/*") }) {
-                    val permissionState = when (it) {
-                        PermissionType.CAMERA -> multiplePermissionState.permissions[1]
-                        PermissionType.MICROPHONE -> multiplePermissionState.permissions[1]
-                    }
-                    permissionState.apply {
-                        if (this.status.shouldShowRationale) {
-                            this.launchPermissionRequest()
-                        } else {
-                            context.openAppSetting()
-                        }
-                    }
-                }
+//            } else {
+//                CameraMicrophoneAccessPage(multiplePermissionState.permissions[1].status.isGranted,
+//                    cameraOpenType,
+//                    onClickCancel = { navController.navigateUp() },
+//                    onClickOpenFile = { fileLauncher.launch("video/*") }) {
+//                    val permissionState = when (it) {
+//                        PermissionType.CAMERA -> multiplePermissionState.permissions[0]
+//                        PermissionType.MICROPHONE -> multiplePermissionState.permissions[1]
+//                    }
+//                    permissionState.apply {
+//                        if (this.status.shouldShowRationale) {
+//                            this.launchPermissionRequest()
+//                        } else {
+//                            context.openAppSetting()
+//                        }
+//                    }
+//                }
+//
 
-
-            }
+           // }
     }
 }
 

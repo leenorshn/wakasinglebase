@@ -1,3 +1,4 @@
+import com.innov.wakasinglebase.core.utils.FileUtils
 import com.innov.wakasinglebase.data.model.UserModel
 import com.innov.wakasinglebase.data.model.VideoModel
 import com.innov.wakasinglebase.data.model.toVideoModel
@@ -14,7 +15,7 @@ data class CompetitionModel(
     val banner:String?,
     val detail:String,
     val isArchived:Boolean,
-    val createdAt:Long,
+    val createdAt:String,
     val participants:List<UserModel> =emptyList(),
     val videos:List<VideoModel> = emptyList(),
 )
@@ -31,7 +32,7 @@ fun CompetitionsQuery.AllCompetition.toCompetitionModel():CompetitionModel{
         banner=banner,
         detail = details,
         isArchived=isArchived,
-        createdAt=createdAt.toLong(),
+        createdAt= FileUtils.convertUnixTimestampToReadableDate(createdAt.toLong()),
         price=price,
         participants = participants.map {
             UserModel(
@@ -60,7 +61,7 @@ fun CompetitionQuery.Competition.toCompetitionModel():CompetitionModel{
         banner=banner,
         detail = details,
         isArchived=isArchived,
-        createdAt=createdAt.toLong(),
+        createdAt=FileUtils.convertUnixTimestampToReadableDate(createdAt.toLong()),
         price=price,
         participants = participants.map {
             UserModel(

@@ -19,6 +19,7 @@ import com.innov.wakasinglebase.screens.camera.upload.uploadNavGraph
 import com.innov.wakasinglebase.screens.comment.commentListingNavGraph
 import com.innov.wakasinglebase.screens.competition.joinCompetition.joinCompetitionNavGraph
 import com.innov.wakasinglebase.screens.competition.marketNavGraph
+import com.innov.wakasinglebase.screens.competition.vote.voteCompetitionNavGraph
 import com.innov.wakasinglebase.screens.competition.watch.watchCompetitionNavGraph
 import com.innov.wakasinglebase.screens.createprofile.creatorprofile.creatorProfileNavGraph
 import com.innov.wakasinglebase.screens.home.homeNavGraph
@@ -75,13 +76,14 @@ fun AppNavHost(
            marketNavGraph(navController)
            joinCompetitionNavGraph(navController)
            uploadNavGraph(navController)
-           //videoDetailNavGraph()
+           voteCompetitionNavGraph(navController)
+
            publicationNavGraph(navController)
            myProfileNavGraph(navController)
            firstProfileNavGraph(navController)
            commentListingNavGraph(navController)
-            rechargeNavGraph(navController)
-            notificationNavGraph(navController)
+           rechargeNavGraph(navController)
+           notificationNavGraph(navController)
            videoDetailNavGraph(navController)
            myVideosNavGraph(navController)
            myBusinessNavGraph(navController)

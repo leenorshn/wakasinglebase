@@ -6,7 +6,7 @@ data class ProductModel(
     val theme: String,
     val coverImage: String,
     val author: UserModel,
-    val createdAt: Long,
+    val createdAt: String,
     val price: Double,
     val isArchived: Boolean,
 )

@@ -7,6 +7,8 @@ import com.innov.wakasinglebase.core.DestinationRoute.PassedKey.VIDEO_INDEX
  * Created by Victor on 3/19/2023.
  */
 object DestinationRoute {
+//    const val PUBLISH_SCREEN_ROUTE="PUBLISH_SCREEN_ROUTE/uri={uri}"
+    const val VOTE_COMPETITION_ROUTE="VOTE_COMPETITION_ROUTE/id={id}"
     const val VIDEO_DETAIL_ROUTE="VIDEO_DETAIL_ROUTE/video={video}"
     const val PROFILE_SETTING="PROFILE_SETTING"
     const val MONETISATION_ROUTE="MONETISATION_ROUTE"
@@ -18,8 +20,8 @@ object DestinationRoute {
     const val MY_VIDEO_ROUTE= "MY_VIDEO_ROUTE/id={videoId}"
     const val MY_BUSINESS_ROUTE= "MY_BUSINESS_ROUTE/"
     const val EDIT_PROFILE="EDIT_PROFILE_ROUTE"
-    const val PROFILE_SCREEN_AVATAR="PROFILE_SCREEN_AVATAR"
-    const val FOLLOWER_ROUTE="follower_route"
+//    const val PROFILE_SCREEN_AVATAR="PROFILE_SCREEN_AVATAR"
+//    const val FOLLOWER_ROUTE="follower_route"
     const val LOADING_SCREEN= "loading_screen"
     const val MAIN_NAV_ROUTE="main_route"
     const val AUTH_ROUTE="auth_route"
@@ -34,16 +36,16 @@ object DestinationRoute {
         "$CREATOR_VIDEO_ROUTE/{$USER_ID}/{$VIDEO_INDEX}"
 
     const val LOTTO_ROUTE = "Lotto_route"
-    const val CHAT_ROUTE = "CHAT_ROUTE/conversation={conversation}"
+//    const val CHAT_ROUTE = "CHAT_ROUTE/conversation={conversation}"
     const val MY_PROFILE_ROUTE = "my_profile_route"
-    const val THREADS_ROUTE = "THREADS_ROUTE"
+//    const val THREADS_ROUTE = "THREADS_ROUTE"
     const val CAMERA_ROUTE = "camera_route"
 
     const val AUTHENTICATION_ROUTE = "authentication_route"
     const val LOGIN_OR_SIGNUP_WITH_PHONE_ROUTE = "login_signup_route"
     const val OPT_SCREEN_ROUTE="opt_screen_route/phone={phone}"
 
-    const val SETTING_ROUTE="setting_route"
+//    const val SETTING_ROUTE="setting_route"
     const val UPLOAD_ROUTE="upload_route/uri={uri}"
 
 

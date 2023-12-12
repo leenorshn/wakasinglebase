@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -52,6 +53,7 @@ import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.data.model.CommentModel
 import com.innov.wakasinglebase.ui.theme.DarkBlue
 import com.innov.wakasinglebase.ui.theme.GrayMainColor
+import com.innov.wakasinglebase.ui.theme.PrimaryColor
 
 @Composable
 fun CommentListScreen(
@@ -85,6 +87,12 @@ fun CommentListScreen(
             .fillMaxHeight(0.75f)
     ) {
         12.dp.Space()
+        if (viewState?.isLoading==true){
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth(),
+                color= PrimaryColor,
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -106,6 +114,7 @@ fun CommentListScreen(
                     }
             )
         }
+
 
         6.dp.Space()
         LazyColumn(contentPadding = PaddingValues(top = 4.dp), modifier = Modifier.weight(1f)) {
@@ -177,10 +186,13 @@ fun CommentItem(item: CommentModel) {
                 end.linkTo(parent.end)
                 width = Dimension.fillToConstraints
             })
-//        Text(text = "${item.createdAt} ", modifier = Modifier.constrainAs(createdOn) {
-//            start.linkTo(name.start)
-//            top.linkTo(comment.bottom, margin = 5.dp)
-//        })
+        Text(text = "${item.createdAt} ",
+            color=Color.Gray,
+            fontSize = 12.sp,
+            modifier = Modifier.constrainAs(createdOn) {
+            start.linkTo(name.start)
+            top.linkTo(comment.bottom, margin = 5.dp)
+        })
 
 //        Text(text = stringResource(id = R.string.reply),
 //            style = MaterialTheme.typography.labelMedium,

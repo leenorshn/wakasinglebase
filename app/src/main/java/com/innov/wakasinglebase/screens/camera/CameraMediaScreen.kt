@@ -4,9 +4,13 @@ package com.innov.wakasinglebase.screens.camera
 import android.app.Activity
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,7 +25,7 @@ import com.innov.wakasinglebase.screens.camera.tabs.CameraScreen
 @Composable
 fun CameraMediaScreen(
     navController: NavController,
-    cameraMediaViewModel: CameraMediaViewModel = hiltViewModel()
+    viewModel: CameraMediaViewModel = hiltViewModel()
 ) {
 
 
@@ -54,7 +58,7 @@ fun CameraMediaScreen(
             Box(modifier = Modifier.weight(1f)) {
                  CameraScreen(
                             navController = navController,
-                            viewModel = cameraMediaViewModel,
+                           // viewModel = cameraMediaViewModel,
                             cameraOpenType = tabs[0]
                         )
 

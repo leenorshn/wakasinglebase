@@ -114,14 +114,14 @@ class VideoDataSource @Inject constructor(
         return flow {
             emit(BaseResponse.Loading)
        val resp= apolloClient.query(VideosQuery(limit)).fetchPolicy(FetchPolicy.NetworkFirst).execute()
-            Log.d("Manatane","${resp.data}")
+           // Log.d("Manatane","${resp.data}")
         if(resp.hasErrors()){
             Log.d("Manatane",resp.errors.toString())
             emit(BaseResponse.Error("Error hard to load videos"))
         }
         if (resp.data?.videos!=null){
             val videos=resp.data?.videos?.map {
-                Log.d("Manatane",it.id)
+                //Log.d("Manatane",it.id)
                 it.toVideoModel()
 
             }?: emptyList()
@@ -140,9 +140,9 @@ class VideoDataSource @Inject constructor(
         return flow {
             emit(BaseResponse.Loading)
             val resp= apolloClient.query(VideoQuery(id)).fetchPolicy(FetchPolicy.NetworkFirst).execute()
-            Log.d("Manatane","${resp.data}")
+            //Log.d("Manatane","${resp.data}")
             if(resp.hasErrors()){
-                Log.d("Manatane",resp.errors.toString())
+               // Log.d("Manatane",resp.errors.toString())
                 emit(BaseResponse.Error("Error hard to load videos"))
             }
             if (resp.data?.video!=null){
@@ -169,11 +169,11 @@ video?.let {
         fetchVideos(100).collect{
             when(it){
                 is BaseResponse.Error -> {
-                    println(it.error)
+                   // println(it.error)
                     "Error When loading videos"
                 }
                 BaseResponse.Loading -> {
-                    println(it)
+                   // println(it)
                     true
                 }
                 is BaseResponse.Success -> {
