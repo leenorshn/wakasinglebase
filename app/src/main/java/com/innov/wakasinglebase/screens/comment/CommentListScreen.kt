@@ -84,7 +84,7 @@ fun CommentListScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxHeight(0.75f)
+            .fillMaxHeight(0.5f)
     ) {
         12.dp.Space()
         if (viewState?.isLoading==true){
@@ -99,7 +99,7 @@ fun CommentListScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Text(
-                text = "${comments.size ?: ""} ${stringResource(id = R.string.comments)}",
+                text = "${comments.size } ${stringResource(id = R.string.comments)}",
                 style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.align(Alignment.Center)
             )

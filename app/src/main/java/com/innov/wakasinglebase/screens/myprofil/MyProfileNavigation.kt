@@ -3,14 +3,18 @@ package com.innov.wakasinglebase.screens.myprofil
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.innov.wakasinglebase.AuthState
 import com.innov.wakasinglebase.core.DestinationRoute
-import com.innov.wakasinglebase.signin.MainViewModel
 
 /**
  * Created by innov Victor on 4/1/2023.
  */
-fun NavGraphBuilder.myProfileNavGraph(navController: NavController) {
+fun NavGraphBuilder.myProfileNavGraph(navController: NavController,authState: AuthState) {
     composable(route = DestinationRoute.MY_PROFILE_ROUTE) {
-        MyProfileScreen(navController)
+        //MyProfileScreen(navController)
+
+
+        MyProfileScreen(navController,authState)
+
     }
 }

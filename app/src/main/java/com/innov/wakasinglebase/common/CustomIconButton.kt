@@ -40,7 +40,7 @@ fun CustomIconButton(
     height: Dp = 56.dp,
     border: BorderStroke = BorderStroke(1.dp, color = SeparatorColor),
     containerColor: Color = MaterialTheme.colorScheme.primary,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    contentColor: Color = Color.White,
     borderColor: Color = SeparatorColor,
     onClickButton: () -> Unit
 ) {

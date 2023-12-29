@@ -28,7 +28,9 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
+import androidx.media3.datasource.DefaultDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import coil.compose.AsyncImage
@@ -36,6 +38,9 @@ import com.innov.wakasinglebase.core.utils.FileUtils
 import com.innov.wakasinglebase.data.model.VideoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.Cache
+import okhttp3.OkHttpClient
+import java.io.File
 
 
 /**
@@ -71,10 +76,23 @@ fun VideoPlayer(
         }
     }
     if (pagerState.settledPage == pageIndex) {
+        val cacheDirectory = File(context.cacheDir, "exoplayer_cache")
+        cacheDirectory.mkdirs()
+
+        val cache = Cache(cacheDirectory, (100*1024*1024))
+        val okHttpClient = OkHttpClient.Builder().cache(cache).build()
+
+        val customDataSourceFactory = DefaultDataSource .Factory(context)
+        val dataSourceFactory = DefaultDataSource.Factory(context, customDataSourceFactory)
+
         //val videoOptions = VideoOptions("${video.videoId}", VideoType.VOD /* For VOD, or VideoType.LIVE for Live */, "Mriz6mr0R8OOGidYspbYVVmE38YjG9EUer3TfrEGJea")
         val exoPlayer = remember(context) {
             ExoPlayer.Builder(context)
+
                 //.setLoadControl(loadControl)
+                .setMediaSourceFactory(
+                    DefaultMediaSourceFactory(context).setDataSourceFactory(dataSourceFactory)
+                )
                 .build().apply {->
                 videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT
                 repeatMode = Player.REPEAT_MODE_ONE

@@ -19,7 +19,7 @@ class CompetitionViewModel @Inject constructor(
 
 val uiState = MutableStateFlow(UserState())
     init {
-        getSignedInUser()
+       // getSignedInUser()
         getCompetitions()
     }
 
@@ -32,9 +32,6 @@ val uiState = MutableStateFlow(UserState())
 
         }
     }
-
-
-
 
 
     private  fun getCompetitions()  {

@@ -53,7 +53,7 @@ fun OptScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             100.dp.Space()
-            Text(text = "Tam-Tam", fontSize = 32.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Waka-Waka", fontSize = 32.sp, fontWeight = FontWeight.Bold)
             32.dp.Space()
             Text(
                 text = "You will receive an SMS code at\n $phone \nto verify that you are a human!",

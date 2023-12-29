@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -50,49 +51,53 @@ fun AppNavHost(
     mainViewModel: MainViewModel= hiltViewModel()
 ) {
     val authState by mainViewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
 
 
-    var initialRoute = if(authState.loading) {
-        "loading"
-    } else if (authState.error!=null){
-        DestinationRoute.AUTH_ROUTE
-    } else if (authState.success){
-        DestinationRoute.MAIN_NAV_ROUTE
-    } else  {
-        DestinationRoute.AUTH_ROUTE
-    }
+//    var initialRoute = if(authState.loading) {
+//        "loading"
+////    } else if (authState.error!=null){
+//        DestinationRoute.AUTH_ROUTE
+//    } else if (authState.success){
+//        DestinationRoute.MAIN_NAV_ROUTE
+//    } else  {
+//        DestinationRoute.AUTH_ROUTE
+//    }
     NavHost(
         navController = navController,
-        startDestination = initialRoute,
+        startDestination = DestinationRoute.MAIN_NAV_ROUTE,
         modifier = modifier
     ) {
+        mainViewModel.onTriggerEvent(MainEvent.OnReloadUser(context))
+        navigation(
+            startDestination = DestinationRoute.HOME_SCREEN_ROUTE,
+            route = DestinationRoute.MAIN_NAV_ROUTE
+        ) {
+            homeNavGraph(navController,authState)
+            cameraMediaNavGraph(navController,authState)
+            creatorProfileNavGraph(navController)
+            watchCompetitionNavGraph(navController)
+            marketNavGraph(navController,authState)
+            joinCompetitionNavGraph(navController)
+            uploadNavGraph(navController)
+            voteCompetitionNavGraph(navController,authState)
 
-       navigation(startDestination=DestinationRoute.HOME_SCREEN_ROUTE,route=DestinationRoute.MAIN_NAV_ROUTE){
-           homeNavGraph(navController)
-           cameraMediaNavGraph(navController)
-           creatorProfileNavGraph(navController)
-           watchCompetitionNavGraph(navController)
-           marketNavGraph(navController)
-           joinCompetitionNavGraph(navController)
-           uploadNavGraph(navController)
-           voteCompetitionNavGraph(navController)
+            publicationNavGraph(navController)
+            myProfileNavGraph(navController,authState)
+            firstProfileNavGraph(navController)
+            commentListingNavGraph(navController)
+            rechargeNavGraph(navController)
+            notificationNavGraph(navController,authState)
+            videoDetailNavGraph(navController)
+            myVideosNavGraph(navController)
+            myBusinessNavGraph(navController)
+            monetisationNavGraph(navController)
 
-           publicationNavGraph(navController)
-           myProfileNavGraph(navController)
-           firstProfileNavGraph(navController)
-           commentListingNavGraph(navController)
-           rechargeNavGraph(navController)
-           notificationNavGraph(navController)
-           videoDetailNavGraph(navController)
-           myVideosNavGraph(navController)
-           myBusinessNavGraph(navController)
-           monetisationNavGraph(navController)
-
-       }
-        navigation(DestinationRoute.AUTHENTICATION_ROUTE,DestinationRoute.AUTH_ROUTE){
+        }
+        navigation(DestinationRoute.AUTHENTICATION_ROUTE, DestinationRoute.AUTH_ROUTE) {
             //welcome,phone,code,Profile
-            authNavGraph(navController)
+            authNavGraph(navController,authState)
             phoneNavGraph(navController)
             optNavGraph(navController)
             profileSettingNavGraph(navController)

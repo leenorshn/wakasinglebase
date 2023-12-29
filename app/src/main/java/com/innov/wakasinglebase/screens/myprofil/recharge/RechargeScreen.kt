@@ -62,7 +62,7 @@ fun RechargeScreen(
                     fontSize = 28.sp,  fontWeight = FontWeight.Bold,
                 ).toSpanStyle()) {
                     append("\n" +
-                            "Tam-Tam \n\n")
+                            "Waka-Waka \n\n")
                 }
                 withStyle(style = TextStyle(
                     fontSize = 28.sp,  fontWeight = FontWeight.Normal,

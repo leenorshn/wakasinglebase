@@ -35,6 +35,7 @@ fun CustomButton(
         shape = shape,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
+            contentColor = Color.White,
         ),
         enabled = isEnabled
     ) {

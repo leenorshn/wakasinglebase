@@ -49,7 +49,8 @@ fun VideosQuery.Video.toVideoModel():VideoModel{
         authorDetails = author.toAuthor(),
         like = like,
         view = view,
-        comment = comment
+        comment = comment,
+        product = product
     )
 }
 
@@ -67,6 +68,6 @@ fun VideoQuery.Video.toVideoModel():VideoModel{
         like = like,
         view = view,
         comment = comment,
-
+        product = product,
     )
 }

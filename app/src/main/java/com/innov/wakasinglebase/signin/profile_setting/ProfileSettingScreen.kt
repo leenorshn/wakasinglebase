@@ -86,6 +86,7 @@ fun ProfileSettingScreen(
 
     LaunchedEffect(key1 = updateUserState.success) {
         if (updateUserState.success) {
+            viewModel.onTriggerEvent(ProfileSettingEvent.ReloadUser)
             navController.navigate(DestinationRoute.MAIN_NAV_ROUTE)
         }
     }
@@ -142,6 +143,7 @@ fun ProfileSettingScreen(
                     CircularProgressIndicator(color = PrimaryColor)
                 } else {
                     CustomButton(
+                        isEnabled = viewModel.isValid(),
                         modifier = Modifier.fillMaxWidth(0.7f),
                         shape = RoundedCornerShape(16),
                         buttonText = "continue"
@@ -154,6 +156,13 @@ fun ProfileSettingScreen(
                     24.dp.Space()
                     Text(text = "${updateUserState.error} ", color = Color.Red, fontSize = 12.sp)
                 }
+
+                32.dp.Space()
+                Text(
+                    text = "L'image et le nom sont obligatoire pour continue",
+                    fontSize = 12.sp,
+
+                )
 
             }
         }

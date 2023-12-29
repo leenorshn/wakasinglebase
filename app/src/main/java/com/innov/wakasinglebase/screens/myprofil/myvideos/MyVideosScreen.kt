@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -74,11 +73,16 @@ fun MyVideoScreen(
         }
     }
 
-    LaunchedEffect(key1 = deleteState.success) {
-        if (deleteState.success) {
-            viewModel.onTriggerEvent(MyVideoEvent.OnVideosLoadedEvent("$videoId"))
-        }
-    }
+//    LaunchedEffect(key1 = deleteState.success) {
+//        if (deleteState.success) {
+//            //viewModel.onTriggerEvent(MyVideoEvent.OnVideosLoadedEvent("$videoId"))
+//            uiState?.videos?.let {
+//                videos=it.filter{
+//                    it.videoId==
+//                }
+//            }
+//        }
+//    }
     Scaffold(
         topBar = {
             Row(
@@ -90,7 +94,7 @@ fun MyVideoScreen(
                     Icon(Icons.Outlined.ArrowBack, "back")
                 }
                 Text(text = "My Videos", fontWeight = FontWeight.Medium, fontSize = 18.sp)
-                Text(text = (uiState?.videos?.size.toString() + " Videos  ") ?: "0 Videos  ")
+                Text(text = (videos.size.toString() + " Videos  ") ?: "0 Videos  ")
             }
         }
     ) {
@@ -146,9 +150,9 @@ fun MyVideoScreen(
                         },
                         onVideoDeleted = {
                             viewModel.onTriggerEvent(MyVideoEvent.OnVideoDeletedEvent(v.videoId))
-                           videos= videos.filter { v->v.videoId!=v.videoId }
+                           videos= videos.filter { n->n.videoId!=v.videoId }
                         },
-                        state = deleteState
+
                     )
                 }
             }
@@ -164,7 +168,6 @@ fun MyVideoScreen(
 fun MyVideoItem(
     key:Int,
     video: VideoModel, onVideoClicked: () -> Unit, onVideoDeleted: () -> Unit,
-    state: DeleteState
 ) {
     var thumbnail by remember {
         mutableStateOf<Pair<Bitmap?, Boolean>>(Pair(null, true))  //bitmap, isShow
@@ -208,13 +211,11 @@ fun MyVideoItem(
             Text(text = "${video.videoTitle}", fontSize = 18.sp, fontWeight = FontWeight.Medium)
         },
         trailingContent = {
-            if (state.isLoading) {
-                CircularProgressIndicator(color = PrimaryColor)
-            } else {
+
                 IconButton(onClick = { onVideoDeleted.invoke() }) {
                     Icon(Icons.Outlined.Delete, "delete")
                 }
-            }
+
         }
     )
 }

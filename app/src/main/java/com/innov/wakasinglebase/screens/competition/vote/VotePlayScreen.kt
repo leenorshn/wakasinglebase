@@ -69,9 +69,9 @@ fun VotePlayScreen(
                     onClickLike = {s:String ,b:Boolean->
                         viewModel.onTriggerEvent(VoteCompetitionEvent.OnSubmitVoteVideoEvent(s))
                     },
-                    onclickFavourite = {},
+                    //onclickFavourite = {},
                     onClickAudio = {},
-                    onClickVote = {},
+                    //onClickVote = {},
                     onClickUser = { userId -> navController.navigate("${DestinationRoute.CREATOR_PROFILE_ROUTE}/$userId") }
                 )
             }

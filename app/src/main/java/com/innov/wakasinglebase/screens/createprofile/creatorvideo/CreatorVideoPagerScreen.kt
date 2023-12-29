@@ -1,8 +1,19 @@
 package com.innov.wakasinglebase.screens.createprofile.creatorvideo
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -57,10 +68,10 @@ fun CreatorVideoPagerScreen(
                     onClickLike = {s:String,b:Boolean->
                         viewModel.onTriggerEvent(CreatorVideoEvent.OnLikeVideoEvent(s))
                     },
-                    onclickFavourite = {},
+                   // onclickFavourite = {},
                     onClickAudio = onClickAudio,
                     onClickUser = onClickUser,
-                    onClickVote={},
+                    //onClickVote={},
                     initialPage = viewModel.videoIndex,
                     modifier = Modifier.weight(1f)
                 )

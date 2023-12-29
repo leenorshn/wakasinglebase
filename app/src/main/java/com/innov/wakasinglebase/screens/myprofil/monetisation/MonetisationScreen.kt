@@ -77,7 +77,7 @@ fun MonetisationScreen(
                     .fillMaxWidth()
                     .height(240.dp))
             10.dp.Space()
-            Text(text = "Monetize Your Tam-Tam Experience!\n",
+            Text(text = "Monetize Your Waka-Waka Experience!\n",
                     fontSize = 26.sp, fontWeight = FontWeight.SemiBold,
                 )
             Text(text = stringResource(R.string.join_monetization), fontSize = 20.sp, lineHeight = 1.2.em)

@@ -16,7 +16,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class ForYouViewModel @Inject constructor(
-    private val videoRepository: VideoRepositoryImpl
+    private val videoRepository: VideoRepositoryImpl,
+
 ) : BaseViewModel<ViewState, ForYouEvent>() {
 
     val likeState = mutableStateOf(LikeState())

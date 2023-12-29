@@ -28,6 +28,10 @@ class MainViewModel @Inject constructor(
 
     val uiState : StateFlow<AuthState> = _state.asStateFlow()
     init {
+        loadUser(context)
+    }
+
+   private fun loadUser(context:Context){
         tokenRepository.init(context)
 
 
@@ -83,19 +87,13 @@ class MainViewModel @Inject constructor(
         }
 
 
+
     }
 
     override fun onTriggerEvent(event: MainEvent) {
         when(event){
-            MainEvent.OnOffline -> {
-                viewModelScope.launch {
-                    userRepository.updateUserOnlineState(false)
-                }
-            }
-            MainEvent.OnOnline -> {
-                viewModelScope.launch {
-                    userRepository.updateUserOnlineState(false)
-                }
+           is MainEvent.OnReloadUser -> {
+                loadUser(context = event.context)
             }
         }
     }
@@ -114,6 +112,6 @@ data class ViewState(
 )
 
 sealed class MainEvent{
-    object OnOnline:MainEvent()
-    object OnOffline:MainEvent()
+    data class OnReloadUser(val context: Context):MainEvent()
+
 }

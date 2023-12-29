@@ -16,8 +16,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.innov.wakasinglebase.AuthState
 import com.innov.wakasinglebase.common.WakawakaVerticalVideoPager
-import com.innov.wakasinglebase.core.DestinationRoute.COMMENT_BOTTOM_SHEET_ROUTE
+import com.innov.wakasinglebase.core.DestinationRoute
+import com.innov.wakasinglebase.core.DestinationRoute.AUTH_ROUTE
 import com.innov.wakasinglebase.core.DestinationRoute.CREATOR_PROFILE_ROUTE
 import com.innov.wakasinglebase.ui.theme.DarkBlue
 import com.innov.wakasinglebase.ui.theme.DarkPink
@@ -29,6 +31,7 @@ import com.innov.wakasinglebase.ui.theme.PrimaryColor
 @Composable
 fun ForYouTabScreen(
     navController: NavController,
+    authState: AuthState,
     viewModel: ForYouViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.viewState.collectAsState()
@@ -67,13 +70,23 @@ fun ForYouTabScreen(
            WakawakaVerticalVideoPager(
                 videos = it,
                 onclickComment = {
-                    navController.navigate(COMMENT_BOTTOM_SHEET_ROUTE.replace("{video}",it)) },
+                                 if (authState.success){
+                                     navController.navigate(DestinationRoute.COMMENT_BOTTOM_SHEET_ROUTE.replace("{video}",it))
+                                 }else{
+                                     navController.navigate(AUTH_ROUTE)
+                                 }
+                     },
                 onClickLike = {s:String ,b:Boolean->
-                    viewModel.onTriggerEvent(ForYouEvent.OnLikeVideo(s))
+                    if (authState.success){
+                        viewModel.onTriggerEvent(ForYouEvent.OnLikeVideo(s))
+                    }else{
+                        navController.navigate(AUTH_ROUTE)
+                    }
+
                 },
-                onclickFavourite = {},
+                //onclickFavourite = {},
                 onClickAudio = {},
-               onClickVote = {},
+              // onClickVote = {},
                 onClickUser = { userId -> navController.navigate("$CREATOR_PROFILE_ROUTE/$userId") }
             )
         } }

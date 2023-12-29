@@ -20,26 +20,30 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
 @HiltViewModel
 class ProfileSettingViewModel @Inject constructor(
     private val repository: AuthRepositoryImpl,
     private val tokenRepository: TokenRepository,
 
     @ApplicationContext val context: Context,
-):BaseViewModel<ViewState,ProfileSettingEvent>() {
+) : BaseViewModel<ViewState, ProfileSettingEvent>() {
 
-    private var _state= MutableStateFlow(ProfileSettingState())
-    val state=_state.asStateFlow()
+    private var _state = MutableStateFlow(ProfileSettingState())
+    val state = _state.asStateFlow()
 
-    var updateUserState= MutableStateFlow(UpdateUserState())
+    var updateUserState = MutableStateFlow(UpdateUserState())
     var uploadState = MutableStateFlow(UploadImageState2())
         private set
 
     var name by mutableStateOf("")
 
 
-
     init {
+        initLoad()
+    }
+
+    private fun initLoad(){
         tokenRepository.init(context)
         tokenRepository.getToken()
         loadUser()
@@ -47,13 +51,14 @@ class ProfileSettingViewModel @Inject constructor(
 
 
     override fun onTriggerEvent(event: ProfileSettingEvent) {
-        when(event){
+        when (event) {
             is ProfileSettingEvent.OnNameEntered -> {
-                Log.d("VICTOR",event.name)
-                _state.value=_state.value.copy(
-                    name =  event.name,
+                Log.d("VICTOR", event.name)
+                _state.value = _state.value.copy(
+                    name = event.name,
                 )
             }
+
             ProfileSettingEvent.OnSubmit -> {
 
                 viewModelScope.launch {
@@ -64,32 +69,33 @@ class ProfileSettingViewModel @Inject constructor(
 
             is ProfileSettingEvent.OnAvatarEntered -> {
                 //val avatar="https://d2y4y6koqmb0v7.cloudfront.net/${event.avatar}"
-                _state.value=_state.value.copy(
-                    avatar =  event.avatar,
+                _state.value = _state.value.copy(
+                    avatar = event.avatar,
                 )
             }
 
             ProfileSettingEvent.ReloadUser -> {
-                loadUser()
+                initLoad()
             }
 
             is ProfileSettingEvent.OnUploadImageOns3 -> {
-                Log.d("IMAGE_UPLOAD",event.fileName)
-                Log.d("IMAGE_UPLOAD",event.uri.toString())
-                uploadFile(event.uri,event.fileName)
+                Log.d("IMAGE_UPLOAD", event.fileName)
+                Log.d("IMAGE_UPLOAD", event.uri.toString())
+                uploadFile(event.uri, event.fileName)
             }
 
 
         }
 
     }
-    private fun loadUser(){
+
+    private fun loadUser() {
         viewModelScope.launch {
-            repository.me().collect{
-                when(it){
+            repository.me().collect {
+                when (it) {
                     is BaseResponse.Error -> {
                         updateState(
-                            viewState= ViewState(
+                            viewState = ViewState(
                                 isLoading = false,
                                 userModel = null,
                                 error = it.error
@@ -97,85 +103,95 @@ class ProfileSettingViewModel @Inject constructor(
                         )
 
                     }
+
                     BaseResponse.Loading -> {
                         updateState(
-                            viewState=ViewState(
+                            viewState = ViewState(
                                 isLoading = true,
                                 userModel = null,
                                 error = null
                             )
                         )
                     }
+
                     is BaseResponse.Success -> {
 
 
                         updateState(
-                            viewState=ViewState(
+                            viewState = ViewState(
                                 isLoading = false,
                                 userModel = it.data,
                                 error = null
                             )
                         )
-                        name=it.data?.name?:""
+                        name = it.data?.name ?: ""
                     }
                 }
             }
         }
     }
-    private fun uploadFile(uri: Uri, fileName: String){
+
+    private fun uploadFile(uri: Uri, fileName: String) {
         //val options = StorageUploadInputStreamOptions.defaultInstance()
         val stream = context.contentResolver.openInputStream(uri)
-        uploadState.value=uploadState.value.copy(
+        uploadState.value = uploadState.value.copy(
             success = false,
             isLoading = true,
-            error=null
+            error = null
         )
         Amplify.Storage.uploadInputStream(
             "$fileName",
             stream!!,
             {
-                uploadState.value=uploadState.value.copy(
+                uploadState.value = uploadState.value.copy(
                     success = true,
                     isLoading = false,
-                    error=null
+                    error = null
                 )
             },
 
             {
-                uploadState.value=uploadState.value.copy(
+                uploadState.value = uploadState.value.copy(
                     success = false,
                     isLoading = false,
-                    error=it.message
+                    error = it.message
                 )
             })
     }
 
-    private suspend fun updateUserData(data: ProfileSettingState) = withContext(Dispatchers.IO){
+    fun isValid(): Boolean {
+        return (_state.value.name?.isNotEmpty() == true) && (_state.value.avatar?.isNotEmpty() == true)
+    }
+
+    private suspend fun updateUserData(data: ProfileSettingState) = withContext(Dispatchers.IO) {
 
         viewModelScope.launch {
-            repository.updateUserData(name=data.name, avatar = data.avatar,bio="not define").collect{
-                when(it){
-                    is BaseResponse.Error -> {
-                        updateUserState.value=updateUserState.value.copy(
-                            error = it.error,
-                            isLoading = false
-                        )
-                    }
-                    BaseResponse.Loading -> {
-                        updateUserState.value=updateUserState.value.copy(
-                            isLoading = true,
-                            error = null
-                        )
-                    }
-                    is BaseResponse.Success -> {
-                        updateUserState.value=updateUserState.value.copy(
-                            success = true,
-                            isLoading = false,
-                            error=null
-                        )
+            repository.updateUserData(name = data.name, avatar = data.avatar, bio = "not define")
+                .collect {
+                    when (it) {
+                        is BaseResponse.Error -> {
+                            updateUserState.value = updateUserState.value.copy(
+                                error = it.error,
+                                isLoading = false
+                            )
+                        }
+
+                        BaseResponse.Loading -> {
+                            updateUserState.value = updateUserState.value.copy(
+                                isLoading = true,
+                                error = null
+                            )
+                        }
+
+                        is BaseResponse.Success -> {
+                            updateUserState.value = updateUserState.value.copy(
+                                success = true,
+                                isLoading = false,
+                                error = null
+                            )
+                        }
                     }
                 }
-            }
         }
     }
 

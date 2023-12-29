@@ -15,6 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.innov.wakasinglebase.AuthState
+import com.innov.wakasinglebase.common.UnAuthorizedInboxScreen
+import com.innov.wakasinglebase.core.DestinationRoute.LOGIN_OR_SIGNUP_WITH_PHONE_ROUTE
 import com.innov.wakasinglebase.core.extension.getCurrentBrightness
 import com.innov.wakasinglebase.screens.camera.tabs.CameraScreen
 
@@ -25,6 +28,7 @@ import com.innov.wakasinglebase.screens.camera.tabs.CameraScreen
 @Composable
 fun CameraMediaScreen(
     navController: NavController,
+    authState:AuthState,
     viewModel: CameraMediaViewModel = hiltViewModel()
 ) {
 
@@ -47,7 +51,7 @@ fun CameraMediaScreen(
         }
     }
 
-
+if (authState.success){
     Scaffold {
         Column(
             modifier = Modifier
@@ -56,15 +60,21 @@ fun CameraMediaScreen(
         ) {
 
             Box(modifier = Modifier.weight(1f)) {
-                 CameraScreen(
-                            navController = navController,
-                           // viewModel = cameraMediaViewModel,
-                            cameraOpenType = tabs[0]
-                        )
+                CameraScreen(
+                    navController = navController,
+                    // viewModel = cameraMediaViewModel,
+                    cameraOpenType = tabs[0]
+                )
 
-                    }
-                }
             }
+        }
+    }
+}else{
+    UnAuthorizedInboxScreen {
+        navController.navigate(LOGIN_OR_SIGNUP_WITH_PHONE_ROUTE)
+    }
+}
+
 
 }
 

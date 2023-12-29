@@ -89,7 +89,7 @@ fun PhoneScreen(
                 .fillMaxSize()
         ) {
             64.dp.Space()
-            Text(text = "Tam-Tam", fontWeight = FontWeight.Medium, fontSize = 32.sp)
+            Text(text = "Waka-Waka", fontWeight = FontWeight.Medium, fontSize = 32.sp)
             Image(painter = painterResource(id = R.drawable.logo_tiktok_compose), contentDescription = "",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.size(56.dp))

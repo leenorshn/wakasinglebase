@@ -3,7 +3,6 @@ package com.innov.wakasinglebase.signin
 //import com.innov.wakasinglebase.core.DestinationRoute.LOGIN_OR_SIGNUP_WITH_PHONE_ROUTE
 
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -33,6 +32,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.innov.wakasinglebase.AuthState
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.common.CustomButton
 import com.innov.wakasinglebase.core.AppContract.Annotate.ANNOTATED_PRIVACY_POLICY
@@ -47,8 +47,14 @@ import com.innov.wakasinglebase.ui.theme.fontFamily
 @Composable
 fun SignInScreen(
     navController: NavController,
+    authState: AuthState,
     onSignInClick: () -> Unit
 ) {
+//    LaunchedEffect(key1 = true,){
+//        if (authState.success){
+//            navController.navigate(DestinationRoute.MAIN_NAV_ROUTE)
+//        }
+//    }
     Scaffold(
         modifier = Modifier.fillMaxSize()
 
@@ -72,31 +78,34 @@ fun SignInScreen(
                 Text(
                     text = stringResource(id = R.string.login_or_sign_up),
                     style = MaterialTheme.typography.displaySmall.copy(
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontWeight = FontWeight.Bold,
                     )
                 )
                 20.dp.Space()
                 Text(
                     text = stringResource(id = R.string.login_in_to_your_existing_account),
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(16.dp)
                         .clip(RoundedCornerShape(10))
                 )
                 20.dp.Space()
-                Image(
+                Icon(
                     painter = painterResource(R.drawable.logo_tiktok_compose),
                     contentDescription = "",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(124.dp)
+                    //contentScale = ContentScale.Crop,
+                    modifier = Modifier.size(124.dp),
+                    tint = MaterialTheme.colorScheme.primary,
                 )
                 20.dp.Space()
-//                if (isLoading){
-//                    CircularProgressIndicator(color= PrimaryColor)
-//                }
-                Spacer(modifier = Modifier.weight(1f))
+//               
+                Text(text = "Just 2 min !",
+                    fontSize = 40.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onPrimary)
+                Spacer(modifier = Modifier.weight(2f))
                 // if(isLoading || currentUser == null){
                 CustomButton(
                     modifier = Modifier.width(340.dp),

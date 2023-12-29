@@ -43,8 +43,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.innov.wakasinglebase.AuthState
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.common.StackedImage
+import com.innov.wakasinglebase.common.UnAuthorizedInboxScreen
 import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.extension.LargeSpace
 import com.innov.wakasinglebase.core.extension.Space
@@ -55,164 +57,165 @@ import com.innov.wakasinglebase.ui.theme.PrimaryColor
 @Composable
 fun CompetitionScreen(
     navController: NavController,
+    authState: AuthState,
     viewModel: CompetitionViewModel = hiltViewModel()
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val uiState by viewModel.uiState.collectAsState()
 
-    val currentUser=uiState.user
+    if (authState.error!=null){
+        UnAuthorizedInboxScreen {
+            navController.navigate(DestinationRoute.LOGIN_OR_SIGNUP_WITH_PHONE_ROUTE)
+        }
+    }else {
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Gray.copy(alpha = 0.2f)),
-        topBar = {
-            TopAppBar(title = { Text(text = "Competitions") }, actions = {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(imageVector = Icons.Outlined.Search, contentDescription = "")
-                }
-            })
-        },
-
-
-        ) {
-        LazyColumn(
+        Scaffold(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            item {
-                if (viewState?.isLoading == true) {
-                    LinearProgressIndicator(
-                        trackColor = PrimaryColor,
-                        color = Color.White,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                .background(color = Color.Gray.copy(alpha = 0.2f)),
+            topBar = {
+                TopAppBar(title = { Text(text = "Competitions") }, actions = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Outlined.Search, contentDescription = "")
+                    }
+                })
+            },
+
+
+            ) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                item {
+                    if (viewState?.isLoading == true) {
+                        LinearProgressIndicator(
+                            trackColor = PrimaryColor,
+                            color = Color.White,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    16.dp.Space()
                 }
-                16.dp.Space()
-            }
-            if (viewState?.competitions != null) {
-                viewState?.competitions?.let {
-                    items(it) { competition ->
-                        Card(
-                            modifier = Modifier.padding(bottom = 16.dp),
-                            elevation = CardDefaults.elevatedCardElevation(
-                                defaultElevation = 3.dp,
-                            ),
-                            colors = CardDefaults.cardColors(
-                                containerColor = Color.White,
-                            )
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 16.dp)
-                            )
-                            {
-                                AsyncImage(
-                                    model = "${competition.banner}",
-                                    contentDescription = "",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        // .padding(bottom = 23.dp)
-                                        .clip(
-                                            RoundedCornerShape(
-                                                topStartPercent = 5,
-                                                topEndPercent = 5
-                                            )
-                                        )
+                if (viewState?.competitions != null) {
+                    viewState?.competitions?.let {
+                        items(it) { competition ->
+                            Card(
+                                modifier = Modifier.padding(bottom = 16.dp),
+                                elevation = CardDefaults.elevatedCardElevation(
+                                    defaultElevation = 3.dp,
+                                ),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color.White,
                                 )
-
-                                ListItem(
-                                    overlineContent = {
-                                        Text(text = "TamTam-Competition")
-                                    },
-
-                                    headlineContent = {
-                                        Text(
-                                            text = "${competition.name} ",
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Medium,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis,
-
-                                            )
-                                    },
-                                    supportingContent = {
-                                        Text(
-                                            text = "${competition.detail} ",
-                                            fontSize = 14.sp,
-                                            color = Color.Gray,
-                                            maxLines = 2,
-                                            overflow = TextOverflow.Ellipsis,
-                                        )
-                                    },
-
-                                    )
-                                4.dp.Space()
-                               Box(modifier = Modifier.padding(horizontal = 16.dp)){
-                                  // for (t in competition.participants.take(4)) {
-                                       Row(
-                                           horizontalArrangement = Arrangement.spacedBy((-14).dp)
-                                       ) {
-                                           for (t in competition.participants.take(4)) {
-                                               StackedImage(
-                                                   image = t.profilePic
-                                               )
-                                           }
-                                      // }
-                                   }
-                               }
-                                4.dp.Space()
-                                Row(
+                            ) {
+                                Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 10.dp),
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-
-                                    if(competition.videos.isNotEmpty()){
-                                        ExtendedFloatingActionButton(
-                                            containerColor = PrimaryColor,
-                                            onClick = {
-                                                navController.navigate(
-                                                    DestinationRoute.WATCH_COMPETITION_ROUTE.replace(
-                                                        "{id}",
-                                                        competition.id
-                                                    )
+                                        .padding(bottom = 16.dp)
+                                )
+                                {
+                                    AsyncImage(
+                                        model = "${competition.banner}",
+                                        contentDescription = "",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            // .padding(bottom = 23.dp)
+                                            .clip(
+                                                RoundedCornerShape(
+                                                    topStartPercent = 5,
+                                                    topEndPercent = 5
                                                 )
-                                            }) {
-                                            Text(text = "Watch")
-                                            Spacer(modifier = Modifier.width(24.dp))
-                                            Icon(
-                                                painter = painterResource(id = R.drawable.ic_play_outline),
-                                                contentDescription = ""
                                             )
+                                    )
+
+                                    ListItem(
+                                        overlineContent = {
+                                            Text(text = "WakaWaka-Competition")
+                                        },
+
+                                        headlineContent = {
+                                            Text(
+                                                text = "${competition.name} ",
+                                                fontSize = 20.sp,
+                                                fontWeight = FontWeight.Medium,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+
+                                                )
+                                        },
+                                        supportingContent = {
+                                            Text(
+                                                text = "${competition.detail} ",
+                                                fontSize = 14.sp,
+                                                color = Color.Gray,
+                                                maxLines = 2,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                        },
+
+                                        )
+                                    4.dp.Space()
+                                    Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                                        // for (t in competition.participants.take(4)) {
+                                        Row(
+                                            horizontalArrangement = Arrangement.spacedBy((-14).dp)
+                                        ) {
+                                            for (t in competition.participants.take(4)) {
+                                                StackedImage(
+                                                    image = t.profilePic
+                                                )
+                                            }
+                                            // }
                                         }
-                                    }else{
-                                        Spacer(modifier = Modifier.width(24.dp))
+                                    }
+                                    4.dp.Space()
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 10.dp),
+                                        horizontalArrangement = Arrangement.End
+                                    ) {
+
+                                        if (competition.videos.isNotEmpty()) {
+                                            ExtendedFloatingActionButton(
+                                                containerColor = PrimaryColor,
+                                                contentColor = Color.White,
+                                                onClick = {
+                                                    navController.navigate(
+                                                        DestinationRoute.WATCH_COMPETITION_ROUTE.replace(
+                                                            "{id}",
+                                                            competition.id
+                                                        )
+                                                    )
+                                                }) {
+                                                Text(text = "Watch")
+                                                Spacer(modifier = Modifier.width(24.dp))
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.ic_play_outline),
+                                                    contentDescription = ""
+                                                )
+                                            }
+                                        } else {
+                                            Spacer(modifier = Modifier.width(24.dp))
+                                        }
                                     }
                                 }
                             }
                         }
-
-
                     }
+
                 }
-
+                item {
+                    80.dp.Space()
+                }
             }
+            LargeSpace()
 
-
-
-            item {
-                80.dp.Space()
-            }
         }
-        LargeSpace()
-
     }
 
 }

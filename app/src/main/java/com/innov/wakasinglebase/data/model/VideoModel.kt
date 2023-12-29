@@ -54,6 +54,7 @@ fun CompetitionsQuery.Video.toVideoModel():VideoModel{
         thumbnail = thumbnail,
         videoTitle = title,
         description = "",
+        product = product,
         createdAt = randomUploadDate(),
         hasTag = null,
     )
@@ -75,6 +76,7 @@ fun CompetitionQuery.Video.toVideoModel():VideoModel{
         ),
         videoTitle = title,
         description = "",
+        product = product,
         createdAt = convertUnixTimestampToReadableDate(like.toLong()),
         hasTag = null,
     )

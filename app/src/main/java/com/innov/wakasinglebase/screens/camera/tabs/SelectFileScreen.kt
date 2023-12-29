@@ -57,7 +57,7 @@ fun SelectFileScreen(
                         .padding(vertical = 32.dp, horizontal = 24.dp)
                 ) {
                     Text(
-                        text = "Tam-tam \n\n video",
+                        text = "Waka-Waka \n\n video",
                         textAlign = TextAlign.Center,
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,

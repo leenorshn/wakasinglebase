@@ -2,7 +2,6 @@ package com.innov.wakasinglebase.common
 
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
@@ -66,11 +65,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.util.UnstableApi
 import coil.compose.AsyncImage
 import com.innov.wakasinglebase.R
 import com.innov.wakasinglebase.core.extension.Space
@@ -87,7 +89,7 @@ import kotlinx.coroutines.launch
 /**
  * Created by innov Victor on 3/16/2023.
  */
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 fun WakawakaVerticalVideoPager(
@@ -96,12 +98,9 @@ fun WakawakaVerticalVideoPager(
     initialPage: Int? = 0,
     showUploadDate: Boolean = false,
     onclickComment: (videoId: String) -> Unit,
-    onclickFavourite: (videoId: String) -> Unit,
     onClickLike: (videoId: String,isLiked:Boolean) -> Unit,
-    onClickVote:(videoId:String)->Unit,
     onClickAudio: (VideoModel) -> Unit,
     onClickUser: (userId: String) -> Unit,
-    onClickFavourite: (isFav: Boolean) -> Unit = {},
     onClickShare: (() -> Unit)? = null
 ) {
     val pagerState = rememberPagerState(
@@ -182,10 +181,9 @@ fun WakawakaVerticalVideoPager(
                         videos[it],
                         doubleTabState = doubleTapState,
                         onclickComment = onclickComment,
-                        onClickUser = onClickUser,
-                        onClickFavourite = onClickFavourite,
+
                         onClickShare = onClickShare,
-                        onClickVote = onClickVote,
+
                         onClickLike = {s:String,b:Boolean->
                             onClickLike.invoke(s,b)
                         }
@@ -251,14 +249,12 @@ fun SideItems(
     item: VideoModel,
     doubleTabState: Triple<Offset, Boolean, Float>,
     onclickComment: (videoId: String) -> Unit,
-    onClickUser: (userId: String) -> Unit,
-    onClickVote: (videoId: String) -> Unit,
     onClickShare: (() -> Unit)? = null,
     onClickLike: (videoId: String,isLiked:Boolean) -> Unit,
-    onClickFavourite: (isFav: Boolean) -> Unit
+
 ) {
 
-    var likes by remember {
+    var (likes,setLike) = remember {
         mutableIntStateOf(item.like)
     }
 
@@ -283,9 +279,15 @@ fun SideItems(
             VoteIconButton(
                 item = item,
                 likeCount = likes.formattedCount(),
-                onClickVote ={
-                    onClickLike.invoke(item.videoId,true)
-                    likes += 1
+                isLiked = isLiked,
+                onClickVote ={ a,b->
+                    onClickLike.invoke(item.videoId,b)
+                    if (b){
+                        setLike(likes+1)
+                    }else{
+                        setLike(likes+1)
+                    }
+
                 }
             )
         }else {
@@ -296,7 +298,12 @@ fun SideItems(
                     onClickLike.invoke(item.videoId,it)
                     isLiked = it
                     item.currentViewerInteraction.isLikedByYou = it
-                    likes += 1
+                    if (isLiked){
+                        setLike(likes+1)
+                    }else{
+                        setLike(likes-1)
+                    }
+
 
                 })
         }
@@ -321,11 +328,12 @@ fun SideItems(
 
         20.dp.Space()
         ShareIconButton(
-            item = item,
             onClickShare={
                 onClickShare?.let { onClickShare.invoke() } ?: run {
                     context.share(
-                        text = item.videoLink
+//                        text = item.videoLink
+                        text = "https://play.google.com/store/apps/details?id=com.innov.wakasinglebase",
+                        title = "Share Waka-Waka"
                     )
                 }
             }
@@ -381,7 +389,6 @@ fun LikeIconButton(
 
 @Composable
 fun ShareIconButton(
-    item: VideoModel,
     onClickShare:()->Unit
 ) {
    // val context= LocalContext.current
@@ -408,7 +415,8 @@ fun VoteIconButton(
 
      likeCount: String,
      item: VideoModel,
-     onClickVote: (videoId: String) -> Unit
+     isLiked: Boolean,
+     onClickVote: (videoId: String,isLiked:Boolean) -> Unit
 ) {
 
 //    val maxSize = 38.dp
@@ -430,7 +438,7 @@ fun VoteIconButton(
             .clip(RoundedCornerShape(10.dp))
             .background(color = MaterialTheme.colorScheme.primary)
             .clickable(interactionSource = MutableInteractionSource(), indication = null) {
-                onClickVote.invoke(item.videoId)
+                onClickVote.invoke(item.videoId, isLiked)
             }, contentAlignment = Alignment.Center
     ) {
         Row(
@@ -467,23 +475,25 @@ fun FooterUi(
 ) {
     Column(modifier = modifier, verticalArrangement = Arrangement.Bottom) {
        if (item.product!=null){
-           Text("for all the content", fontSize = 12.sp)
+          // Text("for all the content", fontSize = 12.sp)
            OutlinedButton(
 
                onClick = { /*TODO navigate to product with this ID*/ },
                border= BorderStroke(0.7.dp, PrimaryColor,),
-               shape= RoundedCornerShape(32),
+               shape= RoundedCornerShape(24),
                colors=ButtonDefaults.outlinedButtonColors(
                    backgroundColor = PrimaryColor,
                    contentColor = Color.White,
 
                    )
            ) {
-               Icon(painter = painterResource(id = R.drawable.usd_money_24), contentDescription = "",modifier=Modifier.size(16.dp))
+               Icon(painter = painterResource(id = R.drawable.trophee_24), contentDescription = "",modifier=Modifier.size(16.dp))
                12.dp.Space()
-               Text(text = "  Purchase ", fontSize = 12.sp)
+               Text(text = "  WakaWaka ", fontSize = 12.sp)
 
            }
+       }else{
+           Text(text = "WakaWaka")
        }
 
         4.dp.Space()
@@ -568,7 +578,7 @@ fun FooterUi(
 }
 
 
-@Composable
+@androidx.annotation.OptIn(UnstableApi::class) @Composable
 fun RotatingAudioView() {
     val infiniteTransition = rememberInfiniteTransition(label = "infinity loop")
     val angle by infiniteTransition.animateFloat(
@@ -590,12 +600,20 @@ fun RotatingAudioView() {
                     top = 8.dp
                 )
         ) {
-            Text(
-                text = stringResource(R.string.waka_waka), style = TextStyle(
-                    color = PrimaryColor,
-                    fontSize = 24.sp, fontWeight = FontWeight.Bold,
-                )
-            )
+            val annotatedString = buildAnnotatedString {
+                withStyle(style = SpanStyle(color = PrimaryColor,
+                    fontSize = 24.sp, fontWeight = FontWeight.Bold)) {
+                    append("Waka")
+                }
+                withStyle(style = SpanStyle(color= Color.White,
+                    fontSize = 24.sp, fontWeight = FontWeight.Bold)) {
+                    append("Waka")
+                }
+
+            }
+
+            Text(text = annotatedString)
+
             Box(modifier = Modifier.rotate(angle)) {
                 Box(
                     modifier = Modifier

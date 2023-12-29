@@ -36,7 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.innov.wakasinglebase.AuthState
 import com.innov.wakasinglebase.R
+import com.innov.wakasinglebase.common.UnAuthorizedInboxScreen
+import com.innov.wakasinglebase.core.DestinationRoute
 import com.innov.wakasinglebase.core.extension.Space
 import com.innov.wakasinglebase.ui.theme.PrimaryColor
 
@@ -45,95 +48,106 @@ import com.innov.wakasinglebase.ui.theme.PrimaryColor
 @Composable
 fun NotificationScreen(
     navController: NavController,
+    authState: AuthState,
     viewModel: NotificationViewModel = hiltViewModel()
 ) {
 
     val viewState by viewModel.viewState.collectAsState()
+    if (authState.success) {
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text(text = "Notifications") },
-                actions = {
-                    IconButton(onClick = {
-                        viewModel.onTriggerEvent(NotificationEvent.LoadNotifications)
-                    }) {
-                        Icon(Icons.Outlined.Refresh, null)
-                    }
-                })
-        }
-    ) { p ->
-        if (viewState?.isLoading == true) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(p),
-                color = PrimaryColor,
-            )
-        }
-        if (viewState?.notifications?.isNotEmpty() == false) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(p), contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+        Scaffold(
+            topBar = {
+                TopAppBar(title = { Text(text = "Notifications") },
+                    actions = {
+                        IconButton(onClick = {
+                            viewModel.onTriggerEvent(NotificationEvent.LoadNotifications)
+                        }) {
+                            Icon(Icons.Outlined.Refresh, null)
+                        }
+                    })
+            }
+        ) { p ->
+            if (viewState?.isLoading == true) {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(p),
+                    color = PrimaryColor,
+                )
+            }
+            if (viewState?.notifications?.isNotEmpty() == false) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(p), contentAlignment = Alignment.Center
                 ) {
-                    Image(painter = painterResource(id = R.drawable.empty), contentDescription = "")
-                    10.dp.Space()
-                    Text(text = "notification list is Empty")
-                    10.dp.Space()
-                    OutlinedButton(onClick = {
-                        viewModel.onTriggerEvent(NotificationEvent.LoadNotifications)
-                    }) {
-                        Text(text = "Refresh")
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.empty),
+                            contentDescription = ""
+                        )
+                        10.dp.Space()
+                        Text(text = "notification list is Empty")
+                        10.dp.Space()
+                        OutlinedButton(onClick = {
+                            viewModel.onTriggerEvent(NotificationEvent.LoadNotifications)
+                        }) {
+                            Text(text = "Refresh")
+                        }
                     }
                 }
-            }
-        } else {
-            viewState?.notifications?.let {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(p)
-                        .fillMaxSize()
-                ) {
-                    items(it) { notif ->
-                        Card {
-                            val color = if (notif.status == "CRITIQUE") Color.Red else Color.Blue
-                            ListItem(
-                                leadingContent = {
-                                    OutlinedIconButton(onClick = { /*TODO*/ }) {
-                                        Icon(Icons.Outlined.Notifications, null)
-                                    }
-                                },
-                                overlineContent = {
-                                    Text(text = notif.status, fontSize = 12.sp, color = color)
-                                },
-                                headlineContent = {
-                                    Text(
-                                        text = notif.title,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                },
-                                supportingContent = {
-                                    Text(
-                                        text = notif.message + "\n" + notif.createdAt,
-                                        textAlign = TextAlign.Start,
-                                        color = Color.Gray,
-                                        fontSize = 14.sp
-                                    )
-                                },
+            } else {
+                viewState?.notifications?.let {
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(p)
+                            .fillMaxSize()
+                    ) {
+                        items(it) { notif ->
+                            Card {
+                                val color =
+                                    if (notif.status == "CRITIQUE") Color.Red else Color.Blue
+                                ListItem(
+                                    leadingContent = {
+                                        OutlinedIconButton(onClick = { /*TODO*/ }) {
+                                            Icon(Icons.Outlined.Notifications, null)
+                                        }
+                                    },
+                                    overlineContent = {
+                                        Text(text = notif.status, fontSize = 12.sp, color = color)
+                                    },
+                                    headlineContent = {
+                                        Text(
+                                            text = notif.title,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    },
+                                    supportingContent = {
+                                        Text(
+                                            text = notif.message + "\n" + notif.createdAt,
+                                            textAlign = TextAlign.Start,
+                                            color = Color.Gray,
+                                            fontSize = 14.sp
+                                        )
+                                    },
 
 
-                                )
-                            Divider()
+                                    )
+                                Divider()
+                            }
                         }
                     }
                 }
             }
-        }
 
+        }
+    }else{
+        UnAuthorizedInboxScreen {
+            navController.navigate(DestinationRoute.LOGIN_OR_SIGNUP_WITH_PHONE_ROUTE)
+        }
     }
 }

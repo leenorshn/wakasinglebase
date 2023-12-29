@@ -47,9 +47,9 @@ viewModel: VideoDetailViewModel= hiltViewModel()
                         videos = listOf(video),
                         onclickComment = { navController.navigate(DestinationRoute.COMMENT_BOTTOM_SHEET_ROUTE) },
                         onClickLike = { s: String, b: Boolean -> },
-                        onclickFavourite = {},
+                        //onclickFavourite = {},
                         onClickAudio = {},
-                        onClickVote = {},
+                        //onClickVote = {},
                         onClickUser = { userId -> navController.navigate("${DestinationRoute.CREATOR_PROFILE_ROUTE}/$userId") }
                     )
                 }
