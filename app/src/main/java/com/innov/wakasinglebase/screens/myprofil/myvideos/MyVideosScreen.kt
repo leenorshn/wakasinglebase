@@ -17,7 +17,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ListItem
@@ -48,7 +47,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyVideoScreen(
     navController: NavController,
@@ -94,7 +92,7 @@ fun MyVideoScreen(
                     Icon(Icons.Outlined.ArrowBack, "back")
                 }
                 Text(text = "My Videos", fontWeight = FontWeight.Medium, fontSize = 18.sp)
-                Text(text = (videos.size.toString() + " Videos  ") ?: "0 Videos  ")
+                Text(text = (videos.size.toString() + " Videos  ") )
             }
         }
     ) {
@@ -138,7 +136,6 @@ fun MyVideoScreen(
             if (uiState?.videos != null) {
                 itemsIndexed(videos){ i,v->
                     MyVideoItem(
-                        key = i,
                         video = v,
                         onVideoClicked = {
                             navController.navigate(
@@ -166,7 +163,6 @@ fun MyVideoScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MyVideoItem(
-    key:Int,
     video: VideoModel, onVideoClicked: () -> Unit, onVideoDeleted: () -> Unit,
 ) {
     var thumbnail by remember {

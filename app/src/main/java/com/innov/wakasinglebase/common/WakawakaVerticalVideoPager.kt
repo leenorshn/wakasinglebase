@@ -332,7 +332,7 @@ fun SideItems(
                 onClickShare?.let { onClickShare.invoke() } ?: run {
                     context.share(
 //                        text = item.videoLink
-                        text = "https://play.google.com/store/apps/details?id=com.innov.wakasinglebase",
+                        text = "https://wakamobile.vercel.app/${item.videoId}",
                         title = "Share Waka-Waka"
                     )
                 }
